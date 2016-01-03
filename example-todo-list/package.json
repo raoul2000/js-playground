@@ -1,0 +1,19 @@
+{
+  "name": "todo-list",
+  "version": "0.0.1",
+  "description": "angular+bootstrap todo list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "test",
+    "nodejs"
+  ],
+  "author": "raoul",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "1.4.8",
+    "bootstrap": "^3.3.6"
+  }
+}

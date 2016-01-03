@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="demoApp">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>Todo list</title>
+
+<!-- Bootstrap -->
+<link href="node_modules/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<script src="node_modules/angular/angular.min.js"></script>
+<script src="todoList.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row" ng-controller="todoCtrl">
+			<div class="col-md-12">
+
+				<h1>Todos</h1>
+				<form id="todo-form" ng-submit="addTodo()">
+
+					<input id="new-todo" type="text" class="form-control add-todo"
+						placeholder="What to do ?" ng-model="newTodo" />
+
+				</form>
+
+
+				<hr>
+
+				<div ng-show="todos.length">
+					<ul id="todo-list" class="list-unstyled">
+						<li ng-repeat="todo in todos"
+							ng-class="{completed: todo.completed}" class="ui-state-default">
+							<div class="view">
+								<input class="mark" type="checkbox" ng-model="todo.completed" />
+								<span>{{todo.title}}</span> <span class="close"
+									ng-click="removeTodo(todo)">x</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<input id="mark-all" type="checkbox" ng-model="allChecked"
+					ng-click="markAll(allChecked)" /> <label 
+					for="mark-all">Tout cocher</label><br/>
+				<button class="btn btn-danger" ng-click="clearCompletedTodos()">Supprimer
+					les tâches cochées</button>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
