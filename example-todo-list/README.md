@@ -3,7 +3,8 @@ This is the classical and very basic *TODO list* app. It uses **angularjs** and 
 
 # Requirements
 
-- nodejs
+- [nodejs](https://nodejs.org/en/)
+- [http-server](https://github.com/indexzero/http-server) (optional - see below for installation instructions)
 
 # Installation
 From the `example-todo-list`folder :
