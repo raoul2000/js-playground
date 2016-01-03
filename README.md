@@ -6,7 +6,10 @@ This is a playground repository for some js, nodejs, and other stuff.
 	
 # Usage
 
-To install an run an example, navigate to the appropriate folder and refer to the README.md instructions
+To install and run an example, navigate to the appropriate folder and refer to the README.md instructions.
+
+- [Todo List](./example-todo-list) : Angularjs, Bootstrap
+- [Electron Hello](./example-electron) : Electron App with build instruction
 
 # Tools
 
