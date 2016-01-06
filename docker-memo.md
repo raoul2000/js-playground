@@ -28,21 +28,16 @@ Launch `start.sh` from the Docker installation folder :
 	docker is configured to use the default machine with IP 192.168.99.100
 	For help getting started, check out the docs at https://docs.docker.com
 
-<<<<<<< HEAD
-The default docker machine is running at **192.168.99.100**. You can add a new record to your etc/hosts file (in Windows) 
-=======
-Here the default docker machine is running at **192.168.99.100**. You can add a new record to your etc/hosts file (in Windows) 
->>>>>>> add Docker memo
+
+Here the default docker machine is running at **192.168.99.100**. You can add a new record to your etc/hosts file
 to create a local DNS name for your Docker VM.
 
-- hosts file : `C:\Windows\System32\drivers\etc`
+- hosts file (Windows) : `C:\Windows\System32\drivers\etc`
 	
-<<<<<<< HEAD
-**TIPS** : You can connect to the *default* VM using SSH with following credentials :
-=======
+
 **TIPS** : connect to the *default* VM using SSH with following credentials :
->>>>>>> add Docker memo
- 
+
+
 - username : `docker`
 - password : `tcuser`
 
@@ -74,11 +69,9 @@ We are now in the *bash* of our ubuntu image. Let's check the version :
 	root@7d0f19f11160:/# uname -a
 	Linux 7d0f19f11160 4.1.13-boot2docker #1 SMP Fri Nov 20 19:05:50 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
 
-<<<<<<< HEAD
-# An sshd image
-=======
+
 # A sshd image
->>>>>>> add Docker memo
+
 ## build 
 Create a folder and a *Dockerfile* file with name `docker-file-sshd`. Then build the image under the tag *eg_sshd*.
 
