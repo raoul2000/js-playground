@@ -1,0 +1,20 @@
+{
+  "name": "example-xml",
+  "version": "0.0.1",
+  "description": "let's play with some xml",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "xml",
+    "js"
+  ],
+  "author": "raoul",
+  "license": "ISC",
+  "dependencies": {
+    "xml2js": "^0.4.15",
+    "xmldom": "^0.1.19",
+    "xpath": "0.0.9"
+  }
+}

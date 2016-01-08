@@ -10,7 +10,9 @@ To install and run an example, navigate to the appropriate folder and refer to t
 
 - [Todo List](./example-todo-list) : Angularjs, Bootstrap
 - [Electron Hello](./example-electron) : Electron App with build instruction
+- [XML and XPath](./example-xml) : Manipulate XML document with nodejs
 
 # Tools
 
 - [ungit](https://github.com/FredrikNoren/ungit) : a nice UI for *git*.
+- [Mocha](https://github.com/mochajs/mocha) : test framework for nodejs.

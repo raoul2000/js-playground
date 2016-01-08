@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [
+  <!ENTITY intro "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus aum totam rerum cum placeat quis eius officiis eaque voluptatem dolore dolorum.">
+]>
+<email>
+	<body>&intro;</body>
+</email>
