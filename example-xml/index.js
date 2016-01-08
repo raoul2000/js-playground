@@ -1,0 +1,1 @@
+console.log("install mocha and run tests");
