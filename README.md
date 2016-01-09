@@ -14,5 +14,6 @@ To install and run an example, navigate to the appropriate folder and refer to t
 
 # Tools
 
-- [ungit](https://github.com/FredrikNoren/ungit) : a nice UI for *git*.
-- [Mocha](https://github.com/mochajs/mocha) : test framework for nodejs.
+- [ungit](https://github.com/FredrikNoren/ungit) : a nice UI for *git*
+- [Mocha](https://github.com/mochajs/mocha) : test framework for *Nodejs*
+- [Chai](http://chaijs.com/) : an assertion library that plays well with Mocha. Note that *Nodejs* also includes an [assertion library](https://nodejs.org/api/assert.html)

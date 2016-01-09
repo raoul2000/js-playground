@@ -4,7 +4,7 @@
   "description": "let's play with some xml",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test-xml2js.js test-xmldom.js test-xpath.js"
   },
   "keywords": [
     "xml",
@@ -13,6 +13,7 @@
   "author": "raoul",
   "license": "ISC",
   "dependencies": {
+    "chai": "^3.4.1",
     "xml2js": "^0.4.15",
     "xmldom": "^0.1.19",
     "xpath": "0.0.9"

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root-node>
+	<node>
+		<child-a>OneWord</child-a>
+		<child-b>123</child-b>
+		<!-- this is a comment -->
+		<child-c an-integer-attribute="123">
+			<grandchild an-float-attribute="456">
+				This is some
+				text on some
+				lines
+			</grandchild>
+			<!--
+				This is a multi-line comment 
+			 -->
+		</child-c>
+	</node>
+	<li>
+		<![CDATA[
+			<li>
+				<ul>blue</ul>
+				<ul>red</ul>
+				<ul>green</ul>
+			</li>
+		]]>
+	</li>
+	<child-d an-integer-attribute="888"/>
+</root-node>

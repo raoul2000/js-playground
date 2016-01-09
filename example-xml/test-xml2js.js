@@ -1,6 +1,7 @@
 'use strict';
 
 var assert = require('assert');
+
 describe("xml2js",function(){
 	
 	describe("parseString",function(){
