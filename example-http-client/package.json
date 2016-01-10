@@ -1,0 +1,16 @@
+{
+  "name": "example-http-client",
+  "version": "0.0.1",
+  "description": "play with http client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "http",
+    "client",
+    "example"
+  ],
+  "author": "raoul",
+  "license": "ISC"
+}
