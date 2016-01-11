@@ -17,7 +17,7 @@ For this example, the Mocha testing framework is used. Install is globally if no
 	 
 # Usage
 
-In this example we are using a testing frameworw and assertion library. To run all tests in a row :
+In this example we are using a testing framework and assertion library. To run all tests in a row :
 
 	npm test
 
