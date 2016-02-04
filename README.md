@@ -19,3 +19,6 @@ To install and run an example, navigate to the appropriate folder and refer to t
 - [Mocha](https://github.com/mochajs/mocha) : test framework for *Nodejs*
 - [Chai](http://chaijs.com/) : an assertion library that plays well with Mocha. Note that *Nodejs* also includes an [assertion library](https://nodejs.org/api/assert.html)
 - [json-server](https://github.com/typicode/json-server) : provides a fake REST API server to testing and demo
+- [http-server](https://github.com/indexzero/http-server) : a simple zero-configuration command-line http server. After installation (global) navigate to a folder
+and enter *http-server . -o* to start the server on the current dir and open the browser.
+- [Node Inspector](https://github.com/node-inspector/node-inspector) : debug your nodejs app in the Chrom browser.
