@@ -11,9 +11,11 @@ To install and run an example, navigate to the appropriate folder and refer to t
 - [Todo List](./example-todo-list) : Angularjs, Bootstrap
 - [Electron Hello](./example-electron) : Electron App with build instruction
 - [XML and XPath](./example-xml) : Manipulate XML document with nodejs
+- [HTTP Client](./example-http-client) : let's make some Http requests to some fake REST API
 
 # Tools
 
 - [ungit](https://github.com/FredrikNoren/ungit) : a nice UI for *git*
 - [Mocha](https://github.com/mochajs/mocha) : test framework for *Nodejs*
 - [Chai](http://chaijs.com/) : an assertion library that plays well with Mocha. Note that *Nodejs* also includes an [assertion library](https://nodejs.org/api/assert.html)
+- [json-server](https://github.com/typicode/json-server) : provides a fake REST API server to testing and demo
