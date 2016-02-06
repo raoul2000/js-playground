@@ -1,0 +1,14 @@
+{
+  "name": "example-promise",
+  "version": "0.0.1",
+  "description": "promise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "raoul2000",
+  "license": "ISC",
+  "dependencies": {
+    "q": "^1.4.1"
+  }
+}
