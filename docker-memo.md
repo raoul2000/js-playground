@@ -92,7 +92,7 @@ Let's run it in background (*-d*) and publishing all exposed ports to random por
 	$ docker run -d -P --name test_sshd eg_sshd
 	e958400f35aac44338248770cc9f9361754099a052c88116ac68c2a954a46d02
 
-We must now find out whot is the mapping for the SSH port 22. This can be obtained using the *ps* or *port* command. 
+We must now find out what is the mapping for the SSH port 22. This can be obtained using the *ps* or *port* command. 
 
 Using *ps* : 
 
@@ -107,6 +107,11 @@ Using *port* :
 
 So we have a winner : port 32769 !
 
+We gave a name to this running image and later use, using that name, we will be able to start it again:
+
+	docker start test_sshd
+	
+	
 ## connect
 
 Using your favorite SSH client, connect to your container :
