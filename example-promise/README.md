@@ -20,6 +20,7 @@ simply run each example manually. For example :
 	
 	node chaining-arg.js 
 
+For more information please refer to inline comments.
 
 # See also
 These are some interesting articles about javascript Promises :
