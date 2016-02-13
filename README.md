@@ -23,3 +23,4 @@ To install and run an example, navigate to the appropriate folder and refer to t
 - [http-server](https://github.com/indexzero/http-server) : a simple zero-configuration command-line HTTP server. After installation (global) navigate to a folder
 and enter *http-server . -o* to start the server on the current dir and open the browser.
 - [Node Inspector](https://github.com/node-inspector/node-inspector) : debug your *nodejs* app in the Chrome browser.
+- [faker.js](https://github.com/marak/faker.js) : generate fake data for your tests
