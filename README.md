@@ -3,7 +3,7 @@ This is a playground repository for some js, nodejs, and other stuff.
 # Installation
 
 	git clone https://github.com/raoul2000/js-playground.git
-	
+
 # Usage
 
 To install and run an example, navigate to the appropriate folder and refer to the README.md instructions.
@@ -24,3 +24,4 @@ To install and run an example, navigate to the appropriate folder and refer to t
 and enter *http-server . -o* to start the server on the current dir and open the browser.
 - [Node Inspector](https://github.com/node-inspector/node-inspector) : debug your *nodejs* app in the Chrome browser.
 - [faker.js](https://github.com/marak/faker.js) : generate fake data for your tests
+- [LiveReloadX](https://github.com/nitoyon/livereloadx) : auto-reload browser on change. Use `livereloadx -s [-p 35729] [path/to/dir]` to work with static pages
