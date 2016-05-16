@@ -1,0 +1,18 @@
+{
+  "name": "example-ftp",
+  "version": "1.0.0",
+  "description": "ftp operations for fun",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ftp"
+  ],
+  "author": "raoul2000",
+  "license": "ISC",
+  "dependencies": {
+    "ftp": "^0.3.10"
+  }
+}
