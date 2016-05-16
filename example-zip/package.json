@@ -1,0 +1,15 @@
+{
+  "name": "example-zip",
+  "version": "1.0.0",
+  "description": "create compressed archive (zip)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^1.0.0"
+  }
+}

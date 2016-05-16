@@ -13,6 +13,7 @@ To install and run an example, navigate to the appropriate folder and refer to t
 - [XML and XPath](./example-xml) : Manipulate XML document with nodejs
 - [HTTP Client](./example-http-client) : let's make some HTTP requests to some fake REST API
 - [Promises](./example-promise) : solve asynchronous problems and callback hell with Promises
+- [FTP](./example-ftp) : simple FTP client
 
 # Modules
 Below is a list of modules that are used for these examples :
