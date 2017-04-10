@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-
+import { WorkoutHistoryTracker } from '../../service/workout-history-tracker'
 @Component({
     selector: 'trainer-app',
     template: `<div class="navbar navbar-default navbar-fixed-top top-navbar">
@@ -9,7 +9,11 @@ import {Component} from '@angular/core';
               </div>
               <div class="container body-content app-container">
                 <router-outlet></router-outlet>
-              </div>`
+              </div>`,
+//  providers : [
+//    WorkoutHistoryTracker
+//  ]
+
 })
 export class TrainerAppComponent {
 }

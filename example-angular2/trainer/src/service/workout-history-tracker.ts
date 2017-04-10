@@ -7,7 +7,7 @@ export class WorkoutHistoryTracker {
     private workoutTracked: boolean;
 
     constructor() {
-
+      console.log('constructor WorkoutHistoryTracker');
     }
 
     get tracking(): boolean {

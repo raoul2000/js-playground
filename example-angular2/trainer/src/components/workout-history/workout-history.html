@@ -24,10 +24,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let historyItem of history|orderBy:'-startedOn'; let i = index">
+                <!--tr *ngFor="let historyItem of history|orderBy:'-startedOn'; let i = index"-->
                   <!--Use the above tr if you are starting from checkpoint1 (github checkpoint3.1),
                       or comment the tr above and use the below ts if starting checkpoint2 -->
-                      <!--<tr *ngFor="let historyItem of history|search:'completed':completed|orderBy:'-startedOn'; let i = index"> -->
+                <tr *ngFor="let historyItem of history|search:'completed':completed|orderBy:'-startedOn'; let i = index">
                     <td>{{i+1}}</td>
                     <td>{{historyItem.startedOn | date:'short'}}</td>
                     <td>{{historyItem.endedOn | date:'short'}}</td>
@@ -43,5 +43,6 @@
     </div>
     <div class="row">
         <button class="btn btn-primary pull-right" (click)="goBack()">Back</button>
+        <button (click)="addLog()">Add Log</button>
     </div>
 </div>

@@ -18,4 +18,11 @@ export class WorkoutHistoryComponent {
   goBack() {
     this.location.back();
   }
+
+  addLog() {
+    this.history.push(Object.assign(
+      {},
+      this.history[this.history.length-1]
+    ));
+  }
 }
