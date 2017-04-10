@@ -4,12 +4,12 @@
         <label>Workouts</label>
         <!--Use the above label if you are starting from checkpoint1 (github checkpoint3.1),
                 or comment the label above and uncomment the below section if starting checkpoint2 -->
-        <!--<label>Filter Workouts: </label>
+        <label>Filter Workouts: </label>
         <div class="btn-group">
             <label><input type="radio" name="searchFilter" value="" (change)="completed = null" checked="">All </label>
             <label><input type="radio" name="searchFilter" value="true" (change)="completed = $event.target.value=='true'">Completed </label>
             <label><input type="radio" name="searchFilter" value="false" (change)="completed = $event.target.value=='true'">Incomplete </label>
-        </div>-->
+        </div>
     </div>
     <div class="row table-responsive">
         <table class="table">
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let historyItem of history; let i = index">
+                <tr *ngFor="let historyItem of history|orderBy:'-startedOn'; let i = index">
                   <!--Use the above tr if you are starting from checkpoint1 (github checkpoint3.1),
                       or comment the tr above and use the below ts if starting checkpoint2 -->
                       <!--<tr *ngFor="let historyItem of history|search:'completed':completed|orderBy:'-startedOn'; let i = index"> -->
