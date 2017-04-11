@@ -1,13 +1,23 @@
 import { ExercisePlan } from '../components/workout-runner/model'
+import { LocalStorage } from './local-storage';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class WorkoutHistoryTracker {
     private maxHistoryItems: number = 20;
     private currentWorkoutLog: WorkoutLogEntry = null;
     private workoutHistory: Array<WorkoutLogEntry> = [];
     private workoutTracked: boolean;
+    private storageKey: string = "workouts";
 
-    constructor() {
+    constructor(private storage: LocalStorage) {
       console.log('constructor WorkoutHistoryTracker');
+      this.workoutHistory = (storage.getItem<Array<WorkoutLogEntry>>(this.storageKey) || [])
+        .map((item: WorkoutLogEntry) => {
+        item.startedOn = new Date(item.startedOn.toString());
+        item.endedOn = item.endedOn == null ? null : new Date(item.endedOn.toString());
+        return item;
+      });
     }
 
     get tracking(): boolean {
@@ -21,6 +31,7 @@ export class WorkoutHistoryTracker {
             this.workoutHistory.shift();
         }
         this.workoutHistory.push(this.currentWorkoutLog);
+        this.storage.setItem(this.storageKey, this.workoutHistory);
     }
 
     exerciseComplete(exercise: ExercisePlan) {
@@ -33,6 +44,7 @@ export class WorkoutHistoryTracker {
         this.currentWorkoutLog.endedOn = new Date();
         this.currentWorkoutLog = null;
         this.workoutTracked = false;
+        this.storage.setItem(this.storageKey, this.workoutHistory);
     };
 
     getHistory(): Array<WorkoutLogEntry> {
