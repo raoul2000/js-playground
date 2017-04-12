@@ -6,9 +6,11 @@ import {ExerciseDescriptionComponent} from './exercise-description/exercise-desc
 import {VideoPlayerComponent} from './video-player/video-player.component';
 import {SecondsToTimePipe} from './seconds-to-time.pipe';
 
+
 @NgModule({
     imports: [BrowserModule],
     declarations: [WorkoutRunnerComponent, ExerciseDescriptionComponent, VideoPlayerComponent, SecondsToTimePipe],
+    entryComponents : [ VideoPlayerComponent ],
     exports: [WorkoutRunnerComponent],
 })
 export class WorkoutRunnerModule { }

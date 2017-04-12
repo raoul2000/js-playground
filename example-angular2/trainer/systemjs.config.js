@@ -4,13 +4,19 @@
   var map = {
     'app': 'dist', // 'dist',
     'rxjs': 'node_modules/rxjs',
-    '@angular': 'node_modules/@angular'
+    '@angular': 'node_modules/@angular',
+    'angular2-modal':             'node_modules/angular2-modal',
+    'angular2-modal/platform-browser': 'node_modules/angular2-modal/platform-browser',
+    'angular2-modal/plugins/bootstrap': 'node_modules/angular2-modal/plugins/bootstrap'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
     'app': { main: 'bootstrap.js', defaultExtension: 'js' },
-    'rxjs': { defaultExtension: 'js' }
+    'rxjs': { defaultExtension: 'js' },
+    'angular2-modal': {main: 'index.js', defaultExtension: 'js'},
+    'angular2-modal/platform-browser': {main: 'index.js', defaultExtension: 'js'},
+    'angular2-modal/plugins/bootstrap': {main: 'index.js', defaultExtension: 'js'}
   };
 
   var ngPackageNames = [
@@ -44,7 +50,7 @@
   var config = {
     map: map,
     packages: packages
-  }
+  };
 
   // filterSystemConfig - index.html's chance to modify config before we register it.
   if (global.filterSystemConfig) { global.filterSystemConfig(config); }
