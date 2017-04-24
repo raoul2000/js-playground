@@ -1,0 +1,50 @@
+<h1>
+  {{title}}
+</h1>
+<hr/>
+<ul *ngIf="todos.length > 0;
+          else empty">
+  <!-- stat info -->
+  <div>
+    you have completed {{getCompletedCount()}} task(s)
+  </div>
+  <!-- toolbar -->
+  <div>
+    <button type="button" (click)="deleteCompletedTask()">delete completed</button>
+  </div>
+  <!-- todos list -->
+  <li *ngFor="let todo of todos; let lastTask = last; let taskIndex = index "
+      [class.task-completed]="todo.completed">
+
+    <input
+      type="checkbox"
+      (click)="toggleTaskComplete(todo)"
+      [checked]="todo.completed">
+
+    {{todo.description}}
+
+    <button (click)="deleteTask(taskIndex)">
+      delete
+    </button>
+  </li>
+</ul>
+
+<ng-template #empty>
+  <em>Humm .. it seems you have nothing to do !</em>
+</ng-template>
+
+  <!-- Add new Task Form -->
+<div>
+  <form (ngSubmit)="addTask()" #taskForm="ngForm">
+    <input
+      autocomplete="off"
+      name="description"
+      type="text"
+      placeholder="What do you need to do ?"
+      [(ngModel)]="task.description"
+      required
+    >
+    <button type="submit" [disabled]="taskForm.invalid" style="display:none"></button>
+  </form>
+
+</div>
