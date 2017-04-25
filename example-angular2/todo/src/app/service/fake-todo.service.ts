@@ -9,10 +9,10 @@ export class FakeTodoService implements ITodoService {
 
   constructor(private apiService: ApiService) { }
 
-  list():Array<TaskModel> {
+  listByTitle(title:string):Array<TaskModel> {
     return [
-      new TaskModel( "do something cool", false),
-      new TaskModel( "do something even more cool", true)
+      new TaskModel( "do something cool "+title, false),
+      new TaskModel( "do something even more cool "+title, true)
     ];
   }
 }

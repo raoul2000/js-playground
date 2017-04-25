@@ -2,30 +2,4 @@
   {{title}}
 </h1>
 <hr/>
-<div *ngIf="todos.length > 0;
-          else empty">
-  <!-- stat info -->
-  <div>
-    you have completed {{getCompletedCount()}} task(s)
-  </div>
-
-  <!-- toolbar -->
-  <div>
-    <button type="button" (click)="deleteCompletedTask()">delete completed</button>
-  </div>
-  <todo-list
-    [todoList]="todos"
-    (toggleTaskCompleteEvent)="toggleTaskComplete($event)"
-    (taskDeletedEvent)="deleteTask($event)"
-  ></todo-list>
-</div>
-
-<ng-template #empty>
-  <em>Humm .. it seems you have nothing to do !</em>
-</ng-template>
-
-  <!-- Add new Task Form -->
-  <todo-form
-    [defaultTask]="defaultTask"
-    (taskCreatedEvent)="createTask($event)"
-  ></todo-form>
+<router-outlet>

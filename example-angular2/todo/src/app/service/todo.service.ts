@@ -10,7 +10,7 @@ export class TodoService implements ITodoService {
 
   constructor(private apiService: ApiService) { }
 
-  list():Array<TaskModel> {
+  listByTitle(title:string):Array<TaskModel> {
     return this.apiService.get('/todos');
   }
 }

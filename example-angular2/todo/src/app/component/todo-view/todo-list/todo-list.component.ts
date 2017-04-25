@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TaskModel } from '../../service/models.service';
+import { TaskModel } from '../../../service/models.service';
+
 
 @Component({
   selector: 'todo-list',

@@ -6,9 +6,15 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { ApiService } from './service/api.service';
 import { TodoService } from './service/todo.service';
+import { TodolistService } from './service/todolist.service';
 import { FakeTodoService } from './service/fake-todo.service';
-import { TodoListComponent } from './component/todo-list/todo-list.component';
-import { TodoFormComponent } from './component/todo-form/todo-form.component';
+import { TodoListComponent } from './component/todo-view/todo-list/todo-list.component';
+import { TodoFormComponent } from './component/todo-view/todo-form/todo-form.component';
+import { TodoViewComponent } from './component/todo-view/todo-view.component';
+import { ListViewComponent } from './component/list-view/list-view.component';
+
+import { RouterModule } from '@angular/router';
+import { ROUTES } from './app.routes';
 
 const IS_PROD = false;
 
@@ -16,16 +22,20 @@ const IS_PROD = false;
   declarations: [
     AppComponent,
     TodoListComponent,
-    TodoFormComponent
+    TodoFormComponent,
+    TodoViewComponent,
+    ListViewComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    RouterModule.forRoot(ROUTES)
   ],
   providers: [
     { provide : ApiService,  useClass : ApiService},
-    { provide : TodoService, useClass : IS_PROD ? TodoService : FakeTodoService}
+    { provide : TodoService, useClass : IS_PROD ? TodoService : FakeTodoService},
+    { provide : TodolistService, useClass : TodolistService }
   ],
   bootstrap: [AppComponent]
 })
