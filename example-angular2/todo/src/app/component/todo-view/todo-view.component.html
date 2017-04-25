@@ -2,6 +2,7 @@
   {{title}}
 </h2>
 <hr/>
+<a href="" [routerLink]="['/home']">I'm done with this list</a><br/>
 <div *ngIf="todos.length > 0;
           else empty">
   <!-- stat info -->
@@ -11,8 +12,7 @@
 
   <!-- toolbar -->
   <div>
-    <a href="" [routerLink]="['/']">I'm done with this list</a>&nbsp;
-    <button type="button" (click)="deleteCompletedTask()">delete all completed</button>
+    <button type="button" (click)="deleteAllCompletedTask()">delete all completed</button>
   </div>
   <todo-list
     [todoList]="todos"

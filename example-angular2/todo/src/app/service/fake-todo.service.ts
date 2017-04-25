@@ -15,4 +15,14 @@ export class FakeTodoService implements ITodoService {
       new TaskModel( "do something even more cool "+title, true)
     ];
   }
+  createTask(task: TaskModel){
+    console.log("creating task "+task.description);
+  }
+  updateTask(task: TaskModel){
+    console.log("updating task "+task.description);
+  }
+  deleteTask(task: TaskModel) {
+    console.log("deleting task "+task.description);
+  }
+
 }

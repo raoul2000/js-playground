@@ -7,6 +7,9 @@ export interface ITodoService {
    * @return {Array<TaskModel>}       collection of task todo
    */
   listByTitle(title: string):Array<TaskModel>;
+  createTask(task: TaskModel);
+  updateTask(task: TaskModel);
+  deleteTask(task: TaskModel);
 }
 
 export interface ITodolistService {

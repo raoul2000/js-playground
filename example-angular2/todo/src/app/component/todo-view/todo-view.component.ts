@@ -57,6 +57,8 @@ export class TodoViewComponent implements OnInit {
 
   deleteTask(taskIndex) {
     console.log("delete task index : " + taskIndex);
+    this.service.deleteTask(this.todos[taskIndex]);
+
     let ar: Array<TaskModel> = [];
     for (let i = 0; i < this.todos.length; i++) {
       if (i !== taskIndex) {
@@ -66,8 +68,11 @@ export class TodoViewComponent implements OnInit {
     this.todos = ar;
     this.updatePageTitle();
   }
-
-  deleteCompletedTask() {
+  /**
+   * Batch deletion of all tasks marked as COMPLETED
+   */
+  deleteAllCompletedTask() {
+    
     this.todos = this.todos.filter(task => !task.completed);
     this.updatePageTitle();
   }
@@ -80,6 +85,7 @@ export class TodoViewComponent implements OnInit {
       alert('you already have this one in your Todo list !');
       this.defaultTask.description = task.description;
     } else {
+      this.service.createTask(task);
       this.todos.push(task);
       this.defaultTask.description = "";
       this.updatePageTitle();

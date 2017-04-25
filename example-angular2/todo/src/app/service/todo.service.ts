@@ -13,4 +13,13 @@ export class TodoService implements ITodoService {
   listByTitle(title:string):Array<TaskModel> {
     return this.apiService.get('/todos');
   }
+  createTask(task: TaskModel){
+
+  }
+  updateTask(task: TaskModel){
+
+  }
+  deleteTask(task: TaskModel) {
+
+  }
 }
