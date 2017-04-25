@@ -1,0 +1,10 @@
+li {
+  list-style-type: none;
+  position: relative;
+  left: -1em;
+}
+
+.task-completed {
+  color: #AAA;
+  font-style: italic;
+}

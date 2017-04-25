@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { TaskModel } from './service/models.service';
 
 import { TodoService } from './service/todo.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 
 @Component({
@@ -11,24 +12,43 @@ import { TodoService } from './service/todo.service';
 })
 export class AppComponent implements OnInit {
   title = 'Todo List';
-  task: TaskModel = new TaskModel("", false);
-
   todos: Array<TaskModel> = [];
+  /**
+   * Initialisation value for task description.
+   * This is empty string on init and on successfull task creation.
+   * On task creation failure because of duplicate description, the user Input
+   * description remains in the input field.
+   */
+  defaultTask: TaskModel = new TaskModel("", false);
 
-  constructor(private service:TodoService) {}
+  constructor(
+    private service: TodoService,
+    private pageTitle: Title,
+    private meta: Meta) { }
 
-  getCompletedCount():number {
-    let count:number = 0;
+  ngOnInit() {
+    this.todos = this.service.list();
+    this.updatePageTitle();
+    this.meta.addTag( { name : 'author', content : 'raoul2000'});
+  }
+
+  updatePageTitle() {
+    this.pageTitle.setTitle(`${this.todos.length - this.getCompletedCount()} todo(s)`);
+  }
+
+  getCompletedCount(): number {
+    let count: number = 0;
     for (let i = 0; i < this.todos.length; i++) {
-      if( this.todos[i].completed === true) {
+      if (this.todos[i].completed === true) {
         count++;
       }
     }
     return count;
   }
-  
-  ngOnInit() {
-    this.todos = this.service.list();
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
   }
 
   deleteTask(taskIndex) {
@@ -40,24 +60,31 @@ export class AppComponent implements OnInit {
       }
     }
     this.todos = ar;
+    this.updatePageTitle();
   }
 
   deleteCompletedTask() {
-    this.todos = this.todos.filter( task => ! task.completed);
+    this.todos = this.todos.filter(task => !task.completed);
+    this.updatePageTitle();
   }
   /**
    * Add a task to the current todo list.
    * @param  {TaskModel} task task to add
    */
-  addTask(task) {
-    console.log("add task : ");
-    console.log(this.task);
-    this.todos.push(this.task);
-    this.task = new TaskModel("", false);
+  createTask(task: TaskModel) {
+    if(this.todos.find((item) => item.description === task.description)) {
+      alert('you already have this one in your Todo list !');
+      this.defaultTask.description = task.description;
+    } else {
+      this.todos.push(task);
+      this.defaultTask.description = "";
+      this.updatePageTitle();
+    }
   }
 
   toggleTaskComplete(task: TaskModel) {
     console.log(task.description);
     task.completed = !task.completed;
+    this.updatePageTitle();
   }
 }
