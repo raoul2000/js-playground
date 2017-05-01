@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-var reservedFolderNames = [
+
+let reservedFolderNames = [
   'node_modules',
   '_core',
   '_build'
@@ -17,43 +18,42 @@ var reservedFolderNames = [
 function getProjectDirectories (srcpath) {
   srcpath = srcpath || __dirname;
 
-  var isFolder = function(file) {
-    return fs.statSync(path.join(srcpath, file)).isDirectory();
-  };
-  var isNotReservedFolder = function(folderName) {
-    return reservedFolderNames.indexOf(folderName) === -1;
-  };
   return fs.readdirSync(srcpath)
-    .filter(isFolder)
-    .filter(isNotReservedFolder);
+    .filter( file => fs.statSync(path.join(srcpath, file)).isDirectory())
+    .filter( folderName => reservedFolderNames.indexOf(folderName) === -1);
 }
-//console.log(getProjectDirectories(__dirname));
-//console.log(getProjectDirectories());
 
 /**
- * [description]
- * @param  {[type]} projectsToProcess  [description]
- * @param  {[type]} allProjectsFolders [description]
- * @return {[type]}                    [description]
+ * Find and returns all project folder names to process which are not valid.
+ *
+ * @param  {array} projectsToProcess  list of project folder names to validate
+ * @param  {array} allProjectsFolders list of all valid project names
+ * @return {array}                    list of invalid project folder names
  */
-var getInvalidProjectFolder = function(projectsToProcess, allProjectsFolders) {
+let getInvalidProjectFolder = function(projectsToProcess, allProjectsFolders) {
     return projectsToProcess.filter(function(projectName){
       return allProjectsFolders.indexOf(projectName) === -1;
     });
 };
+/**
+ * Returns an array containing project folders to process.
+ *
+ * @param  {object} grunt Grunt object
+ * @return {array}       project folder names to process
+ */
+let getProjectFolderToProcess = function(grunt){
 
-var gruntConfig = function(grunt) {
-  var allProjectsFolders = getProjectDirectories();
-  var projectsToProcess = [];
+  let allProjectsFolders = getProjectDirectories();
+  let projectsToProcess = [];
 
-  var projectArg = grunt.option('project');
+  let projectArg = grunt.option('project');
   if( projectArg ) {
     // user provided in the command line a list of project to process
     // grunt task --project="project1 project2 project3"
     projectsToProcess = projectArg.split(' ').filter( function(item) {
       return  item.trim().length !== 0;
     });
-    var invalidProjectFolders = getInvalidProjectFolder(projectsToProcess, allProjectsFolders);
+    let invalidProjectFolders = getInvalidProjectFolder(projectsToProcess, allProjectsFolders);
     if( invalidProjectFolders.length !== 0) {
       grunt.log.error("One or more project are not valid project names : ");
       grunt.log.error(invalidProjectFolders);
@@ -63,8 +63,16 @@ var gruntConfig = function(grunt) {
     // no project name param provided : process ALL project folders
     projectsToProcess = allProjectsFolders;
   }
-  console.log(projectsToProcess);
+  return projectsToProcess;
+}
+////////////////////////////////////////////////////////////////////////////////
 
+var gruntConfig = function(grunt) {
+
+  let projectsToProcess = getProjectFolderToProcess(grunt);
+
+  console.log(projectsToProcess);
+  return;
   // build the copy tasks for each projects
   /*
   var copyTasks = projects.map(function(projectName, idx){
