@@ -1,0 +1,14 @@
+<div>
+  <form (ngSubmit)="addTask(taskForm)" #taskForm="ngForm">
+    <input
+      autocomplete="off"
+      name="description"
+      type="text"
+      placeholder="What do you need to do ?"
+      [(ngModel)]="task.description"
+      required
+    >
+    <button type="submit" [disabled]="taskForm.invalid" style="display:none"></button>
+  </form>
+
+</div>

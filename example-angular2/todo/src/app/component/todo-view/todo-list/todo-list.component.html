@@ -1,0 +1,17 @@
+<ul >
+  <li *ngFor="let todo of todoList; let lastTask = last; let taskIndex = index "
+      [class.task-completed]="todo.completed">
+
+      <input
+        type="checkbox"
+        (click)="toggleTaskComplete(todo)"
+        [checked]="todo.completed" />
+
+      {{todo.description}}
+
+      <button (click)="taskDeleted(taskIndex)">
+        delete
+      </button>
+
+  </li>
+</ul>
