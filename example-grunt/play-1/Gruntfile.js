@@ -15,12 +15,12 @@ let reservedFolderNames = [
  * @param  {[type]} srcpath [description]
  * @return {[type]}         [description]
  */
-function getProjectDirectories (srcpath) {
+function getProjectDirectories(srcpath) {
   srcpath = srcpath || __dirname;
 
   return fs.readdirSync(srcpath)
-    .filter( file => fs.statSync(path.join(srcpath, file)).isDirectory())
-    .filter( folderName => reservedFolderNames.indexOf(folderName) === -1);
+    .filter(file => fs.statSync(path.join(srcpath, file)).isDirectory())
+    .filter(folderName => reservedFolderNames.indexOf(folderName) === -1);
 }
 
 /**
@@ -31,9 +31,9 @@ function getProjectDirectories (srcpath) {
  * @return {array}                    list of invalid project folder names
  */
 let getInvalidProjectFolder = function(projectsToProcess, allProjectsFolders) {
-    return projectsToProcess.filter(function(projectName){
-      return allProjectsFolders.indexOf(projectName) === -1;
-    });
+  return projectsToProcess.filter(function(projectName) {
+    return allProjectsFolders.indexOf(projectName) === -1;
+  });
 };
 /**
  * Returns an array containing project folders to process.
@@ -41,20 +41,20 @@ let getInvalidProjectFolder = function(projectsToProcess, allProjectsFolders) {
  * @param  {object} grunt Grunt object
  * @return {array}       project folder names to process
  */
-let getProjectFolderToProcess = function(grunt){
+let getProjectFolderToProcess = function(grunt) {
 
   let allProjectsFolders = getProjectDirectories();
   let projectsToProcess = [];
 
   let projectArg = grunt.option('project');
-  if( projectArg ) {
+  if (projectArg) {
     // user provided in the command line a list of project to process
     // grunt task --project="project1 project2 project3"
-    projectsToProcess = projectArg.split(' ').filter( function(item) {
-      return  item.trim().length !== 0;
+    projectsToProcess = projectArg.split(' ').filter(function(item) {
+      return item.trim().length !== 0;
     });
     let invalidProjectFolders = getInvalidProjectFolder(projectsToProcess, allProjectsFolders);
-    if( invalidProjectFolders.length !== 0) {
+    if (invalidProjectFolders.length !== 0) {
       grunt.log.error("One or more project are not valid project names : ");
       grunt.log.error(invalidProjectFolders);
       throw 'eeeor';
@@ -72,29 +72,28 @@ var gruntConfig = function(grunt) {
   let projectsToProcess = getProjectFolderToProcess(grunt);
 
   console.log(projectsToProcess);
-  return;
+
   // build the copy tasks for each projects
-  /*
-  var copyTasks = projects.map(function(projectName, idx){
+  var copyTasks = projectsToProcess.map(function(projectName, idx) {
     return {
-      'idx' : idx,
-      'projectName' : projectName,
-      expand : true,
-      cwd : 'd:/tmp/grunt-test/src/' + projectName + '/server/editorial',
-      src : '**',
-      dest : 'build/'
+      'idx': idx,
+      'projectName': projectName,
+      expand: true,
+      cwd: '' + projectName + '/server/editorial',
+      src: '**',
+      dest: 'build/'
     };
   });
-*/
   console.log(copyTasks);
-
   grunt.initConfig({
-    copy : {
+    copy: {
       main : {
-        expand : true,
-        cwd : 'd:/tmp/grunt-test/src/',
-        src : '**',
-        dest : 'build/'
+        files: [{
+          expand: true,
+          cwd : 'project-A/server/',
+          src: ['**'],
+          dest: 'build/'
+        }]
       }
     },
     log: {
@@ -106,8 +105,8 @@ var gruntConfig = function(grunt) {
 
   grunt.registerMultiTask('log', 'Log stuff.', function() {
     grunt.log.writeln(this.target + ': ' + this.data);
-     grunt.log.error('This is an error message.');
-     //return false; // on failure
+    grunt.log.error('This is an error message.');
+    //return false; // on failure
   });
 
   grunt.loadNpmTasks('grunt-contrib-copy');
