@@ -1,13 +1,44 @@
+<style>
+  input.ng-invalid.ng-dirty {
+    border: 3px red solid;
+  }
+</style>
 <h2>
   This is your list of lists !
 </h2>
-<ul>
-  <li *ngFor="let todolist of todolists; let idx = index">
-    {{todolist.title}}
+<div [ngStyle]="{ 'display' : showForm ? 'none' : 'block'}">
+  <ul>
+    <li *ngFor="let todolist of todolists; let idx = index">
+      {{todolist.title}}
 
-    <button (click)="viewTodolist(todolist)">
-      view
-    </button>
+      <button (click)="viewTodolist(todolist)">
+        view
+      </button>
 
-  </li>
-</ul>
+    </li>
+  </ul>
+  <button (click)="showForm = true">
+    New list
+  </button>
+</div>
+<div [ngStyle]="{ 'display' : showForm ? 'block' : 'none'}">
+  <p>Name of your list</p>
+  <form (ngSubmit)="submitNewTodolist()" [formGroup]="todolistForm">
+    <div>
+      <label>name</label><input formControlName="listName">
+      <div *ngIf="listNameCtrl.dirty && listNameCtrl.hasError('required')">
+        please enter a name for your list
+      </div>
+      <div *ngIf="listNameCtrl.dirty && listNameCtrl.hasError('minlength')">
+        The list name should be at least 3 characters long
+      </div>
+      <div *ngIf="listNameCtrl.dirty && listNameCtrl.hasError('tooLazy')">
+        If you have nothing to do, why create a list !!
+      </div>
+    </div>
+    <button type="submit" [disabled]="todolistForm.invalid">Save</button>
+    <button type="button" (click)="showForm = false">Cancel</button>
+
+  </form>
+
+</div>

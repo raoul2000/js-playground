@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TodolistModel } from '../../service/models.service';
 import { TodolistService } from '../../service/todolist.service';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, FormControl  } from '@angular/forms';
 
 @Component({
   selector: 'list-view',
@@ -9,12 +10,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./list-view.component.css']
 })
 export class ListViewComponent implements OnInit {
+  showForm:boolean = false;
   todolists : Array<TodolistModel>;
+  todolistForm: FormGroup;
+  listNameCtrl: FormControl;
 
   constructor(
     private service: TodolistService,
+    private fb: FormBuilder,
     private router: Router
-  ) { }
+  ) {
+    this.listNameCtrl = fb.control('', [ListViewComponent.myCustomValidator,  Validators.required, Validators.minLength(3)]);
+    this.todolistForm = fb.group({
+      listName : this.listNameCtrl
+    });
+  }
 
   ngOnInit() {
     this.todolists = this.service.list();
@@ -24,5 +34,13 @@ export class ListViewComponent implements OnInit {
     console.log(list);
     this.router.navigate(['/todo', list.title]);
   }
+  createTodolist() {
 
+  }
+  submitNewTodolist() {
+    console.log(this.todolistForm.value);
+  }
+  static myCustomValidator(control: FormControl) {
+    return control.value !== "nothing" ? null : { tooLazy : true };
+  }
 }
