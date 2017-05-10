@@ -30,10 +30,17 @@ export class TodoViewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log("bing");
     this.title = this.route.snapshot.paramMap.get('listTitle');
     this.todos = this.service.listByTitle(this.title);
     this.updatePageTitle();
     this.meta.addTag( { name : 'author', content : 'raoul2000'});
+    // test
+    this.service.getTasksByTitle(this.title)
+    .subscribe(result => {
+      console.log(result);
+    });
+
   }
 
   updatePageTitle() {
@@ -72,7 +79,7 @@ export class TodoViewComponent implements OnInit {
    * Batch deletion of all tasks marked as COMPLETED
    */
   deleteAllCompletedTask() {
-    
+
     this.todos = this.todos.filter(task => !task.completed);
     this.updatePageTitle();
   }

@@ -1,0 +1,11 @@
+{
+  "todolists" : [
+    { "id" : 1, "name" : "my first Todo list"},
+    { "id" : 2, "name" : "my second Todo list"}
+  ],
+  "task" : [
+    { "id" : 1, "description" : "task 1 (tdl1)", "completed" : false, "listId" : 1},
+    { "id" : 2, "description" : "task 2 (tdl1)", "completed" : false, "listId" : 1},
+    { "id" : 3, "description" : "task 3 (tdl2)", "completed" : false, "listId" : 2}
+  ]
+}

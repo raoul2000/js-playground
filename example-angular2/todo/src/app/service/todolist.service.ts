@@ -15,6 +15,8 @@ export class TodolistService implements ITodolistService {
 
   list():Array<TodolistModel> {
     //return this.apiService.get('/todos');
+    this.apiService.getAllTodolist()
+    .map( jsonResponse => <TodolistModel>jsonResponse);
     return [
       new TodolistModel("list 1"),
       new TodolistModel("list 2"),

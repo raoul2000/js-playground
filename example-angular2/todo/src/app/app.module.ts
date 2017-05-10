@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule } from '@angular/Http';
 
 import { AppComponent } from './app.component';
 import { ApiService } from './service/api.service';
@@ -16,7 +16,7 @@ import { ListViewComponent } from './component/list-view/list-view.component';
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './app.routes';
 
-const IS_PROD = false;
+const IS_PROD = true;
 
 @NgModule({
   declarations: [

@@ -1,4 +1,5 @@
 import { TaskModel, TodolistModel } from './models.service';
+import {Observable } from 'rxjs/Observable';
 
 export interface ITodoService {
   /**
@@ -10,6 +11,8 @@ export interface ITodoService {
   createTask(task: TaskModel);
   updateTask(task: TaskModel);
   deleteTask(task: TaskModel);
+
+  getTasksByTitle(title : string):Observable<TaskModel[]>;
 }
 
 export interface ITodolistService {

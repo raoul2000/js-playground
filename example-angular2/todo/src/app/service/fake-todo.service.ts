@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { TaskModel } from './models.service';
 import { ITodoService } from './interface-todo.service';
-
+import { Observable } from 'rxjs/Observable';
+import { from } from 'rxjs/observable/from';
 
 @Injectable()
 export class FakeTodoService implements ITodoService {
@@ -23,6 +24,15 @@ export class FakeTodoService implements ITodoService {
   }
   deleteTask(task: TaskModel) {
     console.log("deleting task "+task.description);
+  }
+
+  getTasksByTitle(title:string):Observable<TaskModel[]> {
+    return from([1]).map(item => {
+      return [
+        new TaskModel( "do something cool "+title, false),
+        new TaskModel( "do something even more cool "+title, true)
+      ]
+    });
   }
 
 }
