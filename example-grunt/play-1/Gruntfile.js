@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const emcopy = require('./tasks/emcopy.js');
+
 
 
 let reservedFolderNames = [
@@ -68,7 +70,7 @@ let getProjectFolderToProcess = function(grunt) {
 ////////////////////////////////////////////////////////////////////////////////
 
 var gruntConfig = function(grunt) {
-
+  emcopy(grunt);
   let projectsToProcess = getProjectFolderToProcess(grunt);
 
   console.log(projectsToProcess);
@@ -91,6 +93,11 @@ var gruntConfig = function(grunt) {
     copy: {
       main : {
         files: projectFiles
+      }
+    },
+    emcopy : {
+      main : {
+        baseFolder : 'test'
       }
     }
   });
