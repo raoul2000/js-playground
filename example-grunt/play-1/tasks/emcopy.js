@@ -4,7 +4,7 @@ const path = require('path');
 let reservedFolderNames = [
   'node_modules',
   '_core',
-  '_build', 'build'
+  '_build', 'build', 'tasks'
 ];
 
 /**
@@ -15,7 +15,7 @@ let reservedFolderNames = [
  * @return {[type]}         [description]
  */
 function getProjectDirectories(srcpath) {
-  srcpath = srcpath || __dirname;
+  srcpath = srcpath || '.';
 
   return fs.readdirSync(srcpath)
     .filter(file => fs.statSync(path.join(srcpath, file)).isDirectory())
@@ -43,6 +43,7 @@ let getInvalidProjectFolder = function(projectsToProcess, allProjectsFolders) {
 let getProjectFolderToProcess = function(grunt) {
 
   let allProjectsFolders = getProjectDirectories();
+  console.log(allProjectsFolders);
   let projectsToProcess = [];
 
   let projectArg = grunt.option('project');
@@ -64,14 +65,94 @@ let getProjectFolderToProcess = function(grunt) {
   }
   return projectsToProcess;
 }
+/**
+ * Checks that no duplicate files exists in the project list
+ *
+ * @param  {array} projectsToProcess list of project names to test
+ * @return {[type]}                   [description]
+ */
+let validateNoDuplicate = function(grunt, projectsToProcess) {
+  let hasDuplicate = false;
+  let fileProjectMap = {}; // file : [projectName, projectName , ...]
+  projectsToProcess.forEach( projectName => {
+    let exp = grunt.file.expand({
+      cwd : projectName + '/server/',
+      filter:'isFile'
+    },'**')
+    .forEach((file) => {
+      if(fileProjectMap.hasOwnProperty(file)){
+        fileProjectMap[file].push(projectName);
+        hasDuplicate = true;
+      } else {
+        fileProjectMap[file] = [projectName];
+      }
+    });
+  });
+  //
+  if( hasDuplicate ){
+    grunt.log.subhead('Duplicate files found');
+    for( let filename in fileProjectMap) {
+      let projects = fileProjectMap[filename];
+      if( projects.length > 1) {
+        grunt.log.warn("found file  : "+filename);
+        grunt.log.warn("in projects : "+projects);
+        grunt.log.warn("");
+      }
+    }
+    grunt.fail.fatal("one or more duplicate file found."); // interrupts grunt
+  } else {
+    grunt.log.ok("no duplicate files found.");
+  }
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 
 module.exports = function(grunt){
-  grunt.registerMultiTask('emcopy','compy files em', function(){
+  let projectsToProcess = getProjectFolderToProcess(grunt);
+
+  grunt.registerMultiTask('emcopy','copy files em', function(){
+    var done = this.async();
+
+    console.log(projectsToProcess);
+
     grunt.log.writeln("em-copy go");
     grunt.log.writeln(this.target);
     grunt.log.writeln(this.data);
-     grunt.log.writeln();
+
+    validateNoDuplicate(grunt, projectsToProcess);
+/*
+    projectsToProcess.forEach( projectName => {
+      let exp = grunt.file.expand({
+        cwd : projectName + '/server/',
+        filter:'isFile'
+      },'**')
+      .forEach((file) => {
+        let srcFile = path.join(projectName,'server',file);
+        let destFile = path.join('build',file);
+        grunt.log.writeln("src file : "+srcFile);
+        grunt.log.writeln("dst file : "+destFile);
+        grunt.file.copy(srcFile, destFile);
+      });
+    });
+*/
+    // build the copy tasks for each projects
+    var projectFiles = projectsToProcess.map(function(projectName, idx) {
+      return {
+        'idx': idx,
+        'projectName': projectName,
+        expand: true,
+        cwd: '' + projectName + '/server/',
+        src: '**',
+        dest: 'build/'
+      };
+    });
+
+    grunt.task.run({
+      copy: {
+        main : {
+          files: projectFiles
+        }
+    });
+    done();
   });
 }

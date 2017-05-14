@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const emcopy = require('./tasks/emcopy.js');
+//const emcopy = require('./tasks/emcopy.js');
 
 
 
@@ -70,10 +70,10 @@ let getProjectFolderToProcess = function(grunt) {
 ////////////////////////////////////////////////////////////////////////////////
 
 var gruntConfig = function(grunt) {
-  emcopy(grunt);
+
   let projectsToProcess = getProjectFolderToProcess(grunt);
 
-  console.log(projectsToProcess);
+  //console.log(projectsToProcess);
 
   // build the copy tasks for each projects
   var projectFiles = projectsToProcess.map(function(projectName, idx) {
@@ -86,6 +86,7 @@ var gruntConfig = function(grunt) {
       dest: 'build/'
     };
   });
+
 //  console.log(projectFiles);
   grunt.initConfig({
     noduplicate : {project : projectsToProcess},
@@ -94,14 +95,9 @@ var gruntConfig = function(grunt) {
       main : {
         files: projectFiles
       }
-    },
-    emcopy : {
-      main : {
-        baseFolder : 'test'
-      }
     }
   });
-
+  grunt.loadTasks('tasks');
   /**
    * TASK : noduplicate
    * Checks that the same file is not referenced in more than one project
@@ -135,7 +131,7 @@ var gruntConfig = function(grunt) {
           grunt.log.warn("");
         }
       }
-      grunt.fail.warn("one or more duplicate file found."); // interrupts grunt
+      grunt.fail.fatal("one or more duplicate file found."); // interrupts grunt
     } else {
       grunt.log.ok("no duplicate files found.");
     }
