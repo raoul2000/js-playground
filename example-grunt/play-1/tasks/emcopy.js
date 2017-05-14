@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+
 let reservedFolderNames = [
   'node_modules',
   '_core',
@@ -64,7 +65,7 @@ let getProjectFolderToProcess = function(grunt) {
     projectsToProcess = allProjectsFolders;
   }
   return projectsToProcess;
-}
+};
 /**
  * Checks that no duplicate files exists in the project list
  *
@@ -92,18 +93,21 @@ let validateNoDuplicate = function(grunt, projectsToProcess) {
   if( hasDuplicate ){
     grunt.log.subhead('Duplicate files found');
     for( let filename in fileProjectMap) {
-      let projects = fileProjectMap[filename];
-      if( projects.length > 1) {
-        grunt.log.warn("found file  : "+filename);
-        grunt.log.warn("in projects : "+projects);
-        grunt.log.warn("");
+      if( fileProjectMap.hasOwnProperty(filename)) {
+
+        let projects = fileProjectMap[filename];
+        if( projects.length > 1) {
+          grunt.log.warn("found file  : "+filename);
+          grunt.log.warn("in projects : "+projects);
+          grunt.log.warn("");
+        }
       }
     }
     grunt.fail.fatal("one or more duplicate file found."); // interrupts grunt
   } else {
     grunt.log.ok("no duplicate files found.");
   }
-}
+};
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -152,7 +156,7 @@ module.exports = function(grunt){
         main : {
           files: projectFiles
         }
-    });
+    }});
     done();
   });
-}
+};

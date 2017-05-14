@@ -3,13 +3,16 @@ const path = require('path');
 //const emcopy = require('./tasks/emcopy.js');
 
 
-
 let reservedFolderNames = [
   'node_modules',
   '_core',
-  '_build', 'build'
+  '_build', 'build', 'tasks'
 ];
 
+let config = {
+  PROJECT_AUTO_PATH : 'server',
+  PROJECT_FRAG_PATH : 'server'
+};
 /**
  * Returns the list of all valid project folder names inside
  * folder *srcpath* or the current folder if not provided.
@@ -66,30 +69,34 @@ let getProjectFolderToProcess = function(grunt) {
     projectsToProcess = allProjectsFolders;
   }
   return projectsToProcess;
-}
+};
 ////////////////////////////////////////////////////////////////////////////////
 
 var gruntConfig = function(grunt) {
 
   let projectsToProcess = getProjectFolderToProcess(grunt);
-
-  //console.log(projectsToProcess);
-
   // build the copy tasks for each projects
   var projectFiles = projectsToProcess.map(function(projectName, idx) {
     return {
       'idx': idx,
       'projectName': projectName,
       expand: true,
-      cwd: '' + projectName + '/server/',
+      cwd: '' + projectName + '/'+config.PROJECT_AUTO_PATH+'/',
       src: '**',
       dest: 'build/'
     };
   });
 
-//  console.log(projectFiles);
   grunt.initConfig({
-    noduplicate : {project : projectsToProcess},
+    'ansible-blockinfile' : {
+      default : {
+        projects : projectsToProcess,
+        patterns : '**/*.fragment'
+      }
+    },
+    noduplicate : {
+      project : projectsToProcess
+    },
     clean :['build'],
     copy: {
       main : {
@@ -97,7 +104,42 @@ var gruntConfig = function(grunt) {
       }
     }
   });
-  grunt.loadTasks('tasks');
+
+  grunt.registerMultiTask('ansible-blockinfile', 'generate ansible blockinfile tasks', function(){
+    //console.log(this.data);
+
+    let targetConfig = this.data;
+
+    targetConfig.projects.forEach(function(projectName){
+      let basePath = path.join(projectName, config.PROJECT_FRAG_PATH);
+      let exp = grunt.file.expand({
+          cwd   : basePath,
+          filter:'isFile'
+        },
+        targetConfig.patterns
+      )
+      .forEach((file) => {
+        let filePath = path.join(basePath, file);
+        grunt.log.writeln(filePath);
+        let fileContent = grunt.file.read(filePath, {encoding: 'utf-8'});
+        console.log(fileContent);
+        console.log(file);
+        let destFile = file
+          .split("/") //path.sep
+          .shift();
+        console.log(destFile);
+        let ansibleTask = `
+- name: taskname
+  blockinfile:
+    path: ${destFile}
+    marker: "<!-- {mark} ${projectName} -->"
+    block: |
+${fileContent}
+`;
+        console.log(ansibleTask);
+      });
+    });
+  });
   /**
    * TASK : noduplicate
    * Checks that the same file is not referenced in more than one project
@@ -108,7 +150,7 @@ var gruntConfig = function(grunt) {
     let hasDuplicate = false;
     this.data.forEach(function(projectName){
       let exp = grunt.file.expand({
-        cwd : projectName + '/server/',
+        cwd : projectName + '/'+config.PROJECT_AUTO_PATH+'/',
         filter:'isFile'
       },'**')
       .forEach((file) => {
@@ -124,11 +166,13 @@ var gruntConfig = function(grunt) {
     if( hasDuplicate ){
       grunt.log.subhead('Duplicate files found');
       for( let filename in fileProjectMap) {
-        let projects = fileProjectMap[filename];
-        if( projects.length > 1) {
-          grunt.log.warn("found file  : "+filename);
-          grunt.log.warn("in projects : "+projects);
-          grunt.log.warn("");
+        if( fileProjectMap.hasOwnProperty(filename)) {
+          let projects = fileProjectMap[filename];
+          if( projects.length > 1) {
+            grunt.log.warn("found file  : "+filename);
+            grunt.log.warn("in projects : "+projects);
+            grunt.log.warn("");
+          }
         }
       }
       grunt.fail.fatal("one or more duplicate file found."); // interrupts grunt
@@ -142,27 +186,3 @@ var gruntConfig = function(grunt) {
 };
 
 module.exports = gruntConfig;
-/*
-filter : function(dest) {
-  let destFilePath = path.join(__dirname, dest);
-  let isFile = grunt.file.isFile(destFilePath);
-
-  grunt.log.writeln("destFilePath : " + destFilePath);
-  grunt.log.writeln("isFile : " + isFile);
-  if( fs.statSync(destFilePath).isFile()) {
-    grunt.log.writeln("is file");
-
-    if( copiedFiles.indexOf(destFilePath) !== -1) {
-      grunt.log.writeln("duplicate : " + destFilePath);
-
-      duplicateFiles.push(destFilePath);
-    } else {
-      grunt.log.writeln("destFilePath : " + destFilePath);
-      copiedFiles.push(destFilePath);
-    }
-  } else {
-    grunt.log.writeln("is dir");
-  }
-  return true;          }
-
- */

@@ -59,7 +59,7 @@
 	"debug" : false, // Allow debugger statements e.g. browser breakpoints.
 	"eqnull" : false, // Tolerate use of `== null`.
 	//"es5" : true, // Allow EcmaScript 5 syntax. // es5 is default https://github.com/jshint/jshint/issues/1411
-  "esversion" : 6,
+  //"esversion" : 6,
 	"esnext" : true, // Allow ES.next (ECMAScript 6) specific features such as `const` and `let`.
 	"evil" : false, // Tolerate use of `eval`.
 	"expr" : false, // Tolerate `ExpressionStatement` as Programs.
