@@ -12,7 +12,7 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class TodoService implements ITodoService {
-
+  private baseUrl:string = "http://localhost:3000";
   constructor(
     private apiService: ApiService,
     private http: Http
@@ -23,9 +23,9 @@ export class TodoService implements ITodoService {
   }
 
   getTasksByTitle(title:string):Observable<TaskModel[]> {
-    return this.http.get("/api/task")
+    return this.http.get( this.baseUrl+"/api/task")
     .map( res => {
-      console.log('map');
+      console.log(res);
         return [ new TaskModel("eee",true)];
     });
     //.map( resp => resp.json());

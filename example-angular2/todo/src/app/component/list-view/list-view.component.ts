@@ -27,7 +27,7 @@ export class ListViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.todolists = this.service.list();
+    this.service.list().subscribe(x => this.todolists = x);
   }
 
   viewTodolist(list:TodolistModel) {
