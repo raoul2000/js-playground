@@ -7,12 +7,13 @@ export interface ITodoService {
    * @param  {string}           title the title identifying the todo-list
    * @return {Array<TaskModel>}       collection of task todo
    */
-  listByTitle(title: string):Array<TaskModel>;
+  //listByTitle(title: string):Array<TaskModel>;
   createTask(task: TaskModel);
   updateTask(task: TaskModel);
   deleteTask(task: TaskModel);
 
   getTasksByTitle(title : string):Observable<TaskModel[]>;
+  getTodosByListId(listId:number):Observable<TaskModel[]>;
 }
 
 export interface ITodolistService {
@@ -21,4 +22,6 @@ export interface ITodolistService {
    * @return {Array<TodolistModel>} [description]
    */
   list():Array<TodolistModel>;
+
+
 }

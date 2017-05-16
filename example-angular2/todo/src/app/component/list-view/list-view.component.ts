@@ -31,8 +31,7 @@ export class ListViewComponent implements OnInit {
   }
 
   viewTodolist(list:TodolistModel) {
-    console.log(list);
-    this.router.navigate(['/todo', list.title]);
+    this.router.navigate(['/todo', list.getId()]);
   }
   createTodolist() {
 

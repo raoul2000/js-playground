@@ -5,6 +5,6 @@ import { TodoViewComponent } from './component/todo-view/todo-view.component';
 
 export const ROUTES: Routes = [
   { path: 'home', component: ListViewComponent },
-  { path: 'todo/:listTitle', component: TodoViewComponent },
+  { path: 'todo/:listId', component: TodoViewComponent },
   { path: '**', redirectTo : 'home'}
 ];

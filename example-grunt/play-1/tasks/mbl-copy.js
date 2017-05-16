@@ -67,10 +67,6 @@ let getProjectFolderToProcess = function(grunt) {
 }
 ////////////////////////////////////////////////////////////////////////////////
 
-module.exports = function(grunt) {
-
-}
-
 var gruntConfig = function(grunt) {
 
   let projectsToProcess = getProjectFolderToProcess(grunt);

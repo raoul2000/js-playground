@@ -18,9 +18,18 @@ export class TodoService implements ITodoService {
     private http: Http
   ) { }
 
-  listByTitle(title:string):Array<TaskModel> {
-    return [];
+  getTodosByListId(listId:number):Observable<TaskModel[]>{
+    return this.http.get(
+      this.baseUrl+"/api/task",
+      {
+        params: { listId: listId }
+      }
+   )
+    .map( res => {
+      return res.json().map(item => <TaskModel> item)
+    });
   }
+
 
   getTasksByTitle(title:string):Observable<TaskModel[]> {
     return this.http.get( this.baseUrl+"/api/task")

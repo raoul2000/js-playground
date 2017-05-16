@@ -31,8 +31,12 @@ export class TodoViewComponent implements OnInit {
 
   ngOnInit() {
     console.log("bing");
-    this.title = this.route.snapshot.paramMap.get('listTitle');
-    this.todos = this.service.listByTitle(this.title);
+    let listId:number = parseInt(this.route.snapshot.paramMap.get('listId'));
+
+    this.title = "";
+    this.service.getTodosByListId(listId)
+      .subscribe( x => this.todos = x);
+      
     this.updatePageTitle();
     this.meta.addTag( { name : 'author', content : 'raoul2000'});
     // test
