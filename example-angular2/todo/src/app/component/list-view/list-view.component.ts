@@ -30,8 +30,8 @@ export class ListViewComponent implements OnInit {
     this.service.list().subscribe(x => this.todolists = x);
   }
 
-  viewTodolist(list:TodolistModel) {
-    this.router.navigate(['/todo', list.getId()]);
+  viewTodolist(listId:number) {
+    this.router.navigate(['/todo', listId]);
   }
   createTodolist() {
 

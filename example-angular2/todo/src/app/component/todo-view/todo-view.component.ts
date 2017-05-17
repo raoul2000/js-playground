@@ -14,6 +14,7 @@ import { Title, Meta } from '@angular/platform-browser';
 export class TodoViewComponent implements OnInit {
   title = 'Todo List';
   todos: Array<TaskModel> = [];
+  listId:number;
   /**
    * Initialisation value for task description.
    * This is empty string on init and on successfull task creation.
@@ -30,21 +31,19 @@ export class TodoViewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("bing");
-    let listId:number = parseInt(this.route.snapshot.paramMap.get('listId'));
+    // illustrate the use of the meta service : dynamically set the META tag of the page
+    this.meta.addTag( { name : 'author', content : 'raoul2000'});
+
+    // get the route param : the id of the todolist
+    this.listId = parseInt(this.route.snapshot.paramMap.get('listId'));
 
     this.title = "";
-    this.service.getTodosByListId(listId)
-      .subscribe( x => this.todos = x);
-      
-    this.updatePageTitle();
-    this.meta.addTag( { name : 'author', content : 'raoul2000'});
-    // test
-    this.service.getTasksByTitle(this.title)
-    .subscribe(result => {
-      console.log(result);
-    });
-
+    // get all the tasks that belong to the list
+    this.service.getTodosByListId(this.listId)
+      .subscribe( x => {
+        this.todos = x
+        this.updatePageTitle();
+      });
   }
 
   updatePageTitle() {
@@ -83,7 +82,6 @@ export class TodoViewComponent implements OnInit {
    * Batch deletion of all tasks marked as COMPLETED
    */
   deleteAllCompletedTask() {
-
     this.todos = this.todos.filter(task => !task.completed);
     this.updatePageTitle();
   }
@@ -96,16 +94,29 @@ export class TodoViewComponent implements OnInit {
       alert('you already have this one in your Todo list !');
       this.defaultTask.description = task.description;
     } else {
-      this.service.createTask(task);
-      this.todos.push(task);
-      this.defaultTask.description = "";
-      this.updatePageTitle();
+      task.listId = this.listId;
+      this.service.createTask(task)
+      .subscribe(newTask => {
+        console.log(newTask);
+        this.todos.push(newTask);
+        this.defaultTask.description = "";
+        this.updatePageTitle();
+      });
     }
   }
 
-  toggleTaskComplete(task: TaskModel) {
-    console.log(task.description);
+  toggleTaskComplete(taskIndex) {
+    // TODO: understand why argTask is not cast automatically into a TaskModel object type. instead
+    // it is a generic object with only properties. Calling a TaskModel methode raises an exception
+    // This is why here we force the creation of a TaskModel object
+    //let task = new TaskModel(argTask.description, argTask.completed, argTask.id);
+    let ex = new TaskModel("descr",true);
+    console.log(ex);
+
+    let task = this.todos[taskIndex];
     task.completed = !task.completed;
-    this.updatePageTitle();
+    this.service.updateTask(task).subscribe(x => {
+      this.updatePageTitle();
+    });
   }
 }

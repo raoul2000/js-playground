@@ -12,7 +12,6 @@ export interface ITodoService {
   updateTask(task: TaskModel);
   deleteTask(task: TaskModel);
 
-  getTasksByTitle(title : string):Observable<TaskModel[]>;
   getTodosByListId(listId:number):Observable<TaskModel[]>;
 }
 

@@ -35,7 +35,8 @@ const IS_PROD = true;
   ],
   providers: [
     { provide : ApiService,  useClass : ApiService},
-    { provide : TodoService, useClass : IS_PROD ? TodoService : FakeTodoService},
+    //{ provide : TodoService, useClass : IS_PROD ? TodoService : FakeTodoService},
+    { provide : TodoService, useClass : TodoService },
     { provide : TodolistService, useClass : TodolistService }
   ],
   bootstrap: [AppComponent]

@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
-export class TodoService implements ITodoService {
+export class TodoService  {
   private baseUrl:string = "http://localhost:3000";
   constructor(
     private apiService: ApiService,
@@ -26,25 +26,29 @@ export class TodoService implements ITodoService {
       }
    )
     .map( res => {
-      return res.json().map(item => <TaskModel> item)
+      return res.json().map(item => {
+        return new TaskModel(item.description, item.completed, item.id);
+      })
     });
   }
 
-
-  getTasksByTitle(title:string):Observable<TaskModel[]> {
-    return this.http.get( this.baseUrl+"/api/task")
+  createTask(task: TaskModel):Observable<TaskModel>{
+    return this.http.post(this.baseUrl+"/api/task/",task)
     .map( res => {
-      console.log(res);
-        return [ new TaskModel("eee",true)];
+      let o = res.json();
+      let newTask = new TaskModel(o.description, o.completed, o.id);
+      return newTask;
     });
-    //.map( resp => resp.json());
   }
-  createTask(task: TaskModel){
 
+  updateTask(task: TaskModel):Observable<TaskModel>{
+    return this.http.patch(this.baseUrl+"/api/task/"+task.getId(),task)
+    .map( res => {
+      let o = res.json();
+      return new TaskModel(o.description, o.completed, o.id);
+    });
   }
-  updateTask(task: TaskModel){
 
-  }
   deleteTask(task: TaskModel) {
 
   }

@@ -9,10 +9,10 @@
 <div [ngStyle]="{ 'display' : showForm ? 'none' : 'block'}">
   <ul>
     <li *ngFor="let todolist of todolists; let idx = index">
-      
+
       {{todolist.title}} ({{todolist.id}})
 
-      <button (click)="viewTodolist(todolist)">
+      <button (click)="viewTodolist(todolist.id)">
         view
       </button>
 

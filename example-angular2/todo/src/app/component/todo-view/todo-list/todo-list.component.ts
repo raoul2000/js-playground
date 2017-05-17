@@ -17,8 +17,8 @@ export class TodoListComponent implements OnInit {
   ngOnInit() {
   }
 
-  toggleTaskComplete(todo) {
-    this.toggleTaskCompleteEvent.emit(todo);
+  toggleTaskComplete(taskIndex) {
+    this.toggleTaskCompleteEvent.emit(taskIndex);
   }
   taskDeleted(taskIndex) {
     this.taskDeletedEvent.emit(taskIndex);

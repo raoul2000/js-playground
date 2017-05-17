@@ -2,8 +2,20 @@
 export class TaskModel {
     constructor(
       public description: string,
-      public completed:boolean
+      public completed:boolean,
+      public id?:number,
+      public listId?:number
     ){}
+
+    getId() {
+      return this.id;
+    }
+
+    printSomething(){
+      console.log("something from task model");
+    }
+
+
 }
 
 export class TodolistModel {
@@ -18,7 +30,7 @@ export class TodolistModel {
   getId() {
     return this.id;
   }
-  
+
   getTasks(){
     if(this.tasks === null) {
       this.tasks = new Array<TaskModel>();

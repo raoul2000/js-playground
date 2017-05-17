@@ -4,7 +4,7 @@
 
       <input
         type="checkbox"
-        (click)="toggleTaskComplete(todo)"
+        (click)="toggleTaskComplete(taskIndex)"
         [checked]="todo.completed" />
 
       {{todo.description}}
