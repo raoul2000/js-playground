@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const utils = require('./tasks/utils.js');
+
 
 let reservedFolderNames = [
   'node_modules',
@@ -17,51 +19,56 @@ let config = {
 
 module.exports = function(grunt) {
 
-  // filter file
-  var fileNotExist = function(filepath) {
-    var buildPath = "build/";
-
-    try {
-      var destbaseFolder = path.dirname(filepath).split(path.sep).slice(2).join(path.sep);
-      var destFilepath = path.join(buildPath, destbaseFolder, path.basename(filepath));
-
-      console.log(destbaseFolder);
-      console.log(path.join(buildPath, destbaseFolder, path.basename(filepath)));
-
-      console.log("dest = " + destFilepath);
-
-      grunt.log.writeln("file exists : " + destFilepath + " : " + grunt.file.exists(destFilepath));
-      if (grunt.file.isFile(destFilepath) && grunt.file.exists(destFilepath)) {
-        grunt.fail.fatal("duplicate file : " + filepath);
-        return false;
-      } else {
-        grunt.log.writeln("copy : " + filepath);
-        return true;
-      }
-    } catch (e) {
-      grunt.fail.fatal(e);
-    }
-  };
 
   grunt.initConfig({
+    noduplicate: {
+      all: {}
+    },
     clean: {
-      editorial: ['build/editorial']
+      editorial: ['build/editorial'],
+      archive: ['build/archive'],
+      doc : 'build/doc'
     },
     copy: {
+      doc : {
+        files: [
+          {
+              src: ['*/doc/**/*', '!build/**', '!node_modules/**', '!tasks/**'],
+              expand: true,
+              dest: 'build/doc',
+              rename : function(dest, file){
+                return path.join(dest, file.replace("doc/",""));
+              }
+            }
+        ]
+      },
       editorial: {
         files: [{
             cwd: 'project-A/server/',
             expand: true,
             src: ['editorial/**/*'],
-            dest: 'build/',
-            filter: fileNotExist
+            dest: 'build/'
           },
           {
             cwd: 'project-B/server/',
             expand: true,
             src: ['editorial/**/*'],
-            dest: 'build/',
-            filter: fileNotExist
+            dest: 'build/'
+          }
+        ]
+      },
+      archive: {
+        files: [{
+            cwd: 'project-A/server/',
+            expand: true,
+            src: ['archive/**/*'],
+            dest: 'build/'
+          },
+          {
+            cwd: 'project-B/server/',
+            expand: true,
+            src: ['archive/**/*'],
+            dest: 'build/'
           }
         ]
       }
@@ -72,5 +79,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('build-editorial', ['copy:', 'watch']);
+  grunt.registerMultiTask('noduplicate', 'no dup.', function() {
+    utils.validateNoDuplicate(grunt);
+  });
+
 };
