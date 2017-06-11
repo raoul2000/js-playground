@@ -15,20 +15,15 @@ let reservedFolderNames = [
 
 module.exports = function(grunt) {
 
-  var removeEnvSuffix =function(dest, src) {
-    grunt.log.writeln("## removeEnvSuffix");
-    //grunt.log.writeln(dest);
-    //grunt.log.writeln(src);
-    let destFilename = dest.concat(src.replace(/@dev|prod$/, ''));
+
+  var rename =function(dest, src) {
+    var parts = src.split('/');
+    var destFilename = dest.concat(parts.slice(2).join('/'))
+    .replace(/@dev|@prod$/, '');
     grunt.log.writeln(destFilename);
     return destFilename;
-    };
-  var noOverwrite = function(filePath, arg) {
-    grunt.log.writeln("## noOverwrite");
-    grunt.log.writeln(filePath);
-    grunt.log.writeln(arg);
-    return true;
   };
+
   grunt.initConfig({
     noduplicate: {
       all: {}
@@ -39,7 +34,8 @@ module.exports = function(grunt) {
       doc : 'build/doc'
     },
     mycopy : {
-      all : {}
+      all : {
+      }
     },
     copy: {
       doc : {
@@ -54,14 +50,43 @@ module.exports = function(grunt) {
             }
         ]
       },
-      dev : {
+      role : {
         files : [
-          { // role (archive) and env (dev)
-            cwd: 'project-A/server/',
+          {
             expand: true,
-            src: ['editorial/**/*@dev'],
+            src: ['*/server/*/**', '!**/*@*'],
             dest: 'build/',
-            rename : removeEnvSuffix
+            rename : rename
+          }
+        ]
+      },
+      envdev : {
+        files : [
+          {
+            expand: true,
+            src: ['*/server/*/**/*@dev'],
+            dest: 'build/',
+            rename : rename
+          }
+        ]
+      },
+      envqa : {
+        files : [
+          {
+            expand: true,
+            src: ['*/server/*/**/*@qa'],
+            dest: 'build/',
+            rename : rename
+          }
+        ]
+      },
+      envprod : {
+        files : [
+          {
+            expand: true,
+            src: ['*/server/*/**/*@prod'],
+            dest: 'build/',
+            rename : rename
           }
         ]
       },
