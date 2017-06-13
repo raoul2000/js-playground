@@ -1,0 +1,53 @@
+{
+  "hosts": "dev",
+  "tasks": [{
+    "name": "copy config.xml",
+    "copy": {
+      "src": "config.xml",
+      "dest": "/tmp/config.xml",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy file-A-A.txt",
+    "copy": {
+      "src": "file-A-A.txt",
+      "dest": "/tmp/file-A-A.txt",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy file-B.txt",
+    "copy": {
+      "src": "file-B.txt",
+      "dest": "/tmp/file-B.txt",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy folder1",
+    "copy": {
+      "src": "folder1",
+      "dest": "/tmp/folder1",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy folder1/empty-folder",
+    "copy": {
+      "src": "folder1/empty-folder",
+      "dest": "/tmp/folder1/empty-folder",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy folder1/file-B-C.txt",
+    "copy": {
+      "src": "folder1/file-B-C.txt",
+      "dest": "/tmp/folder1/file-B-C.txt",
+      "backup": "yes"
+    }
+  }, {
+    "name": "copy folder1/file-C.txt",
+    "copy": {
+      "src": "folder1/file-C.txt",
+      "dest": "/tmp/folder1/file-C.txt",
+      "backup": "yes"
+    }
+  }]
+}

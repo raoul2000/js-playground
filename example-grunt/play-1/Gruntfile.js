@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('./tasks/utils.js');
 const myCopy = require('./tasks/my-copy.js');
+const ansible = require('./tasks/ansible.js');
 
 
 let reservedFolderNames = [
@@ -25,13 +26,22 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
+    pkg : grunt.file.readJSON('package.json'),
     noduplicate: {
       all: {}
+    },
+    foo : {
+      dest : 'build/'
+    },
+    'playbook' : {
+      'baseFolder' : 'build/',
+      'remoteBasePath' : '/amypath/{{ansible_user}}'
     },
     clean: {
       editorial: ['build/editorial'],
       archive: ['build/archive'],
-      doc : 'build/doc'
+      doc : 'build/doc',
+      'playbook' : 'build/playbook'
     },
     mycopy : {
       all : {
@@ -128,4 +138,21 @@ module.exports = function(grunt) {
     myCopy.run(grunt);
   });
 
+  grunt.registerTask('playbook', 'Create Ansible playbook for an environment/role pair', function(env, role) {
+    ansible.createPlaybook(grunt,env,role);
+  });
+
+
+
+  grunt.registerTask('foo', 'A sample task that logs stuff.', function(arg1, arg2) {
+    if (arguments.length === 0) {
+      grunt.log.writeln(this.name + ", no args");
+    } else {
+      grunt.log.writeln(this.name + ", " + arg1 + " " + arg2);
+    }
+    grunt.log.writeln( this.data);
+    //grunt.config.requires('meta.name');
+    grunt.config.requires('foo.dest');
+     grunt.log.writeln('The foo.dest property is: ' + grunt.config('foo.dest'));
+  });
 };
