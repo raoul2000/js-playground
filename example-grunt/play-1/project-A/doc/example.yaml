@@ -1,0 +1,21 @@
+- hosts: editorial
+  tasks:
+    - name: 'create empty folder : config/empty-dir1'
+      file:
+        path: '/path/{{ansible_user}}/mnt/tmp/config/empty-dir1/dir2'
+        state: directory
+        recurse: 'yes'
+    - name: 'create empty folder : empty-dir0'
+      file:
+        path: '/path/{{ansible_user}}/mnt/tmp/empty-dir0'
+        state: directory
+        recurse: 'yes'
+    - name: copy archive
+      copy:
+        src: ../archive/
+        dest: '/path/{{ansible_user}}/mnt/tmp/'
+        backup: 'yes'
+    - name: change permission on my-script.bash
+      file:
+        path: '/path/{{ansible_user}}/mnt/tmp/my-script.bash'
+        mode: "u=rwx,g=rx,o=rx"

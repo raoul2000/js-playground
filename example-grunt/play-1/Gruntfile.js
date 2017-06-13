@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     },
     'playbook' : {
       'baseFolder' : 'build/',
-      'remoteBasePath' : '/amypath/{{ansible_user}}'
+      'remoteBasePath' : '/amypath/{{ansible_user}}/mnt/tmp'
     },
     clean: {
       editorial: ['build/editorial'],

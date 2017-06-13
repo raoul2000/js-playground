@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const yaml = require('js-yaml');
 
 function isEmptyDir(grunt, dirPath) {
   if( grunt.file.isDir(dirPath) ){
@@ -32,11 +33,15 @@ exports.createPlaybook = function(grunt,env, role) {
     grunt.log.error('Base Folder not found : '+baseFolder);
     return false;
   }
+  // the Source folder (where source files are located) is built as a relative path
+  // using the baseFolder + role
   let srcFolder = path.posix.join(baseFolder,role);
   if(  ! grunt.file.isDir(srcFolder) ) {
     grunt.log.error('Source Folder not found : '+srcFolder);
     return false;
   }
+  // The is the remote folder base path. All remote path are assumed to be inside this
+  // folder
   grunt.config.requires('playbook.remoteBasePath');
   let remoteBasePath = grunt.config('playbook.remoteBasePath');
 
@@ -60,7 +65,7 @@ exports.createPlaybook = function(grunt,env, role) {
     .map(function(file){
         //console.log(file);  // relative to baseFolder
         let filePath = path.posix.join(srcFolder,file);
-        console.log(filePath);
+        //console.log(filePath);
         if( isEmptyDir(grunt, filePath)) {
           return {
             "name" : "create empty folder : "+file,
@@ -73,28 +78,28 @@ exports.createPlaybook = function(grunt,env, role) {
           let task = {
             'name' : 'copy ' + file,
             'copy' : {
-              'src' : filePath,
+              'src' : path.posix.join('..', role, file),  // up from 'playbook' and down to 'role/...'
               'dest' : path.posix.join(remoteBasePath, file),
               'backup' : 'yes'
             }
           };
           if( ['.bash', '.sh'].indexOf(path.extname(file)) !== -1 ) {
-            task.copy.mode = 644;
+            task.copy.mode = 744;
           }
           return task;
         } // else we are dealing with a non-empty folder that will
         // be created automatically whan a file it contains is copied
     }
   ).filter(x => x ); // remove null and undefined items
-  
-  console.log(JSON.stringify(ansiblePlaybook));
+
+  //console.log(JSON.stringify(ansiblePlaybook));
 
   // dump playbook
   // ////////////////////////////////////////////////////////////////////////
   // create folder if needed
 
   let playbookFolder = path.posix.join(baseFolder, 'playbook');
-  if( ! grunt.file.isDir(playbookFolder)) {
+  if( ! grunt.file.exists(playbookFolder)) {
     grunt.log.writeln('creating ansible playbook folder : '+playbookFolder);
     grunt.file.mkdir(playbookFolder);
   }
@@ -105,7 +110,7 @@ exports.createPlaybook = function(grunt,env, role) {
   if( grunt.file.exists(playbookPath)) {
     grunt.file.delete(playbookPath);
   }
-  grunt.log.writeln('playbook path : '+playbookPath);
+
 
   // for debug only : save the JSON version of the playbook
   fs.writeFileSync(
@@ -114,4 +119,10 @@ exports.createPlaybook = function(grunt,env, role) {
   );
 
   // serialize ansiblePlaybook to YAML file (playbookPath)
+
+  let yamlString = yaml.safeDump ([ansiblePlaybook], {
+    'json' : true
+  });
+  fs.writeFileSync(playbookPath, yamlString);
+  grunt.log.ok('playbook created in ' + playbookPath);
 };
