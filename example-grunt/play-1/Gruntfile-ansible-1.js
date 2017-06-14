@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('./tasks/utils.js');
 const myCopy = require('./tasks/my-copy.js');
-const ansible = require('./tasks/ansible-2.js');
+const ansible = require('./tasks/ansible.js');
 
 
 let reservedFolderNames = [
@@ -138,8 +138,8 @@ module.exports = function(grunt) {
     myCopy.run(grunt);
   });
 
-  grunt.registerTask('playbook', 'Create Ansible playbook for an environment/role pair', function(role) {
-    ansible.createPlaybook(grunt,role);
+  grunt.registerTask('playbook', 'Create Ansible playbook for an environment/role pair', function(env, role) {
+    ansible.createPlaybook(grunt,env,role);
   });
 
 
