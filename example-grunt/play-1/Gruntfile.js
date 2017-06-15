@@ -15,7 +15,16 @@ let reservedFolderNames = [
 
 
 module.exports = function(grunt) {
+	
+	// define path variables
+	var currentWorkingDir = process.cwd().replace(/\\/g,'/');
+	console.log(currentWorkingDir);
 
+	var projectBaseDir = path.posix.normalize(path.posix.join(currentWorkingDir, '../..'));
+	console.log(projectBaseDir);
+
+	var buildDir = path.posix.normalize(path.posix.join(projectBaseDir, '_build'));
+	console.log(buildDir);
 
   var rename =function(dest, src) {
     var parts = src.split('/');
