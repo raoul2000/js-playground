@@ -3,6 +3,7 @@ const path = require('path');
 const utils = require('./tasks/utils.js');
 const myCopy = require('./tasks/my-copy.js');
 const ansible = require('./tasks/ansible-2.js');
+const project = require('./tasks/project.js');
 
 
 let reservedFolderNames = [
@@ -15,12 +16,13 @@ let reservedFolderNames = [
 
 
 module.exports = function(grunt) {
-	
+
 	// define path variables
 	var currentWorkingDir = process.cwd().replace(/\\/g,'/');
 	console.log(currentWorkingDir);
 
-	var projectBaseDir = path.posix.normalize(path.posix.join(currentWorkingDir, '../..'));
+	//var projectBaseDir = path.posix.normalize(path.posix.join(currentWorkingDir, '../..'));
+	var projectBaseDir = currentWorkingDir;
 	console.log(projectBaseDir);
 
 	var buildDir = path.posix.normalize(path.posix.join(projectBaseDir, '_build'));
@@ -45,6 +47,11 @@ module.exports = function(grunt) {
     'playbook' : {
       'baseFolder' : 'build/',
       'remoteBasePath' : '/amypath/{{ansible_user}}/mnt/tmp'
+    },
+    'init-integration' : {
+      'templatePath' : `${projectBaseDir}`,
+      'templateName' : 'project-A',
+      'targetPath' : `${projectBaseDir}`
     },
     clean: {
       editorial: ['build/editorial'],
@@ -149,6 +156,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('playbook', 'Create Ansible playbook for an environment/role pair', function(role) {
     ansible.createPlaybook(grunt,role);
+  });
+
+  grunt.registerTask('init-integration', 'create folder structure from template', function(name) {
+    project.initIntegration(grunt,name);
   });
 
 
