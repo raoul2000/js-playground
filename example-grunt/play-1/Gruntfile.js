@@ -6,6 +6,7 @@ const ansible = require('./tasks/ansible-2.js');
 const project = require('./tasks/project.js');
 
 
+
 let reservedFolderNames = [
   'node_modules',
   '_core',
@@ -19,14 +20,14 @@ module.exports = function(grunt) {
 
 	// define path variables
 	var currentWorkingDir = process.cwd().replace(/\\/g,'/');
-	console.log(currentWorkingDir);
+	grunt.verbose.ok("currentWorkingDir : "+currentWorkingDir);
 
 	//var projectBaseDir = path.posix.normalize(path.posix.join(currentWorkingDir, '../..'));
 	var projectBaseDir = currentWorkingDir;
-	console.log(projectBaseDir);
+	grunt.verbose.ok("projectBaseDir : "+projectBaseDir);
 
 	var buildDir = path.posix.normalize(path.posix.join(projectBaseDir, '_build'));
-	console.log(buildDir);
+	grunt.verbose.ok("buildDir : "+buildDir);
 
   var rename =function(dest, src) {
     var parts = src.split('/');
@@ -38,6 +39,19 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg : grunt.file.readJSON('package.json'),
+    lineending: {
+        dist: {
+          options: {
+            eol: 'lf',
+            overwrite: true
+          },
+          files: {
+            '': [
+              'build/{archive,editorial}/**/*.bash'
+            ]
+          }
+        }
+      },
     noduplicate: {
       all: {}
     },
@@ -146,6 +160,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-lineending');
 
   grunt.registerMultiTask('noduplicate', 'no dup.', function() {
     utils.validateNoDuplicate(grunt);
