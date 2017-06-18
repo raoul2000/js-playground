@@ -4,8 +4,7 @@ const utils = require('./tasks/utils.js');
 const myCopy = require('./tasks/my-copy.js');
 const ansible = require('./tasks/ansible-2.js');
 const project = require('./tasks/project.js');
-
-
+const xmlTools = require('./tasks/xml-tools');
 
 let reservedFolderNames = [
   'node_modules',
@@ -14,7 +13,6 @@ let reservedFolderNames = [
 ];
 
 ////////////////////////////////////////////////////////////////////////////////
-
 
 module.exports = function(grunt) {
 
@@ -26,7 +24,7 @@ module.exports = function(grunt) {
 	var projectBaseDir = currentWorkingDir;
 	grunt.verbose.ok("projectBaseDir : "+projectBaseDir);
 
-	var buildDir = path.posix.normalize(path.posix.join(projectBaseDir, '_build'));
+	var buildDir = path.posix.normalize(path.posix.join(projectBaseDir, 'build'));
 	grunt.verbose.ok("buildDir : "+buildDir);
 
   var rename =function(dest, src) {
@@ -39,6 +37,29 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg : grunt.file.readJSON('package.json'),
+    "dup-entity" : {
+      "options" : {
+        "buildDir" : buildDir,
+        "dtdFilePattern" :  ['**/*.dtd']
+      },
+    },
+    validate_xml : {
+      options : {
+        "buildDir" : buildDir,
+        "dtdFilePattern" :  ['**/*.dtd'],
+        "xmlFiles" : ['**/*.xml']
+      }
+    },
+    xml_validator: {
+      "project-A": {
+        src: [
+          //'project-A/server/**/*.xml',
+          //'project-A/server/**/config.xml'
+          //'project-A/server/**/xml-invalid.xml'
+          'project-A/server/**/xml-invalid-entity.xml'
+        ]
+      }
+    },
     lineending: {
         dist: {
           options: {
@@ -161,6 +182,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-lineending');
+  grunt.loadNpmTasks('grunt-xml-validator');
 
   grunt.registerMultiTask('noduplicate', 'no dup.', function() {
     utils.validateNoDuplicate(grunt);
@@ -168,6 +190,17 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('mycopy', 'test.', function() {
     myCopy.run(grunt);
   });
+
+  grunt.registerTask('dup-entity', 'Checks that entity is not defined more than one.',function(role) {
+    let options = this.options();
+    console.log(options);
+
+    xmlTools.noDupEntity(grunt,options, role);
+  });
+  grunt.registerTask('validate_xml', 'validate XML well formed',function(role) {
+    xmlTools.validateXML(grunt,this.options(), role);
+  });
+
 
   grunt.registerTask('playbook', 'Create Ansible playbook for an environment/role pair', function(role) {
     ansible.createPlaybook(grunt,role);

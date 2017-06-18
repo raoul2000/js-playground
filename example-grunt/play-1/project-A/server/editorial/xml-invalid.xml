@@ -1,0 +1,10 @@
+<root>
+  <div>
+  project : project-B
+
+  role : editorial
+  env : all
+
+  collision with env specific file
+
+</root>

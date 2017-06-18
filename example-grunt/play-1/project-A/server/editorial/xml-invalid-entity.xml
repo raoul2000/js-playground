@@ -1,0 +1,8 @@
+<root>
+  <div>
+    project : project-B
+  </div>
+  <entity>
+    &SOME_VALUE;
+  </entity>
+</root>
