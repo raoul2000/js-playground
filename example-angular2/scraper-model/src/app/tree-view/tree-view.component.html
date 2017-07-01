@@ -1,0 +1,8 @@
+<ul>
+  <li *ngFor="let node of nodes">
+    <span>{{ node.name }}</span>
+    <div *ngIf="node.isExpanded()">
+      <tree-view [nodes]="node.getChildren()"></tree-view>
+    </div>
+  </li>
+</ul>
