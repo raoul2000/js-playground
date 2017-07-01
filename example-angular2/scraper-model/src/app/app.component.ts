@@ -19,40 +19,18 @@ export class AppComponent {
     child3.addChild(new NodeModel("child 5"));
 
     root.addChild(child3);
-    
+
     root.addChild(new NodeModel("child1"));
     root.addChild(new NodeModel("child2"));
 
     this.nodes = [ root ];
   }
 
-  constructor1(){
-    this.nodes = [
-      {
-        "name" : "node1",
-        "expanded" : true,
-        "children" : [
-          {
-            "name" : "child1",
-            "expanded" : false
-          },
-          {
-            "name" : "child2",
-            "expanded" : true,
-            "children" : [
-              {
-                "name" : "grand-child-1"
-              }
-            ]
-          },
-          {
-            "name" : "child3",
-            "expanded" : false
-          }
-        ]
-      }
-    ]
-  } // end constructor
+  addNode() {
+    this.nodes[0].addChild(new NodeModel('new'));
+  }
 
-
+  nodeSelected(node) {
+    console.log("app",node);
+  }
 }

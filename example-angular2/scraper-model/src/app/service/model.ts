@@ -1,27 +1,17 @@
 export class NodeModel {
-  private children:Array<NodeModel> = [];
-  private expanded:boolean = true;
+  private children: Array<NodeModel> = [];
+  private expanded: boolean = true;
 
   constructor(
     private name,
-    private metadata?:any
-  ) {}
+    private metadata?: any
+  ) { }
 
-  getName() {
-    return this.name;
-  }
-
-  getMetadata(){
-    return this.metadata;
-  }
-
-  addChild(node:NodeModel) {
-    this.children.push(node);
-  }
-  getChildren() {
-    return this.children;
-  }
-  isExpanded() {
-    return this.expanded;
-  }
+  getName()     {return this.name;  }
+  getMetadata() {return this.metadata; }
+  getChildren() { return this.children; }
+  hasChildren() { return this.children.length !== 0 ; }
+  isExpanded()  { return this.expanded; }
+  toggle()      { this.expanded = !this.expanded; }
+  addChild(node: NodeModel) { this.children.push(node);  }
 }

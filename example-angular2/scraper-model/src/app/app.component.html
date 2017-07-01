@@ -2,5 +2,12 @@
   {{title}}
 </h1>
 <p>
-  <tree-view [nodes]="nodes"></tree-view>
+  <tree-view
+    [nodes]="nodes"
+    (nodeSelectedEvent)="nodeSelected($event)"
+    >
+  </tree-view>
+</p>
+<p>
+  <button (click)="addNode()">add Node</button>
 </p>

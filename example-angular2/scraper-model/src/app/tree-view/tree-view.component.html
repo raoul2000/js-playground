@@ -1,7 +1,12 @@
 <ul>
   <li *ngFor="let node of nodes">
-    <span>{{ node.name }}</span>
-    <div *ngIf="node.isExpanded()">
+    <span
+      *ngIf="node.hasChildren()"
+      (click)="node.toggle()">
+      X
+    </span>
+    <span (click)="nodeSelected(node)">{{ node.name }}</span>
+    <div *ngIf="node.hasChildren() && node.isExpanded()">
       <tree-view [nodes]="node.getChildren()"></tree-view>
     </div>
   </li>
