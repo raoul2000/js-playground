@@ -8,6 +8,7 @@ import { NodeModel } from './service/model';
 })
 export class AppComponent {
   public nodes:Array<any>;
+  private selectedNode: NodeModel;
 
   title = 'app works!';
 
@@ -30,7 +31,13 @@ export class AppComponent {
     this.nodes[0].addChild(new NodeModel('new'));
   }
 
-  nodeSelected(node) {
-    console.log("app",node);
+  nodeSelected(node: NodeModel) {
+    this.selectedNode = node;
+    this.nodes.forEach(x => x.select(this.selectedNode));
+  }
+
+  deselect() {
+    this.selectedNode = null;
+    this.nodes.forEach(x => x.deselect());
   }
 }

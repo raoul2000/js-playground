@@ -15,9 +15,8 @@ export class TreeViewComponent implements OnInit {
 
   ngOnInit() {
   }
-  
+
   nodeSelected(node:NodeModel) {
-    console.log("node selected");
     this.nodeSelectedEvent.emit(node);
   }
 }

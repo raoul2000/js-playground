@@ -10,4 +10,11 @@
 </p>
 <p>
   <button (click)="addNode()">add Node</button>
+  <button (click)="deselect()">deselect</button>
+</p>
+<p>
+  <detail-view
+    [node]="selectedNode"
+  >
+  </detail-view>
 </p>

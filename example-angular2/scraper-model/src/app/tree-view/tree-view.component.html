@@ -6,8 +6,12 @@
       X
     </span>
     <span (click)="nodeSelected(node)">{{ node.name }}</span>
+    <span *ngIf="node.isSelected()">(s)</span>
     <div *ngIf="node.hasChildren() && node.isExpanded()">
-      <tree-view [nodes]="node.getChildren()"></tree-view>
+      <tree-view
+        [nodes]="node.getChildren()"
+        (nodeSelectedEvent)="nodeSelected($event)">
+      </tree-view>
     </div>
   </li>
 </ul>
