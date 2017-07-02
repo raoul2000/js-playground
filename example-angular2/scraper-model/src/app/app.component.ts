@@ -28,7 +28,11 @@ export class AppComponent {
   }
 
   addNode() {
-    this.nodes[0].addChild(new NodeModel('new'));
+    if(this.selectedNode) {
+      this.selectedNode.addChild(new NodeModel('new'));
+    } else {
+      this.nodes[0].addChild(new NodeModel('new'));
+    }
   }
 
   nodeSelected(node: NodeModel) {

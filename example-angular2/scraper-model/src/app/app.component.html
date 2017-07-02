@@ -9,7 +9,10 @@
   </tree-view>
 </p>
 <p>
-  <button (click)="addNode()">add Node</button>
+  <button
+    (click)="addNode()"
+    [disabled]="! selectedNode"
+  >add Node</button>
   <button (click)="deselect()">deselect</button>
 </p>
 <p>
