@@ -12,14 +12,23 @@ export class DocumentModel {
 export class NodeModel {
   private children: Array<NodeModel> = [];
   private expanded: boolean = true;
-  private selected:boolean = false;
+  private selected:boolean = false;  
 
   constructor(
     private name,
+    private selector?:string,
+    private type?:string,
     private metadata?: any
   ) { }
 
-  getName():String     {return this.name;  }
+  getName():string     {return this.name;  }
+  getSelector():string     {return this.selector;  }
+  setSelector(sel:string)  { this.selector = sel;  }
+
+  getType():string    {return this.type;  }
+  setType(type:string)  { this.type = type;  }
+
+
   getMetadata():any {return this.metadata; }
   getChildren():Array<NodeModel> { return this.children; }
   hasChildren():boolean { return this.children.length !== 0 ; }

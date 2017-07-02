@@ -7,6 +7,7 @@ import { NodeModel } from '../service/model';
   styleUrls: ['./detail-view.component.css']
 })
 export class DetailViewComponent implements OnInit {
+  typeValues: string[] = ["text", "HTML", "composite"];
   @Input() node: NodeModel;
 
   formNode: NodeModel;
@@ -14,12 +15,16 @@ export class DetailViewComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log('init', this.node);
   }
   ngOnChanges() {
     console.log("change", this.node);
-    
+
   }
   save(updatedNode) {
     console.log(updatedNode);
+  }
+  onChange(val) {
+    console.log('change',val);
   }
 }
