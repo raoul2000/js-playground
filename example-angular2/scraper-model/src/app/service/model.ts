@@ -12,7 +12,7 @@ export class DocumentModel {
 export class NodeModel {
   private children: Array<NodeModel> = [];
   private expanded: boolean = true;
-  private selected:boolean = false;  
+  private selected:boolean = false;
 
   constructor(
     private name,
@@ -30,6 +30,7 @@ export class NodeModel {
 
 
   getMetadata():any {return this.metadata; }
+
   getChildren():Array<NodeModel> { return this.children; }
   hasChildren():boolean { return this.children.length !== 0 ; }
   isExpanded():boolean  { return this.expanded; }
@@ -54,5 +55,11 @@ export class NodeModel {
   deselect() {
     this.selected = false;
     this.children.forEach(n => n.deselect());
+  }
+  removeChild(child:NodeModel) {
+    let idx = this.children.findIndex(x => x.getName() === child.getName());
+    if( idx > -1 ) {
+      this.children.splice(idx,1);
+    }
   }
 }

@@ -10,9 +10,13 @@
 <p>
   <button
     (click)="addNode()"
-    [disabled]="! selectedNode"
+    [disabled]="! selectedNode || selectedNode.getType() !== 'composite'"
   >add Node</button>
   <button (click)="deselect()">deselect</button>
+  <button
+    (click)="deleteNode()"
+    [disabled]="! selectedNode"
+  >delete</button>
 </p>
 <p>
   <detail-view

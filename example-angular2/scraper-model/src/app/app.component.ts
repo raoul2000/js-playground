@@ -34,7 +34,9 @@ export class AppComponent {
       this.selectedNode.addChild(new NodeModel('new'));
     }
   }
-
+  deleteNode() {
+    //this.selectedNode.getParent().deleteNode(this.selectedNode);
+  }
   nodeSelected(node: NodeModel) {
     this.selectedNode = node;
     this.nodes.forEach(x => x.select(this.selectedNode));
