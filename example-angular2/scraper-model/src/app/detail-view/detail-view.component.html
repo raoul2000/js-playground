@@ -1,6 +1,11 @@
 <b>detail</b>
 <hr/>
+<div *ngIf="node">
 
-<ul *ngIf="node">
-  <li>name : {{node.name}}</li>
-</ul>
+  <form (ngSubmit)="save(nodeForm.value)" #nodeForm="ngForm">
+    <div>
+      <label>name</label><input name="node.name" [(ngModel)]="node.name">
+    </div>
+    <button type="submit">Save</button>
+  </form>
+</div>

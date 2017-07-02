@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NodeModel } from './service/model';
+import { NodeModel, DocumentModel } from './service/model';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,9 @@ export class AppComponent {
   title = 'app works!';
 
   constructor(){
-    let root = new NodeModel("root");
+    let doc = new DocumentModel();
+
+    let root = doc.getRootNode();
 
     let child3 = new NodeModel("child3");
     child3.addChild(new NodeModel("child 4"));
@@ -30,8 +32,6 @@ export class AppComponent {
   addNode() {
     if(this.selectedNode) {
       this.selectedNode.addChild(new NodeModel('new'));
-    } else {
-      this.nodes[0].addChild(new NodeModel('new'));
     }
   }
 

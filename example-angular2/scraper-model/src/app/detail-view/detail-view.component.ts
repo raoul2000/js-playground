@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { NodeModel } from '../service/model';
 
 @Component({
@@ -8,10 +8,18 @@ import { NodeModel } from '../service/model';
 })
 export class DetailViewComponent implements OnInit {
   @Input() node: NodeModel;
-  
+
+  formNode: NodeModel;
+
   constructor() { }
 
   ngOnInit() {
   }
-
+  ngOnChanges() {
+    console.log("change", this.node);
+    
+  }
+  save(updatedNode) {
+    console.log(updatedNode);
+  }
 }

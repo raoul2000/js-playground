@@ -1,3 +1,14 @@
+export class DocumentModel {
+  private rootNode:NodeModel;
+
+  constructor() {
+    this.rootNode = new NodeModel('root');
+  }
+
+  getRootNode():NodeModel { return this.rootNode;}
+
+}
+
 export class NodeModel {
   private children: Array<NodeModel> = [];
   private expanded: boolean = true;
@@ -8,20 +19,23 @@ export class NodeModel {
     private metadata?: any
   ) { }
 
-  getName()     {return this.name;  }
-  getMetadata() {return this.metadata; }
-  getChildren() { return this.children; }
-  hasChildren() { return this.children.length !== 0 ; }
-  isExpanded()  { return this.expanded; }
-  toggle()      { this.expanded = !this.expanded; }
-  addChild(node: NodeModel) { this.children.push(node);  }
-  
-  isSelected()  { return this.selected; }
-  select(node: NodeModel)  {
+  getName():String     {return this.name;  }
+  getMetadata():any {return this.metadata; }
+  getChildren():Array<NodeModel> { return this.children; }
+  hasChildren():boolean { return this.children.length !== 0 ; }
+  isExpanded():boolean  { return this.expanded; }
+  toggle() :void     { this.expanded = !this.expanded; }
+  addChild(node: NodeModel):NodeModel {
+    this.children.push(node);
+    return this;
+  }
+
+  isSelected():boolean  { return this.selected; }
+  select(node: NodeModel):void   {
     if( this.name === node.name) {
       this.selected = true;
     } else {
-        this.selected = false;
+      this.selected = false;
     }
     this.children.forEach(n => n.select(node));
   }
