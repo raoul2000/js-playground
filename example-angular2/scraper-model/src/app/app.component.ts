@@ -17,25 +17,27 @@ export class AppComponent {
 
     let root = doc.getRootNode();
 
-    let child3 = new NodeModel("child3");
-    child3.addChild(new NodeModel("child 4"));
-    child3.addChild(new NodeModel("child 5"));
+    let child3 = doc.createNode("child3");
+    child3.addChild( doc.createNode("child 4"));
+    child3.addChild( doc.createNode("child 5"));
 
     root.addChild(child3);
 
-    root.addChild(new NodeModel("child1"));
-    root.addChild(new NodeModel("child2"));
+    root.addChild( doc.createNode("child1"));
+    root.addChild( doc.createNode("child2"));
 
     this.nodes = [ root ];
   }
 
   addNode() {
     if(this.selectedNode) {
-      this.selectedNode.addChild(new NodeModel('new'));
+      this.selectedNode.addChild( this.selectedNode.getOwnerDocument().createNode('new'));
     }
   }
   deleteNode() {
-    //this.selectedNode.getParent().deleteNode(this.selectedNode);
+    if(this.selectedNode) {
+      this.selectedNode.remove();
+    }
   }
   nodeSelected(node: NodeModel) {
     this.selectedNode = node;

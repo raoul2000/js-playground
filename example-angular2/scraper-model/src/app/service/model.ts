@@ -2,55 +2,94 @@ import { UUID } from 'angular2-uuid';
 
 export class DocumentModel {
   private rootNode: NodeModel;
+  private id: string;
 
   constructor() {
-    this.rootNode = new NodeModel('root');
+    this.id = UUID.UUID();
+    this.rootNode = new NodeModel('root',this);
   }
+  getId():string { return this.id;}
 
+  createNode(name:string):NodeModel {
+    return new NodeModel(name,this);
+  }
   getRootNode(): NodeModel { return this.rootNode; }
 
+  equal(otherDocument:DocumentModel):boolean {
+    return this.getId() === otherDocument.getId();
+  }
 }
 
 export class NodeModel {
   private id: string;
+
+  private parent?:NodeModel;
   private children: Array<NodeModel> = [];
-  private ownerDocument:DocumentModel;
   private expanded: boolean = true;
   private selected: boolean = false;
 
+  private selector:string;
+  private type:string = "text";
+  private metadata:any = {};
+
   constructor(
-    private name,
-    private selector?: string,
-    private type?: string,
-    private metadata?: any
+    private name: string,
+    private ownerDocument:DocumentModel
   ) {
     this.id = UUID.UUID();
   }
-
+  private checkSameOwnerDocument(node:NodeModel) {
+    if( ! this.getOwnerDocument().equal(node.getOwnerDocument())) {
+      throw new Error(`node ${node.getId()} doesn't belong to the same document`);
+    }
+  }
   getId():string            { return this.id; }
   getName(): string         { return this.name; }
 
+  getOwnerDocument():DocumentModel {
+    return this.ownerDocument;
+  }
+
+  getParent():NodeModel { return this.parent;}
+  setParent(node:NodeModel):NodeModel {
+    this.checkSameOwnerDocument(node);
+    this.parent = node;
+    return this;
+  }
   getSelector(): string     { return this.selector; }
-  setSelector(sel: string)  { this.selector = sel; }
+  setSelector(sel: string):NodeModel  {
+    this.selector = sel;
+    return this;
+  }
 
   getType(): string         { return this.type; }
-  setType(type: string)     { this.type = type; }
-
+  setType(type: string):NodeModel {
+    this.type = type;
+    return this;
+  }
 
   getMetadata(): any        { return this.metadata; }
-  setMetadata(metadata):any { this.metadata = metadata; }
+  setMetadata(metadata):NodeModel {
+    this.metadata = metadata;
+    return this;
+  }
 
   getChildren(): Array<NodeModel> { return this.children; }
   hasChildren(): boolean { return this.children.length !== 0; }
-  isExpanded(): boolean { return this.expanded; }
-  toggle(): void { this.expanded = !this.expanded; }
+
   addChild(node: NodeModel): NodeModel {
+    this.checkSameOwnerDocument(node);
+    node.setParent(this);
     this.children.push(node);
     return this;
   }
 
+  isExpanded(): boolean { return this.expanded; }
+  toggle(): void { this.expanded = !this.expanded; }
+
   isSelected(): boolean { return this.selected; }
   select(node: NodeModel): void {
+    this.checkSameOwnerDocument(node);
     this.selected = this.getId() === node.getId();
     this.children.forEach(n => n.select(node));
   }
@@ -62,10 +101,22 @@ export class NodeModel {
     this.children.forEach(n => n.deselect());
   }
 
-  removeChild(child: NodeModel) {
-    let idx = this.children.findIndex(x => x.getId() === child.getId());
+  remove() {
+    let success:boolean = false;
+    let parent:NodeModel = this.getParent();
+    if(parent) {
+      this.getParent().removeChild(this);
+      success = true;
+    }
+    return success;
+  }
+  removeChild(child: NodeModel):boolean {
+    this.checkSameOwnerDocument(child);
+    let success:boolean = false;
+    let idx:number = this.children.findIndex(x => x.getId() === child.getId());
     if (idx > -1) {
       this.children.splice(idx, 1);
     }
+    return success;
   }
 }
