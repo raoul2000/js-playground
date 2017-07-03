@@ -12,6 +12,7 @@
         <select [(ngModel)]="node.type" name="node.type"  (change)="onChange($event.target.value)">
           <option *ngFor="let typeValue of typeValues; index as i" [ngValue]="i">{{typeValue}}</option>
         </select>
+        <label>list of values : </label><input type="checkbox" name="node.list" [(ngModel)]="node.list">
       </div>
     </form>
   </div>

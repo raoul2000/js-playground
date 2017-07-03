@@ -8,7 +8,7 @@ export const enum NodeType {
 export class DocumentModel {
   private rootNode: NodeModel;
   private id: string;
-  
+
   constructor() {
     this.id = UUID.UUID();
     this.rootNode = new NodeModel('root',this);
@@ -37,6 +37,7 @@ export class NodeModel {
   private selector:string;
   private type:NodeType = NodeType.text;
   private metadata:any = {};
+  private list:boolean = false;
 
   constructor(
     private name: string,
@@ -62,6 +63,9 @@ export class NodeModel {
     this.parent = node;
     return this;
   }
+  getList():boolean { return this.list;}
+  setList(v:boolean) { this.list = v;}
+  
   getSelector(): string     { return this.selector; }
   setSelector(sel: string):NodeModel  {
     this.selector = sel;
