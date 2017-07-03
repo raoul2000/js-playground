@@ -1,13 +1,13 @@
 <ul>
   <li *ngFor="let node of nodes">
     <span
-      *ngIf="node.hasChildren() && node.getType() === 'composite'"
+      *ngIf="node.hasChildren() && node.isComposite()"
       (click)="node.toggle()">
       X
     </span>
     <span (click)="nodeSelected(node)">{{ node.name }}</span>
     <span *ngIf="node.isSelected()">(s)</span>
-    <div *ngIf="node.hasChildren() && node.isExpanded() && node.getType() === 'composite'">
+    <div *ngIf="node.hasChildren() && node.isExpanded() && node.isComposite()">
       <tree-view
         [nodes]="node.getChildren()"
         (nodeSelectedEvent)="nodeSelected($event)">

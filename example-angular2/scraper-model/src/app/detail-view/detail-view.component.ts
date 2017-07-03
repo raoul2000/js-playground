@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { NodeModel } from '../service/model';
+import { NodeModel, NodeType } from '../service/model';
 
 @Component({
   selector: 'detail-view',
@@ -7,6 +7,7 @@ import { NodeModel } from '../service/model';
   styleUrls: ['./detail-view.component.css']
 })
 export class DetailViewComponent implements OnInit {
+  // WARNING : values index must match the NodeType enum values
   typeValues: string[] = ["text", "HTML", "composite"];
   @Input() node: NodeModel;
 
@@ -16,6 +17,7 @@ export class DetailViewComponent implements OnInit {
 
   ngOnInit() {
     console.log('init', this.node);
+
   }
   ngOnChanges() {
     console.log("change", this.node);

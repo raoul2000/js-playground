@@ -1,13 +1,18 @@
 import { UUID } from 'angular2-uuid';
 
+// use NodeType[NodeType.text] returns 'text'
+export const enum NodeType {
+  text, html, composite
+}
+
 export class DocumentModel {
   private rootNode: NodeModel;
   private id: string;
-
+  
   constructor() {
     this.id = UUID.UUID();
     this.rootNode = new NodeModel('root',this);
-    this.rootNode.setType('composite');
+    this.rootNode.setType(NodeType.composite);
   }
   getId():string { return this.id;}
 
@@ -30,7 +35,7 @@ export class NodeModel {
   private selected: boolean = false;
 
   private selector:string;
-  private type:string = "text";
+  private type:NodeType = NodeType.text;
   private metadata:any = {};
 
   constructor(
@@ -63,8 +68,8 @@ export class NodeModel {
     return this;
   }
 
-  getType(): string         { return this.type; }
-  setType(type: string):NodeModel {
+  getType(): NodeType         { return this.type; }
+  setType(type: NodeType):NodeModel {
     this.type = type;
     return this;
   }
@@ -78,6 +83,7 @@ export class NodeModel {
   getChildren(): Array<NodeModel> { return this.children; }
   hasChildren(): boolean { return this.children.length !== 0; }
   isRootNode():boolean { return this.getId() === this.getOwnerDocument().getRootNode().getId()}
+  isComposite():boolean { return this.type === NodeType.composite ;}
 
   addChild(node: NodeModel): NodeModel {
     this.checkSameOwnerDocument(node);
