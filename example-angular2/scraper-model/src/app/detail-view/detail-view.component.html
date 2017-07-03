@@ -1,16 +1,30 @@
 <b>detail</b>
 <hr/>
 <div *ngIf="node">
+  <div *ngIf="node.isRootNode() === false ">
 
-  <form (ngSubmit)="save(nodeForm.value)" #nodeForm="ngForm">
-    <div>
-      <label>name</label><input name="node.name" [(ngModel)]="node.name">
-      <label>selector</label><input name="node.selector" [(ngModel)]="node.selector"><br/>
+    <form (ngSubmit)="save(nodeForm.value)" #nodeForm="ngForm">
+      <div>
+        <label>name</label><input name="node.name" [(ngModel)]="node.name">
+        <label>selector</label><input name="node.selector" [(ngModel)]="node.selector"><br/>
 
-      <label for="type">type</label>
-      <select [(ngModel)]="node.type" name="node.type"  (change)="onChange($event.target.value)">
-        <option *ngFor="let typeValue of typeValues" [ngValue]="typeValue">{{typeValue}}</option>
-      </select>
-    </div>
-  </form>
+        <label for="type">type</label>
+        <select [(ngModel)]="node.type" name="node.type"  (change)="onChange($event.target.value)">
+          <option *ngFor="let typeValue of typeValues" [ngValue]="typeValue">{{typeValue}}</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="">
+    <button
+    (click)="addNode()"
+    [disabled]="node.getType() !== 'composite'"
+    >add Node</button>
+
+    <button
+    (click)="deleteNode()"
+    [disabled]=" node.isRootNode()"
+    >delete</button>
+  </div>
 </div>

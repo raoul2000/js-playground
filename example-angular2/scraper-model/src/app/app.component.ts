@@ -10,7 +10,7 @@ export class AppComponent {
   public nodes:Array<any>;
   private selectedNode: NodeModel;
 
-  title = 'app works!';
+  title = 'Scraper';
 
   constructor(){
     let doc = new DocumentModel();
@@ -29,16 +29,7 @@ export class AppComponent {
     this.nodes = [ root ];
   }
 
-  addNode() {
-    if(this.selectedNode) {
-      this.selectedNode.addChild( this.selectedNode.getOwnerDocument().createNode('new'));
-    }
-  }
-  deleteNode() {
-    if(this.selectedNode) {
-      this.selectedNode.remove();
-    }
-  }
+
   nodeSelected(node: NodeModel) {
     this.selectedNode = node;
     this.nodes.forEach(x => x.select(this.selectedNode));

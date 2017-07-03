@@ -27,4 +27,17 @@ export class DetailViewComponent implements OnInit {
   onChange(val) {
     console.log('change',val);
   }
+  addNode() {
+    if(this.node) {
+      this.node.addChild( this.node.getOwnerDocument().createNode('new'));
+    }
+  }
+  deleteNode() {
+    if(this.node && ! this.node.isRootNode() ) {
+      let parent:NodeModel = this.node.getParent();
+      this.node.remove();
+      this.node = parent;
+      parent.select(parent);
+    }
+  }
 }

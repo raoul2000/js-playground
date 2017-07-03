@@ -7,6 +7,7 @@ export class DocumentModel {
   constructor() {
     this.id = UUID.UUID();
     this.rootNode = new NodeModel('root',this);
+    this.rootNode.setType('composite');
   }
   getId():string { return this.id;}
 
@@ -76,6 +77,7 @@ export class NodeModel {
 
   getChildren(): Array<NodeModel> { return this.children; }
   hasChildren(): boolean { return this.children.length !== 0; }
+  isRootNode():boolean { return this.getId() === this.getOwnerDocument().getRootNode().getId()}
 
   addChild(node: NodeModel): NodeModel {
     this.checkSameOwnerDocument(node);
