@@ -43,9 +43,24 @@ export class AppComponent {
 
   parseJSONString() {
     let obj = {
+      'p0-default' : {
+        "selector" : "p1.selector"
+      },
       'p1' : {
         "selector" : "p1.selector",
         "type" : "text"
+      },
+      'p1-array' : {
+        "selector" : "p1-array.selector (string array)",
+        "type" : ["text"]
+      },
+      'p1-html-simple' : {
+        "selector" : "p1-html-simple.selector",
+        "type" : "html"
+      },
+      'p1-html-array' : {
+        "selector" : "p1-html-array.selector",
+        "type" : ["html"]
       },
       'p2' : {
         "selector" : "p2.selector",
@@ -54,12 +69,38 @@ export class AppComponent {
             "selector" : "C1.selector",
             "type" : "text"
           },
-
-        }
+        },
+      },
+      'p2-deep-blue' : {
+        "selector" : "p2.selector (deep blue)",
+        "type" : {
+          'C1' : {
+            "selector" : "C1.selector",
+            "type" : {
+                'D1' : {
+                  "selector" : "I am D1",
+                  "type" : {
+                    "E1" : {
+                      "selector" : "I am E1"
+                    }
+                  }
+                }
+            }
+          },
+        },
+      },
+      'p2-obj-list' : {
+        "selector" : "p2.selector obj list",
+        "type" : [{
+          'C1' : {
+            "selector" : "C1.selector",
+            "type" : "text"
+          }
+        }]
       }
     };
-    let doc:DocumentModel = DocumentParser.parseJSONString(JSON.stringify(obj));
-
-    console.log(doc);
+    this.doc = DocumentParser.parseJSONString(JSON.stringify(obj));
+    this.deselect();
+    this.nodes = [this.doc.getRootNode()];
   }
 }
