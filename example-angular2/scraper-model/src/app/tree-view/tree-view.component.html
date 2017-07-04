@@ -3,9 +3,14 @@
     <span
       *ngIf="node.hasChildren() && node.isComposite()"
       (click)="node.toggle()">
-      X
+      <span
+        *ngIf="! node.isExpanded()"
+      class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+      <span
+        *ngIf="node.isExpanded()"
+      class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
     </span>
-    <span (click)="nodeSelected(node)">{{ node.name }}</span>
+    <span class="node-label" (click)="nodeSelected(node)">{{ node.name }}</span>
     <span *ngIf="node.isSelected()">(s)</span>
     <div *ngIf="node.hasChildren() && node.isExpanded() && node.isComposite()">
       <tree-view

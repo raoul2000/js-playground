@@ -37,13 +37,13 @@
 
   <div class="">
     <button
-      class="btn btn-default"
+      class="btn btn-primary"
       (click)="addNode()"
       [disabled]="! node.isComposite()"
     >add Node</button>
 
     <button
-      class="btn btn-default"
+      class="btn btn-danger"
       (click)="deleteNode()"
       [disabled]=" node.isRootNode()"
     >delete</button>

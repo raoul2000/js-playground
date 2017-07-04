@@ -31,7 +31,7 @@ export class NodeModel {
 
   private parent?:NodeModel;
   private children: Array<NodeModel> = [];
-  private expanded: boolean = true;
+  private expanded: boolean = false;
   private selected: boolean = false;
 
   private selector:string;
@@ -65,7 +65,7 @@ export class NodeModel {
   }
   getList():boolean { return this.list;}
   setList(v:boolean) { this.list = v;}
-  
+
   getSelector(): string     { return this.selector; }
   setSelector(sel: string):NodeModel  {
     this.selector = sel;
