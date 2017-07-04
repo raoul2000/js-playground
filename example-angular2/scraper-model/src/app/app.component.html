@@ -1,20 +1,17 @@
-<h1>
-  {{title}}
-</h1>
-<p>
-  <tree-view
-    [nodes]="nodes"
-    (nodeSelectedEvent)="nodeSelected($event)"
-  ></tree-view>
-</p>
-<p>
-  <button (click)="deselect()">deselect</button>
-  <button (click)="parseJSONString()">parse JSON string</button>
-
-</p>
-<p>
-  <detail-view
-    [node]="selectedNode"
-  >
-  </detail-view>
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-4">
+      <tree-view
+      [nodes]="nodes"
+      (nodeSelectedEvent)="nodeSelected($event)"
+      ></tree-view>
+      <button class="btn btn-default" (click)="deselect()">deselect</button>
+      <button class="btn btn-default" (click)="parseJSONString()">parse JSON string</button>
+    </div>
+    <div class="col-lg-8">
+      <detail-view
+      [node]="selectedNode"
+      >  </detail-view>
+    </div>
+  </div>
+</div>

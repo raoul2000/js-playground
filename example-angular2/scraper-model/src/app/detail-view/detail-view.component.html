@@ -1,31 +1,51 @@
-<b>detail</b>
-<hr/>
 <div *ngIf="node">
   <div *ngIf="node.isRootNode() === false ">
 
-    <form (ngSubmit)="save(nodeForm.value)" #nodeForm="ngForm">
-      <div>
-        <label>name</label><input name="node.name" [(ngModel)]="node.name">
-        <label>selector</label><input name="node.selector" [(ngModel)]="node.selector"><br/>
+    <form
+      (ngSubmit)="save(nodeForm.value)"
+      #nodeForm="ngForm">
 
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input id="name" name="node.name" [(ngModel)]="node.name" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="selector">Selector:</label>
+        <input id="selector" name="node.selector" [(ngModel)]="node.selector" class="form-control">
+      </div>
+
+      <div class="form-group">
         <label for="type">type</label>
-        <select [(ngModel)]="node.type" name="node.type"  (change)="onChange($event.target.value)">
+        <select class="form-control"
+          name="node.type"
+          [(ngModel)]="node.type"
+          (change)="onChange($event.target.value)">
           <option *ngFor="let typeValue of typeValues; index as i" [ngValue]="i">{{typeValue}}</option>
         </select>
-        <label>list of values : </label><input type="checkbox" name="node.list" [(ngModel)]="node.list">
       </div>
+
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="node.list" [(ngModel)]="node.list">
+          list of values
+        </label>
+      </div>
+
     </form>
   </div>
 
   <div class="">
     <button
-    (click)="addNode()"
-    [disabled]="! node.isComposite()"
+      class="btn btn-default"
+      (click)="addNode()"
+      [disabled]="! node.isComposite()"
     >add Node</button>
 
     <button
-    (click)="deleteNode()"
-    [disabled]=" node.isRootNode()"
+      class="btn btn-default"
+      (click)="deleteNode()"
+      [disabled]=" node.isRootNode()"
     >delete</button>
   </div>
 </div>
