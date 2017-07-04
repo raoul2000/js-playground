@@ -10,8 +10,11 @@
         *ngIf="node.isExpanded()"
       class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
     </span>
-    <span class="node-label" (click)="nodeSelected(node)">{{ node.name }}</span>
-    <span *ngIf="node.isSelected()">(s)</span>
+    <span
+      [ngClass]="{ 'node-label' : true, 'node-selected' : node.isSelected() }"
+      (click)="nodeSelected(node)">
+      {{ node.name }}
+    </span>
     <div *ngIf="node.hasChildren() && node.isExpanded() && node.isComposite()">
       <tree-view
         [nodes]="node.getChildren()"

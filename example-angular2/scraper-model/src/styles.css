@@ -3,6 +3,7 @@ ul {
     list-style-type: none;
     cursor: pointer;
 }
+.node-selected,
 .node-label:hover {
   text-decoration: underline;
 }
