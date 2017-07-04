@@ -20,6 +20,9 @@ export class DocumentModel {
     return new NodeModel(name,this);
   }
   getRootNode(): NodeModel { return this.rootNode; }
+  select(node?:NodeModel) {
+    this.rootNode.select(node);
+  }
 
   equal(otherDocument:DocumentModel):boolean {
     return this.getId() === otherDocument.getId();
@@ -97,12 +100,17 @@ export class NodeModel {
   }
 
   isExpanded(): boolean { return this.expanded; }
+  setExpanded(expanded:boolean) { return this.expanded = expanded; }
   toggle(): void { this.expanded = !this.expanded; }
 
   isSelected(): boolean { return this.selected; }
-  select(node: NodeModel): void {
-    this.checkSameOwnerDocument(node);
-    this.selected = this.getId() === node.getId();
+  select(node?: NodeModel): void {
+    if( ! node ) {
+      this.selected = false;
+    } else {
+      this.checkSameOwnerDocument(node);
+      this.selected = this.getId() === node.getId();
+    }
     this.children.forEach(n => n.select(node));
   }
   /**

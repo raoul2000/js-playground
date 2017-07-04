@@ -31,7 +31,10 @@ export class DetailViewComponent implements OnInit {
   }
   addNode() {
     if(this.node) {
-      this.node.addChild( this.node.getOwnerDocument().createNode('new'));
+      let newNode = this.node.getOwnerDocument().createNode('new');
+      this.node.addChild(newNode);
+      this.node.getOwnerDocument().select(newNode);
+      newNode.getParent().setExpanded(true);
     }
   }
   deleteNode() {

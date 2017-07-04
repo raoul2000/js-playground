@@ -9,36 +9,36 @@ import { DocumentParser } from './service/doc-parser';
 })
 export class AppComponent {
   public nodes:Array<any>;
+  public doc:DocumentModel;
   private selectedNode: NodeModel;
 
   title = 'Scraper';
 
   constructor(){
-    let doc = new DocumentModel();
+    this.doc = new DocumentModel();
 
-    let root = doc.getRootNode();
+    let root = this.doc.getRootNode();
 
-    let child3 = doc.createNode("child3");
-    child3.addChild( doc.createNode("child 4"));
-    child3.addChild( doc.createNode("child 5"));
+    let child3 = this.doc.createNode("child3");
+    child3.addChild( this.doc.createNode("child 4"));
+    child3.addChild( this.doc.createNode("child 5"));
 
     root.addChild(child3);
 
-    root.addChild( doc.createNode("child1"));
-    root.addChild( doc.createNode("child2"));
-
-    this.nodes = [ root ];
+    root.addChild( this.doc.createNode("child1"));
+    root.addChild( this.doc.createNode("child2"));
+    this.nodes = [this.doc.getRootNode()];
   }
 
 
-  nodeSelected(node: NodeModel) {
+  nodeSelectedEvent(node: NodeModel) {
     this.selectedNode = node;
-    this.nodes.forEach(x => x.select(this.selectedNode));
+    this.doc.select(this.selectedNode);
   }
 
   deselect() {
     this.selectedNode = null;
-    this.nodes.forEach(x => x.deselect());
+    this.doc.select();
   }
 
   parseJSONString() {

@@ -3,7 +3,7 @@
     <div class="col-lg-4">
       <tree-view
       [nodes]="nodes"
-      (nodeSelectedEvent)="nodeSelected($event)"
+      (nodeSelectedEvent)="nodeSelectedEvent($event)"
       ></tree-view>
       <button class="btn btn-default" (click)="deselect()">deselect</button>
       <button class="btn btn-default" (click)="parseJSONString()">parse JSON string</button>
