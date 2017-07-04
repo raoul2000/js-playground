@@ -19,8 +19,7 @@
         <label for="type">type</label>
         <select class="form-control"
           name="node.type"
-          [(ngModel)]="node.type"
-          (change)="onChange($event.target.value)">
+          [(ngModel)]="node.type">
           <option *ngFor="let typeValue of typeValues; index as i" [ngValue]="i">{{typeValue}}</option>
         </select>
       </div>

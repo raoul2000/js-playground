@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NodeModel } from '../service/model';
 
 
@@ -7,14 +7,11 @@ import { NodeModel } from '../service/model';
   templateUrl: './tree-view.component.html',
   styleUrls: ['./tree-view.component.css']
 })
-export class TreeViewComponent implements OnInit {
+export class TreeViewComponent {
   @Input() nodes: Array<any>;
   @Output() nodeSelectedEvent = new EventEmitter<NodeModel>();
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   nodeSelected(node:NodeModel) {
     this.nodeSelectedEvent.emit(node);

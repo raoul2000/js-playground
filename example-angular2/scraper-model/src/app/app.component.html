@@ -10,7 +10,8 @@
     </div>
     <div class="col-lg-8">
       <detail-view
-      [node]="selectedNode"
+        [node]="selectedNode"
+        (nodeSelectedEvent)="nodeSelectedEvent($event)"
       >  </detail-view>
     </div>
   </div>
