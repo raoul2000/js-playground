@@ -68,3 +68,14 @@ Copy the `archive` folder and all its children recursively (but skip empty folde
 ```
 
 This will correctly handle backup, but specific mode must be changed manually in following tasks.
+
+## added bar task
+
+Select env, role and int to copy.
+
+```
+grunt mycopy:dev
+grunt mycopy:dev:editorial
+grunt mycopy:dev:editorial,archive
+grunt mycopy:dev:*:project-A,project-B
+```
