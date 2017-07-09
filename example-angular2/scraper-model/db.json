@@ -1,0 +1,9 @@
+{
+  "documents": [
+    {
+      "p0-default": {
+        "selector": "p > p0-default"
+      }
+    }
+  ]
+}
