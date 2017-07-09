@@ -8,6 +8,7 @@ export const enum NodeType {
 export class DocumentModel {
   private rootNode: NodeModel;
   private id: string;
+  private name:string;
 
   constructor() {
     this.id = UUID.UUID();
@@ -26,6 +27,12 @@ export class DocumentModel {
 
   equal(otherDocument:DocumentModel):boolean {
     return this.getId() === otherDocument.getId();
+  }
+  getName():string {
+    return this.name;
+  }
+  setName(name:string) {
+    this.name = name;
   }
 }
 
