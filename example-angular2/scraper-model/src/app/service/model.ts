@@ -7,11 +7,10 @@ export const enum NodeType {
 
 export class DocumentModel {
   private rootNode: NodeModel;
-  private id: string;
   private name:string;
 
-  constructor() {
-    this.id = UUID.UUID();
+  constructor(private id?:string) {
+    this.id = id || UUID.UUID();
     this.rootNode = new NodeModel('root',this);
     this.rootNode.setType(NodeType.composite);
   }

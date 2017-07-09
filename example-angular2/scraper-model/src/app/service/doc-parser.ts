@@ -2,9 +2,17 @@ import { DocumentModel, NodeModel, NodeType } from './model';
 
 export class DocumentParser {
 
-  public static  parseJSONString(json:string): DocumentModel {
-    let docResult:DocumentModel = new DocumentModel();
-    let obj:any = JSON.parse(json);
+  public static  parseJSONString(data:any): DocumentModel {
+
+    let obj = typeof data === 'object' ? data : JSON.parse(data);
+    let docInfo = obj['__document'];
+    let docResult:DocumentModel = docInfo
+      ? new DocumentModel(docInfo.id)
+      : new DocumentModel();
+    if(docInfo.name) {
+      docResult.setName(docInfo.name);
+    }
+
     DocumentParser.parseObject(
       obj,
       docResult.getRootNode()
@@ -19,7 +27,9 @@ export class DocumentParser {
   private static parseObject(obj:any, parentNode:NodeModel):void {
     console.log('processing object :',obj);
     let childrenKeys = [];
-    Object.keys(obj).forEach( propName => {
+    Object.keys(obj)
+    .filter( propName => propName !== '__document') // ignore document info node
+    .forEach( propName => {
       console.log('processing property :',propName);
         let propValue = obj[propName];
 

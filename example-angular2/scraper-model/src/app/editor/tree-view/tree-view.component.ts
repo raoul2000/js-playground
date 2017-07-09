@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NodeModel } from '../../service/model';
+import { NodeModel, DocumentModel } from '../../service/model';
 
 
 @Component({
@@ -8,6 +8,7 @@ import { NodeModel } from '../../service/model';
   styleUrls: ['./tree-view.component.css']
 })
 export class TreeViewComponent {
+  @Input() document: DocumentModel;
   @Input() nodes: Array<any>;
   @Output() nodeSelectedEvent = new EventEmitter<NodeModel>();
 

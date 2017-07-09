@@ -48,6 +48,10 @@ export class EditorComponent {
   }
   parseJSONString() {
     let obj = {
+      '__document' : {
+        'id' : "11223344",
+        'name' : "sample document"
+      },
       'p0-default' : {
         "selector" : "p1.selector"
       },
