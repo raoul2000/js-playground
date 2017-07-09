@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NodeModel } from '../service/model';
+import { NodeModel } from '../../service/model';
 
 
 @Component({

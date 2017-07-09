@@ -4,14 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { TreeViewComponent } from './tree-view/tree-view.component';
-import { DetailViewComponent } from './detail-view/detail-view.component';
+import { TreeViewComponent } from './editor/tree-view/tree-view.component';
+import { DetailViewComponent } from './editor/detail-view/detail-view.component';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TreeViewComponent,
-    DetailViewComponent
+    DetailViewComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

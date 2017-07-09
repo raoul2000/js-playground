@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-4">
+      <tree-view
+      [nodes]="nodes"
+      (nodeSelectedEvent)="nodeSelectedEvent($event)"
+      ></tree-view>
+      <button class="btn btn-default" (click)="deselect()">deselect</button>
+      <button class="btn btn-default" (click)="parseJSONString()">parse JSON string</button>
+      <button class="btn btn-default" (click)="serialize()">serialize</button>
+    </div>
+    <div class="col-lg-8">
+      <detail-view
+        [node]="selectedNode"
+        (nodeSelectedEvent)="nodeSelectedEvent($event)"
+      >  </detail-view>
+    </div>
+  </div>
+</div>

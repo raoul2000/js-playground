@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { NodeModel, NodeType } from '../service/model';
+import { NodeModel, NodeType } from '../../service/model';
 
 @Component({
   selector: 'detail-view',
