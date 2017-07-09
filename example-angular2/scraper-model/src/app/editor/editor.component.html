@@ -5,11 +5,10 @@
         <li>doc ID = {{doc.getId()}}</li>
         <li>doc name = {{doc.getName()}}</li>
       </ul>
-      doc name = {{doc.getName()}}
+      <hr/>
       <tree-view
-      [document]="doc"
-      [nodes]="nodes"
-      (nodeSelectedEvent)="nodeSelectedEvent($event)"
+        [nodes]="nodes"
+        (nodeSelectedEvent)="nodeSelectedEvent($event)"
       ></tree-view>
       <button class="btn btn-default" (click)="deselect()">deselect</button>
       <button class="btn btn-default" (click)="parseJSONString()">parse JSON string</button>

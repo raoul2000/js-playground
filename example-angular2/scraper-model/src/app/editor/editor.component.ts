@@ -28,7 +28,7 @@ export class EditorComponent {
 
     root.addChild( this.doc.createNode("child1"));
     root.addChild( this.doc.createNode("child2"));
-    this.nodes = [this.doc.getRootNode()];
+    this.nodes = [this.doc.getRootNode().getChildren()];
   }
 
 

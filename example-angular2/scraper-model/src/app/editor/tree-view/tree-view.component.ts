@@ -8,7 +8,6 @@ import { NodeModel, DocumentModel } from '../../service/model';
   styleUrls: ['./tree-view.component.css']
 })
 export class TreeViewComponent {
-  @Input() document: DocumentModel;
   @Input() nodes: Array<any>;
   @Output() nodeSelectedEvent = new EventEmitter<NodeModel>();
 
