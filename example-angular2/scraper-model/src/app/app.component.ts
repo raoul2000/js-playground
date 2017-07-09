@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NodeModel, DocumentModel } from './service/model';
 import { DocumentParser } from './service/doc-parser';
+import { DocumentSerializer } from './service/doc-serializer';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +42,10 @@ export class AppComponent {
     this.doc.select();
   }
 
+  serialize() {
+    let obj = DocumentSerializer.serializeToJSON(this.doc);
+    console.log(obj);
+  }
   parseJSONString() {
     let obj = {
       'p0-default' : {

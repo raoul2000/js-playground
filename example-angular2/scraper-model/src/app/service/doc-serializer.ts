@@ -3,32 +3,40 @@ import { DocumentModel, NodeModel, NodeType } from './model';
 export class DocumentSerializer {
 
   public static serializeToJSON(doc:DocumentModel):any {
-    let obj = {};
-    DocumentSerializer.serializeObject(
-      doc.getRootNode().getChildren(),
-      obj
+    return DocumentSerializer.serializeObject(
+      doc.getRootNode().getChildren()
     );
-    return obj;
   }
 
-  private static serializeObject(nodes:NodeModel[],obj:any):any {
-
+  private static serializeObject(nodes:NodeModel[]):any {
+    let obj = {};
     nodes.forEach(node => {
       obj[node.getName()] = {
         'selector' : node.getSelector(),
         'type' : DocumentSerializer.serializeType(node)
       };
     });
+    return obj;
   }
 
   private static serializeType(node:NodeModel):any {
     let nodeType = 'text';
+
     if(node.getType() === NodeType.text) {
         nodeType = 'text';
     } else if(node.getType() === NodeType.html) {
       nodeType = 'html';
     } else if(node.getType() === NodeType.composite) {
-      nodeType = DocumentSerializer.serializeObject();
+      nodeType = DocumentSerializer.serializeObject(
+        node.getChildren()
+      );
+    } else {
+      throw new Error("invalid value type : "+node.getType());
+    }
+    if( node.getList() === true) {
+      return  [nodeType];
+    } else {
+      return nodeType;
     }
   }
 }
