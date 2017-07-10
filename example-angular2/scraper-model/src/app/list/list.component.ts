@@ -8,7 +8,7 @@ import { ScraperDataService } from '../service/scraper-data'
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  items:Array<DocumentModel> = [];
+  public items:Array<DocumentModel> = [];
 
   constructor(private api:ScraperDataService) { }
 

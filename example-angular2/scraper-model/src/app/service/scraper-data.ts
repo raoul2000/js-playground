@@ -6,8 +6,6 @@ import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
 
-
-
 @Injectable()
 export class ScraperDataService {
 
@@ -21,7 +19,7 @@ export class ScraperDataService {
       console.log(json);
       return json.map( doc => {
         console.log("processing item : ", doc)
-         return DocumentParser.parseJSONString(JSON.stringify(doc));
+         return DocumentParser.parseJSONString(doc);
       });
     });
   }

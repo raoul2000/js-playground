@@ -1,8 +1,27 @@
 {
   "documents": [
     {
+      "__document": {
+        "id": "id1",
+        "name": "doc name"
+      },
       "p0-default": {
         "selector": "p > p0-default"
+      }
+    },
+    {
+      "__document": {
+        "id": "id2",
+        "name": "doc name (2)"
+      },
+      "p0-default": {
+        "selector": "p > p0-default"
+      },
+      "p1": {
+        "selector": "p",
+        "type": [
+          "text"
+        ]
       }
     }
   ]
