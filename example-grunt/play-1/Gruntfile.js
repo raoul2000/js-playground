@@ -14,7 +14,8 @@ let reservedFolderNames = [
 module.exports = function(grunt) {
 
   // define path variables
-  var currentWorkingDir = process.cwd().replace(/\\/g, '/');
+  //var currentWorkingDir = process.cwd().replace(/\\/g, '/');
+  var currentWorkingDir =  path.posix.normalize(process.cwd());
   grunt.verbose.ok("currentWorkingDir : " + currentWorkingDir);
 
   //var projectBaseDir = path.posix.normalize(path.posix.join(currentWorkingDir, '../..'));
@@ -69,7 +70,6 @@ module.exports = function(grunt) {
         .map( x => x.trim())
         .join('|');
     };
-
     env  = normalizeArgList(env);
     role = normalizeArgList(role);
     int  = normalizeArgList(int);
