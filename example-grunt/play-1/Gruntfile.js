@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const utils = require('./tasks/utils.js');
-
+const mcopy = require('./tasks/mip-copy.js');
 
 let reservedFolderNames = [
   'node_modules',
@@ -39,11 +39,6 @@ module.exports = function(grunt) {
     },
     noduplicate: {
       all: {}
-    },
-    'mycopy': {
-      'options': {
-        "opt1": "val1"
-      }
     }
   });
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -52,70 +47,9 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('noduplicate', 'no dup.', function() {
     utils.validateNoDuplicate(grunt);
   });
-  grunt.registerTask('mycopy', 'copy source files', function(env, role, int) {
-
-    role = role || '*';
-    int = int || '*';
-    if( ! env ) {
-      grunt.fail.fatal("missing ENV argument");
-    }
-    grunt.log.ok("Environment : "+env);
-    grunt.log.ok("Role        : "+role);
-    grunt.log.ok("Integration : "+int);
-
-    // normalize arguments
-    let normalizeArgList = function(arg) {
-      return arg.split(',')
-        .filter( x => x && x.trim().length !== 0)
-        .map( x => x.trim())
-        .join('|');
-    };
-    env  = normalizeArgList(env);
-    role = normalizeArgList(role);
-    int  = normalizeArgList(int);
-
-    // create src files glob patterns
-    let srcRole = `+(${int})/server/+(${role})/**/!(*@dev|*@qa|*@prod)`;
-    //grunt.log.writeln("srcRole = "+srcRole);
-
-    let srcEnv  = `+(${int})/server/+(${role})/**/*@(${env})`;
-    //grunt.log.writeln("srcEnv = "+srcEnv);
-
-    // rename file function
-    var rename = function(dest, src) {
-      //console.log("dest", dest);
-      //console.log("src", src);
-      var parts = src.split('/');
-      var destFilename = dest.concat(parts.slice(2).join('/'))
-        .replace(/(@dev|@qa|@prod)$/, '');
-      grunt.log.writeln(destFilename);
-
-      return destFilename;
-      // return dest.concat(src.split('/').slice(2).join('/')).replace(/(@dev|@qa|@prod)$/,'')
-    };
-
-    // config the copy task
-    grunt.config('copy', {
-      roleFile: {
-        expand: true,
-        src: srcRole,
-        dest: 'build/',
-        rename : rename
-      },
-      envFile: {
-        expand: true,
-        src: srcEnv,
-        dest: 'build/',
-        rename : rename
-      }
-    });
-
-    //grunt.task.run('clean:all', 'copy:roleFile');
-
-    // run the tasks
-    grunt.task.run('clean:all',  'copy:roleFile', 'copy:envFile');
+  grunt.registerTask('mcopy', 'copy source files', function(env, role, int) {
+    mcopy.run(grunt,env, role, int);
   });
-
 
 
 
