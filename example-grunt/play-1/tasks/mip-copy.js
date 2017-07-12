@@ -1,18 +1,23 @@
 
+const FILTER_NO = 1;
+const FILTER_SRC_ONLY = 2;
+const FILTER_ENV_ONLY = 3;
 
-exports.run = function(grunt, env, role, int) {
+exports.run = function(grunt, destFolder, env, role, int, filter) {
 
-    const fs = require('fs');
+    const fs   = require('fs');
     const path = require('path');
 
+    filter = filter || FILTER_NO;
     role = role || '*';
-    int = int || '*';
+    int  = int  || '*';
     if( ! env ) {
       grunt.fail.fatal("missing ENV argument");
     }
     grunt.log.ok("Environment : "+env);
     grunt.log.ok("Role        : "+role);
     grunt.log.ok("Integration : "+int);
+    grunt.log.ok("Filter      : "+filter);
 
     // normalize arguments
     let normalizeArgList = function(arg) {
@@ -21,16 +26,11 @@ exports.run = function(grunt, env, role, int) {
         .map( x => x.trim())
         .join('|');
     };
-    env  = normalizeArgList(env);
+    // ENV does not support value list
+    //env  = normalizeArgList(env);
+
     role = normalizeArgList(role);
     int  = normalizeArgList(int);
-
-    // create src files glob patterns
-    let srcRole = `+(${int})/server/+(${role})/**/!(*@dev|*@qa|*@prod)`;
-    //grunt.log.writeln("srcRole = "+srcRole);
-
-    let srcEnv  = `+(${int})/server/+(${role})/**/*@(${env})`;
-    //grunt.log.writeln("srcEnv = "+srcEnv);
 
     // rename file function
     var rename = function(dest, src) {
@@ -38,29 +38,46 @@ exports.run = function(grunt, env, role, int) {
       //console.log("src", src);
       var parts = src.split('/');
       var destFilename = dest.concat(parts.slice(2).join('/'))
-        .replace(/(@dev|@qa|@prod)$/, '');
-      grunt.log.writeln(destFilename);
-
+        .replace(/\/@(dev|qa|prod)\./, '/');
+      grunt.verbose.ok("destFilename = "+destFilename);
+      //grunt.log.writeln(destFilename);
       return destFilename;
-      // return dest.concat(src.split('/').slice(2).join('/')).replace(/(@dev|@qa|@prod)$/,'')
     };
 
+
+    // create src files glob patterns
+    let fileSrc = `+(${int})/src/+(${role})/**/!(@dev\.*|@qa\.*|@prod\.*)`;
+    //grunt.log.writeln("fileSrc = "+fileSrc);
+
+    let fileEnv  = `+(${int})/src/+(${role})/**/@+(${env})\.*`;
+    //grunt.log.writeln("fileEnv = "+fileEnv);
+
+    let copyTasksConfig = {};
+    let copyTasksList = [];
+    if( filter === FILTER_NO || filter === FILTER_SRC_ONLY) {
+      copyTasksConfig.fileSrc = {
+        expand: true,
+        src: fileSrc,
+        dest: `${destFolder}/`,
+        rename : rename
+      };
+      copyTasksList.push("copy:fileSrc");
+    }
+
+    if( filter === FILTER_NO || filter === FILTER_ENV_ONLY) {
+      copyTasksConfig.fileEnv = {
+        expand: true,
+        src: fileEnv,
+        dest: `${destFolder}/`,
+        rename : rename
+      };
+      copyTasksList.push("copy:fileEnv");
+    }
+
+    //console.log(copyTasksConfig);
     // config the copy task
-    grunt.config('copy', {
-      roleFile: {
-        expand: true,
-        src: srcRole,
-        dest: 'build/',
-        rename : rename
-      },
-      envFile: {
-        expand: true,
-        src: srcEnv,
-        dest: 'build/',
-        rename : rename
-      }
-    });
+    grunt.config('copy',copyTasksConfig);
     // run the tasks
-    grunt.task.run('clean:all',  'copy:roleFile', 'copy:envFile');
+    grunt.task.run(copyTasksList);
 
 };
