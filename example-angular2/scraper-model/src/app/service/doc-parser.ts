@@ -17,6 +17,7 @@ export class DocumentParser {
       obj,
       docResult.getRootNode()
     );
+    console.log("DocumentModel result : ",docResult);
     return docResult;
   }
   //

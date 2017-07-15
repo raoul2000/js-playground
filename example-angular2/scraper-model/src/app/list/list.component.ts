@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NodeModel, DocumentModel } from '../service/model';
 import { ScraperDataService } from '../service/scraper-data'
 
@@ -10,7 +11,10 @@ import { ScraperDataService } from '../service/scraper-data'
 export class ListComponent implements OnInit {
   public items:Array<DocumentModel> = [];
 
-  constructor(private api:ScraperDataService) { }
+  constructor(
+    private api:ScraperDataService,
+    private router:Router
+  ) { }
 
   ngOnInit() {
     this.api.list()
@@ -23,4 +27,9 @@ export class ListComponent implements OnInit {
 
   }
 
+  editModel(model:DocumentModel) {
+    console.log('editModel', model);
+    this.api.selectedDoc = model;
+    this.router.navigate(['/editor']);
+  }
 }

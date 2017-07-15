@@ -4,6 +4,6 @@ import { ListComponent } from './list/list.component';
 
 
 export const ROUTES: Routes = [
-  { path: '', component: ListComponent },
+  { path: '',       component: ListComponent },
   { path: 'editor', component: EditorComponent }
 ];

@@ -9,6 +9,9 @@
         </thead>
         <tr *ngFor="let item of items">
           <td title="id:{{item.id}}">{{item.name}}</td>
+          <td>
+            <button type="button" (click)="editModel(item)">edit</button>
+          </td>
         </tr>
       </table>
     </div>

@@ -9,6 +9,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ScraperDataService {
 
+  public selectedDoc:DocumentModel = null;
+  
   constructor(private http: Http) {
   }
 
@@ -23,4 +25,5 @@ export class ScraperDataService {
       });
     });
   }
+
 }

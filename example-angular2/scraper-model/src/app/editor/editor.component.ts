@@ -1,36 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NodeModel, DocumentModel } from '../service/model';
 import { DocumentParser } from '../service/doc-parser';
 import { DocumentSerializer } from '../service/doc-serializer';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ScraperDataService } from '../service/scraper-data'
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
-export class EditorComponent {
+export class EditorComponent implements OnInit {
   public nodes:Array<any>;
   public doc:DocumentModel;
   private selectedNode: NodeModel;
 
   title = 'Scraper';
 
-  constructor(){
-    this.doc = new DocumentModel();
+  constructor(
+    private api:ScraperDataService,
+    private route: ActivatedRoute
+  ){}
 
-    let root = this.doc.getRootNode();
-
-    let child3 = this.doc.createNode("child3");
-    child3.addChild( this.doc.createNode("child 4"));
-    child3.addChild( this.doc.createNode("child 5"));
-
-    root.addChild(child3);
-
-    root.addChild( this.doc.createNode("child1"));
-    root.addChild( this.doc.createNode("child2"));
-    this.nodes = [this.doc.getRootNode().getChildren()];
+  ngOnInit() {
+    if(this.api.selectedDoc) {
+      console.log('ngOnInit',this.api.selectedDoc);
+      this.doc = this.api.selectedDoc;
+      this.nodes =  [this.doc.getRootNode()];
+    }
   }
-
 
   nodeSelectedEvent(node: NodeModel) {
     this.selectedNode = node;
