@@ -21,7 +21,7 @@ export class ScraperDataService {
     var enableCache = false;
     //if( this.cache ) {
 
-    if( enableCache ) {
+    if( enableCache && this.cache ) {
 
       return Observable.create(observer => {
         observer.onNext(this.cache);
