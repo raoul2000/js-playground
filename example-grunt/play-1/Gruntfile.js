@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('./tasks/utils.js');
 const mcopy = require('./tasks/mip-copy.js');
+const ansible = require('./tasks/ansible-3.js');
 
 let reservedFolderNames = [
   'node_modules',
@@ -34,11 +35,16 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
+    pkg : grunt.file.readJSON('package.json'),
     clean: {
       all: ['build/*']
     },
     noduplicate: {
       all: {}
+    },
+    playbook : {
+      'buildDir' : buildDir,
+      'targetFolderPath' : '/target/path'
     }
   });
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -47,8 +53,12 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('noduplicate', 'no dup.', function() {
     utils.validateNoDuplicate(grunt);
   });
-  grunt.registerTask('mcopy', 'copy source files', function(env, role, int) {
-    mcopy.run(grunt,env, role, int);
+  grunt.registerTask('mcopy', 'copy source files', function(env, role) {
+    mcopy.run(grunt,env, role);
+  });
+
+  grunt.registerTask('playbook', 'create ansible playbook', function(role, int) {
+     ansible.createPlaybook(this.name, grunt, role, int);
   });
 
 
