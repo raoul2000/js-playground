@@ -9,7 +9,7 @@ import { ScraperDataService } from '../service/scraper-data'
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  public items:Array<DocumentModel> = [];
+  public items:Array<DocumentModel> = null;
 
   constructor(
     private api:ScraperDataService,
@@ -17,10 +17,12 @@ export class ListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.api.list()
-    .subscribe( docList => {
-      this.items = docList;
-    });
+    if( this.items === null ) {
+      this.api.list()
+      .subscribe( docList => {
+        this.items = docList;
+      });      
+    }
   }
 
   loadDocumentList() {
