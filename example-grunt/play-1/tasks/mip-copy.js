@@ -1,13 +1,29 @@
 
+const fs   = require('fs');
+const path = require('path');
+
 const FILTER_NO = 1;
 const FILTER_SRC_ONLY = 2;
 const FILTER_ENV_ONLY = 3;
 
+let mapCache = {};
+
+function applyMapping(mapName,project,role,filePath) {
+  if( ! mapName ) {
+    return filePath;
+  }
+  /*
+  path.join(project,"server",role+'.map');
+  if( fs.existsSync(path) )
+*/
+}
+
 exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
 
-    const fs   = require('fs');
-    const path = require('path');
 
+
+
+    let mapCache = {};
     filter = filter || FILTER_NO;
     role = role || '*';
     int  = int  || '*';
@@ -32,16 +48,37 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
 
     role = normalizeArgList(role);
     int  = normalizeArgList(int);
+    let pathRe = new RegExp(/^(.*?)\/server\/(.*?)\/(.*)/);
 
     // rename file function
     var rename = function(dest, src) {
-      console.log("dest", dest);
-      console.log("src", src);
+      console.log("dest", dest);  // ex :  C:\dev\ws\lab\js-playground\example-grunt\play-1/build/
+      console.log("src", src);  // ex :  project-A/server/archive/config/config-A.txt
+      let matches = pathRe.exec(src);
+      console.log(matches);
+
+      let project = matches[1]; // ex : project-A
+      let role = matches[1];    // ex : archive
+      let filePath = matches[1];  // ex : config/config-A.txt
+
+      filePath = applyMapping(mapName,project,role,filePath);
+
       var parts = src.split('/');
       var destFilename = dest.concat(parts.slice(2).join('/'))
         .replace(/\/@(dev|qa|prod)\./, '/');
       grunt.verbose.ok("destFilename = "+destFilename);
-      grunt.log.writeln(destFilename);
+      grunt.log.writeln(destFilename); // ex : C:\dev\ws\lab\js-playground\example-grunt\play-1/build/archive/config
+      return destFilename;
+    };
+
+    var rename_orig = function(dest, src) {
+      console.log("dest", dest);  // ex :  C:\dev\ws\lab\js-playground\example-grunt\play-1/build/
+      console.log("src", src);  // ex :  project-A/server/archive/config
+      var parts = src.split('/');
+      var destFilename = dest.concat(parts.slice(2).join('/'))
+        .replace(/\/@(dev|qa|prod)\./, '/');
+      grunt.verbose.ok("destFilename = "+destFilename);
+      grunt.log.writeln(destFilename); // ex : C:\dev\ws\lab\js-playground\example-grunt\play-1/build/archive/config
       return destFilename;
     };
 
