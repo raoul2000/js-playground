@@ -3,7 +3,7 @@ const FILTER_NO = 1;
 const FILTER_SRC_ONLY = 2;
 const FILTER_ENV_ONLY = 3;
 
-exports.run = function(grunt, destFolder, env, role, int, filter) {
+exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
 
     const fs   = require('fs');
     const path = require('path');
@@ -18,6 +18,7 @@ exports.run = function(grunt, destFolder, env, role, int, filter) {
     grunt.log.ok("Role        : "+role);
     grunt.log.ok("Integration : "+int);
     grunt.log.ok("Filter      : "+filter);
+    grunt.log.ok("map Name    : "+ (mapName ? mapName : "(no map)"));
 
     // normalize arguments
     let normalizeArgList = function(arg) {
@@ -34,30 +35,22 @@ exports.run = function(grunt, destFolder, env, role, int, filter) {
 
     // rename file function
     var rename = function(dest, src) {
-      //console.log("dest", dest);
-      //console.log("src", src);
+      console.log("dest", dest);
+      console.log("src", src);
       var parts = src.split('/');
       var destFilename = dest.concat(parts.slice(2).join('/'))
         .replace(/\/@(dev|qa|prod)\./, '/');
       grunt.verbose.ok("destFilename = "+destFilename);
-      //grunt.log.writeln(destFilename);
+      grunt.log.writeln(destFilename);
       return destFilename;
     };
-
-
-    // create src files glob patterns
-    let fileSrc = `+(${int})/src/+(${role})/**/!(@dev\.*|@qa\.*|@prod\.*)`;
-    //grunt.log.writeln("fileSrc = "+fileSrc);
-
-    let fileEnv  = `+(${int})/src/+(${role})/**/@+(${env})\.*`;
-    //grunt.log.writeln("fileEnv = "+fileEnv);
 
     let copyTasksConfig = {};
     let copyTasksList = [];
     if( filter === FILTER_NO || filter === FILTER_SRC_ONLY) {
       copyTasksConfig.fileSrc = {
         expand: true,
-        src: fileSrc,
+        src: `+(${int})/server/+(${role})/**/!(@dev\.*|@qa\.*|@prod\.*)`,
         dest: `${destFolder}/`,
         rename : rename
       };
@@ -67,17 +60,14 @@ exports.run = function(grunt, destFolder, env, role, int, filter) {
     if( filter === FILTER_NO || filter === FILTER_ENV_ONLY) {
       copyTasksConfig.fileEnv = {
         expand: true,
-        src: fileEnv,
+        src: `+(${int})/server/+(${role})/**/@+(${env})\.*`,
         dest: `${destFolder}/`,
         rename : rename
       };
       copyTasksList.push("copy:fileEnv");
     }
-
-    //console.log(copyTasksConfig);
     // config the copy task
     grunt.config('copy',copyTasksConfig);
     // run the tasks
     grunt.task.run(copyTasksList);
-
 };

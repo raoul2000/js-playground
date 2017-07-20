@@ -45,6 +45,9 @@ module.exports = function(grunt) {
     playbook : {
       'buildDir' : buildDir,
       'targetFolderPath' : '/target/path'
+    },
+    mcopy : {
+      'buildDir' : buildDir
     }
   });
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -53,8 +56,13 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('noduplicate', 'no dup.', function() {
     utils.validateNoDuplicate(grunt);
   });
-  grunt.registerTask('mcopy', 'copy source files', function(env, role) {
-    mcopy.run(grunt,env, role);
+  grunt.registerTask('mcopy', 'copy source files', function(env, role, int) {
+    var mapName = grunt.option('map');
+    console.log('mapName = ', mapName);
+
+    grunt.config.requires('mcopy.buildDir');
+	  let buildDir = grunt.config('mcopy.buildDir'); // must exist
+	  mcopy.run(grunt,buildDir, env, role, int,0);		// add filter = 3 : env files only
   });
 
   grunt.registerTask('playbook', 'create ansible playbook', function(role, int) {
