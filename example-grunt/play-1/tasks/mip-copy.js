@@ -25,8 +25,8 @@ function applyMapping(grunt, mapName,project,role,filePath) {
     }
 
     // could we find a map with a matching key ?
-    if( map && map.hasOwnProperty(filePath)){
-        mappedValue = map[filePath];
+    if( map && map[role] && map[role].hasOwnProperty(filePath)){
+        mappedValue = map[role][filePath];
         grunt.verbose.ok("MAP:: mapping applied to "+filePath+" : "+mappedValue);
     }
   }
@@ -75,15 +75,19 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
       return destFilename;
     };
 
-    var rename_orig = function(dest, src) {
-      grunt.verbose.ok("dest", dest);  // ex :  C:\dev\ws\lab\js-playground\example-grunt\play-1/build/
-      grunt.verbose.ok("src", src);  // ex :  project-A/server/archive/config
-      var parts = src.split('/');
-      var destFilename = dest.concat(parts.slice(2).join('/'))
-        .replace(/\/@(dev|qa|prod)\./, '/');
-      grunt.verbose.ok("destFilename = "+destFilename);
-      grunt.log.writeln(destFilename); // ex : C:\dev\ws\lab\js-playground\example-grunt\play-1/build/archive/config
-      return destFilename;
+    var noOverwrite = function (src) {
+      src = src.replace(/\\/g, "/");
+      grunt.verbose.ok('noOverwrite:: check file exist : '+src);
+            // Construct the destination file path.
+      let matches =  pathRe.exec(src);
+      console.log(matches);
+      let [, project, role, filePath] = matches;
+
+      var dest = path.join(destFolder,role,filePath);
+      grunt.verbose.ok('check file exist : '+dest);
+      // Return false if the file exists.
+
+      //return !(grunt.file.exists(dest));
     };
 
     ////////////////////////////////////////////////////////////////////////////
@@ -94,7 +98,8 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
         expand: true,
         src: `+(${int})/server/+(${role})/**/!(@dev\.*|@qa\.*|@prod\.*)`,
         dest: `${destFolder}/`,
-        rename : rename
+        rename : rename,
+        filter : noOverwrite
       };
       copyTasksList.push("copy:fileSrc");
     }
