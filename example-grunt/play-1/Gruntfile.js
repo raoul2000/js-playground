@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 
     grunt.config.requires('mcopy.buildDir');
 	  let buildDir = grunt.config('mcopy.buildDir'); // must exist
-	  mcopy.run(grunt,buildDir, env, role, int,0);		// add filter = 3 : env files only
+	  mcopy.run(grunt,buildDir, env, role, int,0, mapName);		// add filter = 3 : env files only
   });
 
   grunt.registerTask('playbook', 'create ansible playbook', function(role, int) {

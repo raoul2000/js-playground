@@ -1,0 +1,4 @@
+{
+  "config/duplicate.txt" : "another_config/duplicate.txt",
+  "config/@dev.env-cfg.xml" : "another_config/@dev.env-cfg.xml"
+}
