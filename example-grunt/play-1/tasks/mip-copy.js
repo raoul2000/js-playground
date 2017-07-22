@@ -61,6 +61,8 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
     role = normalizeArgList(role);
     int  = normalizeArgList(int);
     let pathRe = new RegExp(/^(.*?)\/server\/(.*?)\/(.*)/);
+    let copiedFiles = {};
+    let record;
 
     // rename file function
     var rename = function(dest, src) {
@@ -68,26 +70,40 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
       //grunt.verbose.ok("src", src);  // ex :  project-A/server/archive/config/config-A.txt
 
       let [, project, role, filePath] = pathRe.exec(src);
-      filePath = applyMapping(grunt, mapName,project,role,filePath);
+      let mappedFilePath = applyMapping(grunt, mapName,project,role,filePath);
 
-      var destFilename = path.join(dest,role,filePath.replace(/\/@(dev|qa|prod)\./, '/'));
+      var destFilename = path.join(dest,role,mappedFilePath.replace(/\/@(dev|qa|prod)\./, '/'));
       grunt.verbose.ok("destFilename = "+destFilename); // ex : C:\dev\ws\lab\js-playground\example-grunt\play-1/build/archive/config
+
+      record = [path.posix.join(project, role,filePath)];
+      if( mapName && filePath !== mappedFilePath) {
+        record.push('(mapped by "'+mapName+'" to '+ path.posix.join(project,role,mappedFilePath)+')');
+      }
+
+      if( grunt.file.isFile(destFilename) && copiedFiles.hasOwnProperty(destFilename)) {
+        grunt.log.warn(" => ",copiedFiles[destFilename].join(' '));
+        grunt.log.warn(" => ",record.join(' '));
+        grunt.fail.fatal('duplicate file found');
+      } else {
+        copiedFiles[destFilename] = record;
+      }
       return destFilename;
     };
 
     var noOverwrite = function (src) {
       src = src.replace(/\\/g, "/");
       grunt.verbose.ok('noOverwrite:: check file exist : '+src);
-            // Construct the destination file path.
-      let matches =  pathRe.exec(src);
-      console.log(matches);
-      let [, project, role, filePath] = matches;
+      // Construct the destination file path.
+      let [, project, role, filePath] = pathRe.exec(src);
 
       var dest = path.join(destFolder,role,filePath);
       grunt.verbose.ok('check file exist : '+dest);
-      // Return false if the file exists.
-
-      //return !(grunt.file.exists(dest));
+      if( grunt.file.isFile(dest) &&  grunt.file.exists(dest)){
+        grunt.fail.fatal("duplicate file found : "+src);
+        return false;
+      } else {
+        return true;
+      }
     };
 
     ////////////////////////////////////////////////////////////////////////////
@@ -98,8 +114,7 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
         expand: true,
         src: `+(${int})/server/+(${role})/**/!(@dev\.*|@qa\.*|@prod\.*)`,
         dest: `${destFolder}/`,
-        rename : rename,
-        filter : noOverwrite
+        rename : rename
       };
       copyTasksList.push("copy:fileSrc");
     }
