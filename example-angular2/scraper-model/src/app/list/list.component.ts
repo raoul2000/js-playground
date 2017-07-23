@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NodeModel, DocumentModel } from '../service/model';
 import { ScraperDataService } from '../service/scraper-data'
+import { DocumentCloner } from '../service/doc-cloner';
 
 @Component({
   selector: 'app-list',
@@ -21,7 +22,7 @@ export class ListComponent implements OnInit {
       this.api.list()
       .subscribe( docList => {
         this.items = docList;
-      });      
+      });
     }
   }
 
@@ -31,7 +32,7 @@ export class ListComponent implements OnInit {
 
   editModel(model:DocumentModel) {
     console.log('editModel', model);
-    this.api.selectedDoc = model;
+    this.api.selectedDoc = DocumentCloner.clone(model);
     this.router.navigate(['/editor']);
   }
 }
