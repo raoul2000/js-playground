@@ -1,4 +1,3 @@
-
 const fs   = require('fs');
 const path = require('path');
 
@@ -8,9 +7,36 @@ const FILTER_ENV_ONLY = 3;
 
 let mapCache = {};
 
+/**
+ * Returns the map object for the given parameters.
+ * If 'mapName' is a file path, the map is loaded and used for all projects/roles. It is
+ * called a global map. A relative path is assumed to be relative to the grunt file location.
+ * Otherwise, the file 'map-{mapName}.json' is searched for the given project/role.
+ * Note that an internal cache is used to avoid loading mulitple times the same
+ * map file.
+ *
+ * @param  {object} grunt   the grunt object
+ * @param  {string} mapName name or path to the map file
+ * @param  {string} project project name
+ * @param  {string} role    role name
+ * @return {object|null}    the map object
+ */
 function getMap(grunt, mapName, project, role) {
   let map;
-  let mapFilePath = path.join(project,"server",`map-${mapName}.json`);
+  let mapFilePath;
+
+  if( mapCache.hasOwnProperty(mapName)) {
+    // mapName is the path to the map file and it has been already loaded in the
+    // cache
+    map = mapCache[mapName];
+    mapFilePath = mapName;
+  } else {
+    if( grunt.file.isFile(mapName) && grunt.file.exists(mapName)) {
+      mapFilePath = mapName;
+    } else {
+      mapFilePath = path.join(project,"server",`map-${mapName}.json`);
+    }
+  }
 
   // load the map from cache or from file
   if( mapCache.hasOwnProperty(mapFilePath)) {
@@ -21,10 +47,25 @@ function getMap(grunt, mapName, project, role) {
     mapCache[mapFilePath] = map;
   } else {
     mapCache[mapFilePath] = false;
+    grunt.verbose.ok('MAP:: no map found for mapName = '+mapName);
   }
   return (map ? map[role] : null);
 }
 
+/**
+ * Convert a filePath into another filePath using a map. If no map is found
+ * this function is identity.
+ * The map is loaded by function getMap.
+ * When a map is found, it first search for an exact match with 'filePath'. If no
+ * match is found, the configured functions (fn:replace) is applied.
+ *
+ * @param  {object} grunt    the grunt object
+ * @param  {string|null} mapName  the map name to use or null if no map is to be used
+ * @param  {string} project  the project name
+ * @param  {string} role     the role name
+ * @param  {string} filePath the file path to convert
+ * @return {string}          the converted file path
+ */
 function applyMapping(grunt, mapName,project,role,filePath) {
   //grunt.verbose.ok('MAP:: '+filePath);
 
