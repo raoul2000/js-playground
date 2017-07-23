@@ -31,6 +31,8 @@ export class DocumentSerializer {
         nodeType = 'text';
     } else if(node.getType() === NodeType.html) {
       nodeType = 'html';
+    } else if(node.getType() === NodeType.attribute) {
+      nodeType = '@'+node.getAttrName();
     } else if(node.getType() === NodeType.composite) {
       nodeType = DocumentSerializer.serializeObject(
         node.getChildren()

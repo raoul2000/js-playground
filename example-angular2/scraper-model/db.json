@@ -7,6 +7,10 @@
       },
       "p0-default": {
         "selector": "p > p0-default"
+      },
+      "p1-attr": {
+        "selector": "p > p1-attr",
+        "type": "@href"
       }
     },
     {

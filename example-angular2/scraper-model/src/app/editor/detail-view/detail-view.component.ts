@@ -8,7 +8,7 @@ import { NodeModel, NodeType } from '../../service/model';
 })
 export class DetailViewComponent {
   // WARNING : values index must match the NodeType enum values
-  typeValues: string[] = ["text", "HTML", "composite"];
+  typeValues: string[] = ["text", "HTML", "attribute", "composite"];
   @Input() node: NodeModel;
   @Output() nodeSelectedEvent = new EventEmitter<NodeModel>();
   formNode: NodeModel;

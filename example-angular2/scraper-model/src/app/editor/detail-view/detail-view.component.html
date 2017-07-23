@@ -24,6 +24,11 @@
         </select>
       </div>
 
+      <div *ngIf="node.type === 2 " class="form-group">
+        <label for="attribute-name">Attribute Name:</label>
+        <input id="attribute-name" name="node.attrName" [(ngModel)]="node.attrName" class="form-control">
+      </div>
+
       <div class="checkbox">
         <label>
           <input type="checkbox" name="node.list" [(ngModel)]="node.list">

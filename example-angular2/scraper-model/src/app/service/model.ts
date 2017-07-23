@@ -2,7 +2,7 @@ import { UUID } from 'angular2-uuid';
 
 // use NodeType[NodeType.text] returns 'text'
 export const enum NodeType {
-  text, html, composite
+  text, html, attribute, composite
 }
 
 export class DocumentModel {
@@ -45,6 +45,7 @@ export class NodeModel {
 
   private selector:string;
   private type:NodeType = NodeType.text;
+  private attrName:string;
   private metadata:any = {};
   private list:boolean = false;
 
@@ -84,6 +85,12 @@ export class NodeModel {
   getType(): NodeType         { return this.type; }
   setType(type: NodeType):NodeModel {
     this.type = type;
+    return this;
+  }
+
+  getAttrName(): string         { return this.attrName; }
+  setAttrName(attrName: string):NodeModel {
+    this.attrName = attrName;
     return this;
   }
 

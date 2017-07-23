@@ -68,6 +68,8 @@ export class DocumentParser {
         propType.value,
         node
       );
+    } else if( node.getType() === NodeType.attribute) {
+      node.setAttrName(propType.value);
     }
   }
 
@@ -82,20 +84,28 @@ export class DocumentParser {
 
       // if it's an array, validate that it contains only one item
       // and consider this item as the type definition
-      if( Array.isArray(propValue)) {
+      if( Array.isArray(propValue))
+      {
         if( propValue.length !== 1) {
           throw new Error("invalid value type : array must contain extactly one item");
         }
         propValue = propValue[0];
         result.array = true;
       }
-      // simple case : value type is a string
-      if( typeof propValue === "string") {
+      else  if( typeof propValue === "string")
+      {
+        // simple case : value type is a string
         switch(propValue.toLowerCase()) {
           case 'text': result.type = NodeType.text; break;
           case 'html': result.type = NodeType.html; break;
           default:
-            throw new Error("invalid value type : "+propValue);
+            if( propValue.startsWith('@')){
+              result.type  = NodeType.attribute;
+              result.value = propValue.substr(1);
+            } else {
+              throw new Error("invalid value type : "+propValue);
+            }
+          break;
         }
       } else if(typeof propValue === 'object') {
         // we have a composite value type
