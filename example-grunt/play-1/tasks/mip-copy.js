@@ -7,30 +7,57 @@ const FILTER_SRC_ONLY = 2;
 const FILTER_ENV_ONLY = 3;
 
 let mapCache = {};
+
+function getMap(grunt, mapName, project, role) {
+  let map;
+  let mapFilePath = path.join(project,"server",`map-${mapName}.json`);
+
+  // load the map from cache or from file
+  if( mapCache.hasOwnProperty(mapFilePath)) {
+    map = mapCache[mapFilePath];
+  } else  if( grunt.file.exists(mapFilePath) &&  grunt.file.isFile(mapFilePath) ) {
+    map = grunt.file.readJSON(mapFilePath);
+    grunt.verbose.ok('MAP:: loaded map '+mapName+' for project '+project+' (file : '+mapFilePath+')');
+    mapCache[mapFilePath] = map;
+  } else {
+    mapCache[mapFilePath] = false;
+  }
+  return (map ? map[role] : null);
+}
+
 function applyMapping(grunt, mapName,project,role,filePath) {
-  grunt.verbose.ok('MAP:: '+filePath);
+  //grunt.verbose.ok('MAP:: '+filePath);
 
   let mappedValue = filePath;
   if( mapName ) {
-    let map = null;
-    let mapFilePath = path.join(project,"server",`map-${mapName}.json`);
-
-    // load the map from cache or from file
-    if( mapCache.hasOwnProperty(mapFilePath)) {
-      map = mapCache[mapFilePath];
-    } else  if( fs.existsSync(mapFilePath)) {
-      map = JSON.parse(fs.readFileSync(mapFilePath));
-      grunt.verbose.ok('MAP:: loaded map '+mapName+' for project '+project);
-      mapCache[mapFilePath] = map;
-    }
-
+    let map = getMap(grunt, mapName, project, role);
     // could we find a map with a matching key ?
-    if( map && map[role] && map[role].hasOwnProperty(filePath)){
-        mappedValue = map[role][filePath];
-        grunt.verbose.ok("MAP:: mapping applied to "+filePath+" : "+mappedValue);
+    if( map ) {
+      // a map is available and it has a matching role key : good. First try to find
+      // a match on filepath
+      if( map.hasOwnProperty(filePath)){
+        mappedValue = map[filePath];
+        grunt.verbose.ok("MAP:: exact match applied to "+filePath+" : "+mappedValue);
+      } else {
+        // no exact filepath match was found : apply function
+        mappedValue = filePath;
+        Object.getOwnPropertyNames(map).
+        filter(prop => prop.startsWith('fn:'))
+        .forEach( fn => {
+          let [,fnName, fnArg] = fn.split(':');
+          switch (fnName) {
+            case 'replace':
+              let resultStr = mappedValue.replace(fnArg,map[fn]);
+              if( resultStr !== mappedValue) {
+                grunt.verbose.ok(`MAP:: replace ${fnArg} with ${map[fn]} in ${mappedValue}`);
+                mappedValue = resultStr;
+                return; // function applied : stop
+              }
+          }
+        });
+      }
     }
   }
-
   return mappedValue;
 }
 
@@ -88,22 +115,6 @@ exports.run = function(grunt, destFolder, env, role, int, filter, mapName) {
         copiedFiles[destFilename] = record;
       }
       return destFilename;
-    };
-
-    var noOverwrite = function (src) {
-      src = src.replace(/\\/g, "/");
-      grunt.verbose.ok('noOverwrite:: check file exist : '+src);
-      // Construct the destination file path.
-      let [, project, role, filePath] = pathRe.exec(src);
-
-      var dest = path.join(destFolder,role,filePath);
-      grunt.verbose.ok('check file exist : '+dest);
-      if( grunt.file.isFile(dest) &&  grunt.file.exists(dest)){
-        grunt.fail.fatal("duplicate file found : "+src);
-        return false;
-      } else {
-        return true;
-      }
     };
 
     ////////////////////////////////////////////////////////////////////////////

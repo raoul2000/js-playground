@@ -1,6 +1,8 @@
 {
   "archive" : {
-    "config/duplicate.txt" : "another_config/duplicate.txt",
-    "config/@dev.env-cfg.xml" : "another_config/@dev.env-cfg.xml"    
+    "_config/duplicate.txt" : "another_config/duplicate.txt",
+    "_config/@dev.env-cfg.xml" : "another_config/@dev.env-cfg.xml",
+    "__config/config.txt" : "file.json",
+    "fn:replace:config/" : "conf2/"
   }
 }
