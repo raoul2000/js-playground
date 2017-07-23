@@ -19,7 +19,7 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private api:ScraperDataService,
-    private route: ActivatedRoute
+    private router: Router
   ){}
 
   ngOnInit() {
@@ -34,7 +34,13 @@ export class EditorComponent implements OnInit {
     this.selectedNode = node;
     this.doc.select(this.selectedNode);
   }
+  cancel() {
+    this.router.navigate(['/']);
+  }
 
+  save() {
+
+  }
   deselect() {
     this.selectedNode = null;
     this.doc.select();

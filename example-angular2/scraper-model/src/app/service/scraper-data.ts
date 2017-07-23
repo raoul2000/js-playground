@@ -14,19 +14,18 @@ export class ScraperDataService {
 
   constructor(private http: Http) {
   }
-
+  clearCache() {
+    this.cache = null;
+  }
 
   list():Observable<Array<DocumentModel>> {
 
-    var enableCache = false;
+    var enableCache = true;
     //if( this.cache ) {
 
     if( enableCache && this.cache ) {
-
-      return Observable.create(observer => {
-        observer.onNext(this.cache);
-        observer.onCompleted();
-        return () => console.log('disposed');
+      return new Observable(observer => {
+        observer.next(this.cache);
       });
     } else {
 

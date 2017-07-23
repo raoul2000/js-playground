@@ -5,6 +5,8 @@
         <li>doc ID = {{doc.getId()}}</li>
         <li>doc name = {{doc.getName()}}</li>
       </ul>
+      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
       <hr/>
       <tree-view
         [nodes]="nodes"

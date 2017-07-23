@@ -10,27 +10,32 @@ import { DocumentCloner } from '../service/doc-cloner';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  public items:Array<DocumentModel> = null;
+  public items: Array<DocumentModel> = null;
 
   constructor(
-    private api:ScraperDataService,
-    private router:Router
+    private api: ScraperDataService,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    if( this.items === null ) {
-      this.api.list()
-      .subscribe( docList => {
-        this.items = docList;
-      });
+    this.loadDocumentList();
+  }
+
+  refresh() {
+    this.loadDocumentList(true);
+  }
+
+  loadDocumentList(forceReload = false) {
+    if(forceReload ) {
+      this.api.clearCache();
     }
+    this.api.list()
+    .subscribe(docList => {
+      this.items = docList;
+    });
   }
 
-  loadDocumentList() {
-
-  }
-
-  editModel(model:DocumentModel) {
+  editModel(model: DocumentModel) {
     console.log('editModel', model);
     this.api.selectedDoc = DocumentCloner.clone(model);
     this.router.navigate(['/editor']);
