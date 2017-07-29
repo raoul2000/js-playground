@@ -1,9 +1,17 @@
 <div *ngIf="node">
-  <div *ngIf="node.isRootNode() === false ">
+  <form
+  (ngSubmit)="save(nodeForm.value)"
+  #nodeForm="ngForm">
 
-    <form
-      (ngSubmit)="save(nodeForm.value)"
-      #nodeForm="ngForm">
+  <div *ngIf="node.isRootNode() === true ">
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input id="name" name="node.ownerDocument.name" [(ngModel)]="node.ownerDocument.name" class="form-control">
+    </div>
+
+    {{node.getOwnerDocument().getName()}}
+  </div>
+  <div *ngIf="node.isRootNode() === false ">
 
       <div class="form-group">
         <label for="name">Name:</label>
@@ -36,8 +44,8 @@
         </label>
       </div>
 
-    </form>
   </div>
+</form>
 
   <div class="">
     <button

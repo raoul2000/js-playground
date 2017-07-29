@@ -18,6 +18,7 @@
       (click)="nodeSelected(node)">
       {{ node.name }}
     </span>
+    
     <div *ngIf="node.hasChildren() && node.isExpanded() && node.isComposite()">
       <tree-view
         [nodes]="node.getChildren()"

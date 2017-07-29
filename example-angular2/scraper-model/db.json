@@ -40,6 +40,24 @@
         "id": "id2",
         "name": "doc name (2)"
       }
+    },
+    {
+      "title": {
+        "selector": "p",
+        "type": "text"
+      },
+      "body": {
+        "selector": "p.body",
+        "type": "text"
+      },
+      "signature": {
+        "type": "text"
+      },
+      "id": "072929b3-0586-eacc-b93e-c1bf9a47d045",
+      "__document": {
+        "id": "072929b3-0586-eacc-b93e-c1bf9a47d045",
+        "name": "docu3"
+      }
     }
   ]
 }

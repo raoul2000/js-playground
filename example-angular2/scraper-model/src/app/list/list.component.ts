@@ -25,6 +25,12 @@ export class ListComponent implements OnInit {
     this.loadDocumentList(true);
   }
 
+  newDocument() {
+    this.api.selectedDoc = new DocumentModel();
+    this.router.navigate(['/editor']);
+
+  }
+
   loadDocumentList(forceReload = false) {
     if(forceReload ) {
       this.api.clearCache();
