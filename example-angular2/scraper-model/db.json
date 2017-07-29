@@ -1,31 +1,44 @@
 {
   "documents": [
     {
-      "__document": {
-        "id": "id1",
-        "name": "doc name"
+      "article": {
+        "selector": "div > p.story",
+        "type": [
+          "text"
+        ]
       },
       "p0-default": {
-        "selector": "p > p0-default"
+        "selector": "p > p0-default",
+        "type": "text"
       },
       "p1-attr": {
         "selector": "p > p1-attr",
         "type": "@href"
+      },
+      "id": "id1",
+      "__document": {
+        "id": "id1",
+        "name": "doc name"
       }
     },
     {
-      "__document": {
-        "id": "id2",
-        "name": "doc name (2)"
+      "zezezeze": {
+        "type": "text"
       },
       "p0-default": {
-        "selector": "p > p0-default"
+        "selector": "p > p0-default",
+        "type": "text"
       },
       "p1": {
         "selector": "p",
         "type": [
           "text"
         ]
+      },
+      "id": "id2",
+      "__document": {
+        "id": "id2",
+        "name": "doc name (2)"
       }
     }
   ]

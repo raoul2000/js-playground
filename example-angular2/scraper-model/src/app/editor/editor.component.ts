@@ -39,7 +39,10 @@ export class EditorComponent implements OnInit {
   }
 
   save() {
-
+    this.api.saveDocument(this.doc).subscribe( res => {
+      console.log("saved", res);
+      this.router.navigate(['/']);
+    });
   }
   deselect() {
     this.selectedNode = null;

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { DocumentModel } from './model';
 import { DocumentParser } from './doc-parser'
+import { DocumentSerializer } from './doc-serializer'
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
@@ -17,6 +18,37 @@ export class ScraperDataService {
   clearCache() {
     this.cache = null;
   }
+
+  saveDocument(newDoc:DocumentModel): Observable<Response> {
+    //let headers = new Headers({ 'Content-Type': 'application/json' });
+    //let options = new RequestOptions({ headers: headers });
+    let jsonDoc = DocumentSerializer.serializeToJSON(newDoc);
+    jsonDoc.id = newDoc.getId(); // preserve ID for json server
+
+    return this.http.post(
+      'http://localhost:3000/documents',
+      jsonDoc,
+      {
+        headers : new Headers({ 'Content-Type': 'application/json' })
+      })
+      .map( res => {
+        if(res.ok) {
+          let updatedCache:Array<DocumentModel>;
+          updatedCache = this.cache.map(doc => {
+            if( doc.getId() === newDoc.getId()) {
+              return newDoc;
+            } else {
+              return doc;
+            }
+          });
+          this.cache = updatedCache;
+        } else {
+          console.error("response error",res);
+        }
+        return res;
+      });
+  }
+
 
   list():Observable<Array<DocumentModel>> {
 
