@@ -3,14 +3,13 @@ import { DocumentModel, NodeModel, NodeType } from './model';
 export class DocumentSerializer {
 
   public static serializeToJSON(doc:DocumentModel):any {
-    let objResult = DocumentSerializer.serializeObject(
-      doc.getRootNode().getChildren()
-    );
-    objResult['__document'] = {
-      "id" : doc.getId(),
-      "name" : doc.getName()
-    }
-    return objResult;
+    return {
+      "id"   : doc.getId(),
+      "name" : doc.getName(),
+      "root" : DocumentSerializer.serializeObject(
+        doc.getRootNode().getChildren()
+      )
+    };
   }
 
   private static serializeObject(nodes:NodeModel[]):any {

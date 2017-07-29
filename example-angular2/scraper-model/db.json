@@ -1,62 +1,44 @@
 {
   "documents": [
     {
-      "article": {
-        "selector": "div > p.story",
-        "type": [
-          "text"
-        ]
-      },
-      "p0-default": {
-        "selector": "p > p0-default",
-        "type": "text"
-      },
-      "p1-attr": {
-        "selector": "p > p1-attr",
-        "type": "@href"
-      },
       "id": "id1",
-      "__document": {
-        "id": "id1",
-        "name": "doc name"
+      "name": "doc name",
+      "root": {
+        "article": {
+          "selector": "div > p.story",
+          "type": [
+            {
+              "title": {
+                "selector": "h1",
+                "type": "text"
+              },
+              "body": {
+                "selector": "p",
+                "type": "text"
+              }
+            }
+          ]
+        },
+        "p0-default": {
+          "selector": "p > p0-default",
+          "type": "text"
+        },
+        "p1-attr": {
+          "selector": "p > p1-attr",
+          "type": "@href"
+        }
       }
     },
     {
-      "zezezeze": {
-        "type": "text"
-      },
-      "p0-default": {
-        "selector": "p > p0-default",
-        "type": "text"
-      },
-      "p1": {
-        "selector": "p",
-        "type": [
-          "text"
-        ]
-      },
-      "id": "id2",
-      "__document": {
-        "id": "id2",
-        "name": "doc name (2)"
-      }
-    },
-    {
-      "title": {
-        "selector": "p",
-        "type": "text"
-      },
-      "body": {
-        "selector": "p.body",
-        "type": "text"
-      },
-      "signature": {
-        "type": "text"
-      },
-      "id": "072929b3-0586-eacc-b93e-c1bf9a47d045",
-      "__document": {
-        "id": "072929b3-0586-eacc-b93e-c1bf9a47d045",
-        "name": "docu3"
+      "id": "c486d6ad-aaf7-1ec0-3ddb-f9e350dc7eb0",
+      "name": "newModel",
+      "root": {
+        "new": {
+          "type": "text"
+        },
+        "new2": {
+          "type": "text"
+        }
       }
     }
   ]

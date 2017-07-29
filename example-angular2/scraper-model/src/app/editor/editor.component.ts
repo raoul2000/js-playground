@@ -11,22 +11,22 @@ import { ScraperDataService } from '../service/scraper-data'
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  public nodes:Array<any>;
-  public doc:DocumentModel;
+  public nodes: Array<any>;
+  public doc: DocumentModel;
   private selectedNode: NodeModel;
 
   title = 'Scraper';
 
   constructor(
-    private api:ScraperDataService,
+    private api: ScraperDataService,
     private router: Router
-  ){}
+  ) { }
 
   ngOnInit() {
-    if(this.api.selectedDoc) {
-      console.log('ngOnInit',this.api.selectedDoc);
+    if (this.api.selectedDoc) {
+      console.log('ngOnInit', this.api.selectedDoc);
       this.doc = this.api.selectedDoc;
-      this.nodes =  [this.doc.getRootNode()];
+      this.nodes = [this.doc.getRootNode()];
     }
   }
 
@@ -39,7 +39,7 @@ export class EditorComponent implements OnInit {
   }
 
   save() {
-    this.api.saveDocument(this.doc).subscribe( res => {
+    this.api.saveDocument(this.doc).subscribe(res => {
       console.log("saved", res);
       this.router.navigate(['/']);
     });
@@ -55,64 +55,64 @@ export class EditorComponent implements OnInit {
   }
   parseJSONString() {
     let obj = {
-      '__document' : {
-        'id' : "11223344",
-        'name' : "sample document"
-      },
-      'p0-default' : {
-        "selector" : "p1.selector"
-      },
-      'p1' : {
-        "selector" : "p1.selector",
-        "type" : "text"
-      },
-      'p1-array' : {
-        "selector" : "p1-array.selector (string array)",
-        "type" : ["text"]
-      },
-      'p1-html-simple' : {
-        "selector" : "p1-html-simple.selector",
-        "type" : "html"
-      },
-      'p1-html-array' : {
-        "selector" : "p1-html-array.selector",
-        "type" : ["html"]
-      },
-      'p2' : {
-        "selector" : "p2.selector",
-        "type" : {
-          'C1' : {
-            "selector" : "C1.selector",
-            "type" : "text"
+      'id': "11223344",
+      'name': "sample document",
+      "root": {
+        'p0-default': {
+          "selector": "p1.selector"
+        },
+        'p1': {
+          "selector": "p1.selector",
+          "type": "text"
+        },
+        'p1-array': {
+          "selector": "p1-array.selector (string array)",
+          "type": ["text"]
+        },
+        'p1-html-simple': {
+          "selector": "p1-html-simple.selector",
+          "type": "html"
+        },
+        'p1-html-array': {
+          "selector": "p1-html-array.selector",
+          "type": ["html"]
+        },
+        'p2': {
+          "selector": "p2.selector",
+          "type": {
+            'C1': {
+              "selector": "C1.selector",
+              "type": "text"
+            },
           },
         },
-      },
-      'p2-deep-blue' : {
-        "selector" : "p2.selector (deep blue)",
-        "type" : {
-          'C1' : {
-            "selector" : "C1.selector",
-            "type" : {
-                'D1' : {
-                  "selector" : "I am D1",
-                  "type" : {
-                    "E1" : {
-                      "selector" : "I am E1"
+        'p2-deep-blue': {
+          "selector": "p2.selector (deep blue)",
+          "type": {
+            'C1': {
+              "selector": "C1.selector",
+              "type": {
+                'D1': {
+                  "selector": "I am D1",
+                  "type": {
+                    "E1": {
+                      "selector": "I am E1"
                     }
                   }
                 }
-            }
+              }
+            },
           },
         },
-      },
-      'p2-obj-list' : {
-        "selector" : "p2.selector obj list",
-        "type" : [{
-          'C1' : {
-            "selector" : "C1.selector",
-            "type" : "text"
-          }
-        }]
+        'p2-obj-list': {
+          "selector": "p2.selector obj list",
+          "type": [{
+            'C1': {
+              "selector": "C1.selector",
+              "type": "text"
+            }
+          }]
+        }
       }
     };
     this.doc = DocumentParser.parseJSONString(JSON.stringify(obj));

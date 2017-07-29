@@ -5,16 +5,14 @@ export class DocumentParser {
   public static  parseJSONString(data:any): DocumentModel {
 
     let obj = typeof data === 'object' ? data : JSON.parse(data);
-    let docInfo = obj['__document'];
-    let docResult:DocumentModel = docInfo
-      ? new DocumentModel(docInfo.id)
-      : new DocumentModel();
-    if(docInfo.name) {
-      docResult.setName(docInfo.name);
+
+    let docResult:DocumentModel = new DocumentModel(obj.id);
+    if(obj.name) {
+      docResult.setName(obj.name);
     }
 
     DocumentParser.parseObject(
-      obj,
+      obj.root,
       docResult.getRootNode()
     );
     console.log("DocumentModel result : ",docResult);
@@ -29,7 +27,6 @@ export class DocumentParser {
     console.log('processing object :',obj);
     let childrenKeys = [];
     Object.keys(obj)
-    .filter( propName => propName !== '__document') // ignore document info node
     .forEach( propName => {
       console.log('processing property :',propName);
         let propValue = obj[propName];
