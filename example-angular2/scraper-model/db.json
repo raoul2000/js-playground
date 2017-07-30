@@ -1,60 +1,25 @@
 {
   "documents": [
     {
-      "id": "id1",
-      "name": "doc namezzz",
+      "id": "bf64a9cb-8ec4-6df8-5782-727c1a3868b6",
+      "name": "aaa",
+      "json": "{\"article\":{\"selector\":\"p.body\",\"type\":{\"title\":{\"selector\":\"h1\",\"type\":\"text\"},\"content\":{\"selector\":\"p.content\",\"type\":\"text\"}}}}"
+    },
+    {
+      "id": "dfd74ac6-83fa-044f-4543-5cf827f27c1c",
+      "name": "bbbbbb",
       "root": {
-        "article": {
-          "selector": "div > p.story",
-          "type": [
-            "text"
-          ]
-        },
-        "p0-default": {
-          "selector": "p > p0-default",
-          "type": "text"
-        },
-        "p1-attr": {
-          "selector": "p > p1-attr",
+        "photo-url": {
+          "selector": "img",
           "type": "@href"
         }
-      }
+      },
+      "json": "{\"photo-url\":{\"selector\":\"img\",\"type\":\"@href\"}}"
     },
     {
-      "id": "c486d6ad-aaf7-1ec0-3ddb-f9e350dc7eb0",
-      "name": "newModel",
-      "root": {
-        "new": {
-          "type": "text"
-        },
-        "new2": {
-          "type": "text"
-        }
-      }
-    },
-    {
-      "id": "1cd31864-e60e-3d48-3bc5-da9fd69d4074",
-      "name": "eeeeeq dqsd",
-      "root": {
-        "new": {
-          "type": "text"
-        }
-      }
-    },
-    {
-      "id": "160a0f41-b45a-a2c7-f045-996195768f39",
-      "name": "rrrrr",
-      "root": {}
-    },
-    {
-      "id": "35230d28-f641-fcdc-1620-ffad955605ea",
-      "name": "wxcwxcwxc",
-      "root": {}
-    },
-    {
-      "id": "730a0b35-8cb4-2c45-bc4d-de006e6782d9",
-      "name": "azaz",
-      "root": {}
+      "id": "28af9b3e-9a23-e424-02f0-a376a4b026e2",
+      "name": "eeeeee",
+      "json": "{}"
     }
   ]
 }

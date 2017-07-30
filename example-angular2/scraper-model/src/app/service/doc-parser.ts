@@ -12,7 +12,7 @@ export class DocumentParser {
     }
 
     DocumentParser.parseObject(
-      obj.root,
+      JSON.parse(obj.json),
       docResult.getRootNode()
     );
     console.log("DocumentModel result : ",docResult);

@@ -61,7 +61,7 @@ export class ScraperDataService {
       .map( json => {
         console.log(json);
         this.cache =  json.map( doc => {
-          console.log("processing item : ", doc)
+          console.log("processing item : ", doc);
           return DocumentParser.parseJSONString(doc);
         });
         return this.cache;
