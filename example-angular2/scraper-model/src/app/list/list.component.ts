@@ -50,4 +50,8 @@ export class ListComponent implements OnInit {
     this.api.selectedDoc = DocumentCloner.clone(model);
     this.router.navigate(['/editor']);
   }
+
+  deleteModel(model: DocumentModel) {
+    // TODO : implement
+  }
 }
