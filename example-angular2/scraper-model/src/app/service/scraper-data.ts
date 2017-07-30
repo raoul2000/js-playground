@@ -20,14 +20,9 @@ export class ScraperDataService {
   }
 
   saveDocument(newDoc:DocumentModel): Observable<Response> {
-    //let headers = new Headers({ 'Content-Type': 'application/json' });
-    //let options = new RequestOptions({ headers: headers });
-    let jsonDoc = DocumentSerializer.serializeToJSON(newDoc);
-    jsonDoc.id = newDoc.getId(); // preserve ID for json server
-
     return this.http.post(
       'http://localhost:3000/documents',
-      jsonDoc,
+      DocumentSerializer.serializeToJSON(newDoc),
       {
         headers : new Headers({ 'Content-Type': 'application/json' })
       })
@@ -49,18 +44,18 @@ export class ScraperDataService {
       });
   }
 
-
+  /**
+   * Returns a list of document retrieved from the server
+   * or from the internal cache.
+   * @return {Observable} [description]
+   */
   list():Observable<Array<DocumentModel>> {
-
     var enableCache = true;
-    //if( this.cache ) {
-
     if( enableCache && this.cache ) {
       return new Observable(observer => {
         observer.next(this.cache);
       });
     } else {
-
       return this.http.get('http://localhost:3000/documents' )
       .map( res => res.json())
       .map( json => {
@@ -72,6 +67,5 @@ export class ScraperDataService {
         return this.cache;
       });
     }
-
   }
 }

@@ -2,21 +2,12 @@
   "documents": [
     {
       "id": "id1",
-      "name": "doc name",
+      "name": "doc namezzz",
       "root": {
         "article": {
           "selector": "div > p.story",
           "type": [
-            {
-              "title": {
-                "selector": "h1",
-                "type": "text"
-              },
-              "body": {
-                "selector": "p",
-                "type": "text"
-              }
-            }
+            "text"
           ]
         },
         "p0-default": {
@@ -40,6 +31,30 @@
           "type": "text"
         }
       }
+    },
+    {
+      "id": "1cd31864-e60e-3d48-3bc5-da9fd69d4074",
+      "name": "eeeeeq dqsd",
+      "root": {
+        "new": {
+          "type": "text"
+        }
+      }
+    },
+    {
+      "id": "160a0f41-b45a-a2c7-f045-996195768f39",
+      "name": "rrrrr",
+      "root": {}
+    },
+    {
+      "id": "35230d28-f641-fcdc-1620-ffad955605ea",
+      "name": "wxcwxcwxc",
+      "root": {}
+    },
+    {
+      "id": "730a0b35-8cb4-2c45-bc4d-de006e6782d9",
+      "name": "azaz",
+      "root": {}
     }
   ]
 }
