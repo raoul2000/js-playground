@@ -11,6 +11,8 @@ import { DocumentCloner } from '../service/doc-cloner';
 })
 export class ListComponent implements OnInit {
   public items: Array<DocumentModel> = null;
+  private listLoaded:boolean = false;
+  private connectionError:boolean = false;
 
   constructor(
     private api: ScraperDataService,
@@ -39,9 +41,16 @@ export class ListComponent implements OnInit {
     if(forceReload ) {
       this.api.clearCache();
     }
+    this.connectionError = false;
+    this.listLoaded = false;
     this.api.list()
     .subscribe(docList => {
       this.items = docList;
+      this.listLoaded = true;
+    },
+    error => {
+      console.log(error);
+      this.connectionError = true;
     });
   }
 

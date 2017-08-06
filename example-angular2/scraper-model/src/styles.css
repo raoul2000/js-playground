@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  margin-top: 1em;
+}
+
 ul {
     list-style-type: none;
     cursor: pointer;
@@ -6,4 +11,20 @@ ul {
 .node-selected,
 .node-label:hover {
   text-decoration: underline;
+}
+
+/* animated refresh icon */
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }

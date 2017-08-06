@@ -20,6 +20,11 @@
       "id": "28af9b3e-9a23-e424-02f0-a376a4b026e2",
       "name": "eeeeee",
       "json": "{}"
+    },
+    {
+      "id": "af5d2153-e5cc-8b6b-6d7b-0d9abdaa0114",
+      "name": "qsdfqsdf",
+      "json": "{\"newqsdf\":{\"selector\":\"qsdf\",\"type\":\"text\"},\"newqsd fqsd\":{\"selector\":\"dfdf\",\"type\":{\"newqsdf\":{\"selector\":\"sqdf\",\"type\":\"text\"},\"newffffff\":{\"selector\":\"df\",\"type\":\"html\"},\"new\":{\"type\":\"text\"}}}}"
     }
   ]
 }
