@@ -5,6 +5,20 @@ export const enum NodeType {
   text, html, attribute, composite
 }
 
+export class DocumentSummary {
+  constructor(
+    private id:string,
+    private name:string
+  ){}
+
+  public getId():string {
+    return this.id;
+  }
+  public getName():string {
+    return this.name;
+  }
+}
+
 export class DocumentModel {
   private rootNode: NodeModel;
   private name:string;
