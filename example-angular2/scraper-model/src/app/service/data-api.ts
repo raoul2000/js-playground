@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions, Headers, Response, RequestOptionsArgs } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { DocumentModel } from './model';
 import { DocumentParser } from './doc-parser'
 import { DocumentSerializer } from './doc-serializer'
@@ -7,8 +7,9 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class DataAPI {
+  private baseURL:string = 'http://localhost/dev/yii2-app/web/index.php';
 
-  constructor(private baseURL:string, private http: Http)
+  constructor(private http: HttpClient)
   {}
 
   public getBaseURL():string {
@@ -20,10 +21,13 @@ export class DataAPI {
       this.baseURL,
       DocumentSerializer.serializeToJSON(model),
       {
-        headers : new Headers({ 'Content-Type': 'application/json' }),
-        params : new HttpParams().set('r','scraper/api/create')
+        headers : new HttpHeaders().set('Content-Type', 'application/json' ),
+        params  : new HttpParams().set('r','scraper/api/create')
       }
-    ).map(res => "1");
+    ).map(res => {
+      console.log(res);
+      return "1";
+    } );
   }
 
   public update(model:DocumentModel) {
@@ -35,6 +39,16 @@ export class DataAPI {
   }
 
   public getList() {
+    return this.http.get(
+      this.baseURL,
+      {
+        headers : new HttpHeaders().set('Content-Type', 'application/json' ),
+        params  : new HttpParams().set('r','scraper/api')
+      }
+    ).map(res => {
+      console.log(res);
+      return "1";
+    } );
 
   }
 }

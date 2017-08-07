@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
+
 
 import { RouterModule } from '@angular/router';
 import { ROUTES } from './app.routes';
@@ -12,6 +13,7 @@ import { DetailViewComponent } from './editor/detail-view/detail-view.component'
 import { EditorComponent } from './editor/editor.component';
 import { ListComponent } from './list/list.component';
 import { ScraperDataService } from './service/scraper-data';
+import { DataAPI } from './service/data-api';
 
 
 @NgModule({
@@ -25,10 +27,10 @@ import { ScraperDataService } from './service/scraper-data';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [ScraperDataService],
+  providers: [ScraperDataService, DataAPI],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

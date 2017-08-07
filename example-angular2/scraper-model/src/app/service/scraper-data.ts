@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions, Headers, Response } from '@angular/http';
+//import { Http, RequestOptions, Headers, Response } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DocumentModel } from './model';
 import { DocumentParser } from './doc-parser'
 import { DocumentSerializer } from './doc-serializer'
@@ -13,7 +14,7 @@ export class ScraperDataService {
   private cache:Array<DocumentModel> = null;
   public selectedDoc:DocumentModel = null;
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
   }
   clearCache() {
     this.cache = null;
@@ -24,10 +25,10 @@ export class ScraperDataService {
       'http://localhost:3000/documents',
       DocumentSerializer.serializeToJSON(newDoc),
       {
-        headers : new Headers({ 'Content-Type': 'application/json' })
+        headers : new HttpHeaders().set('Content-Type', 'application/json' )
       })
       .map( res => {
-        if(res.ok) {
+        //if(res.ok) {
           let updatedCache:Array<DocumentModel>;
           updatedCache = this.cache.map(doc => {
             if( doc.getId() === newDoc.getId()) {
@@ -37,9 +38,9 @@ export class ScraperDataService {
             }
           });
           this.cache = updatedCache;
-        } else {
-          console.error("response error",res);
-        }
+        //} else {
+        //  console.error("response error",res);
+        //}
         return res;
       });
   }
@@ -57,13 +58,13 @@ export class ScraperDataService {
       });
     } else {
       return this.http.get('http://localhost:3000/documents' )
-      .map( res => res.json())
       .map( json => {
         console.log(json);
+        /*
         this.cache =  json.map( doc => {
           console.log("processing item : ", doc);
           return DocumentParser.parseJSONString(doc);
-        });
+        });*/
         return this.cache;
       });
     }

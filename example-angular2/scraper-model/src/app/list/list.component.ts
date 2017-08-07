@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { NodeModel, DocumentModel } from '../service/model';
 import { ScraperDataService } from '../service/scraper-data'
+import { DataAPI } from '../service/data-api'
 import { DocumentCloner } from '../service/doc-cloner';
 
 @Component({
@@ -16,17 +17,28 @@ export class ListComponent implements OnInit {
 
   constructor(
     private api: ScraperDataService,
+    private scraperAPI:DataAPI,
     private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    /*
     this.route.paramMap.subscribe((params: ParamMap) => {
       //const refresh:boolean = params.get('refresh') === "true";
       this.loadDocumentList(true);
     });
+    */
   }
-
+  getList() {
+    console.log("getList");
+    this.scraperAPI.getList()
+    .subscribe(
+      res => {console.log(res)},
+      error => {
+        console.error('ERROR',error);
+      });
+  }
   refresh() {
     this.loadDocumentList(true);
   }
