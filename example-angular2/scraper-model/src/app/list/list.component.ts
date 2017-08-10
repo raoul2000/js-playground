@@ -4,6 +4,9 @@ import { NodeModel, DocumentModel } from '../service/model';
 import { ScraperDataService } from '../service/scraper-data'
 import { DataAPI } from '../service/data-api'
 import { DocumentCloner } from '../service/doc-cloner';
+import { DocumentParser } from '../service/doc-parser';
+import { DocumentSerializer } from '../service/doc-serializer';
+
 
 @Component({
   selector: 'app-list',
@@ -30,6 +33,30 @@ export class ListComponent implements OnInit {
     });
     */
   }
+  view() {
+    console.log('view');
+    this.scraperAPI.view("22")
+    .subscribe(
+      res => {console.log(res)},
+      error => {
+        console.error('ERROR',error);
+      });
+
+  }
+  createModel() {
+    console.log('createModel');
+    let doc = DocumentParser.parseJSONString(JSON.stringify({
+      'name': "sample document",
+      "json" : "{}"
+    }));
+    this.scraperAPI.create(doc)
+    .subscribe(
+      res => {console.log(res)},
+      error => {
+        console.error('ERROR',error);
+      });
+  }
+
   getList() {
     console.log("getList");
     this.scraperAPI.getList()

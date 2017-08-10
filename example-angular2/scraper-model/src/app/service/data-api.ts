@@ -5,6 +5,10 @@ import { DocumentParser } from './doc-parser'
 import { DocumentSerializer } from './doc-serializer'
 import { Observable } from 'rxjs/Observable';
 
+interface ListResponse {
+
+}
+
 @Injectable()
 export class DataAPI {
   private baseURL:string = 'http://localhost/dev/yii2-app/web/index.php';
@@ -47,8 +51,23 @@ export class DataAPI {
       }
     ).map(data => {
       console.log(data);
-      return data;
+      return data.map( item =>  DocumentParser.parseJSONString(item));
+      //return data;
     } );
+  }
 
+  public view(id:string):Observable<DocumentModel> {
+    return this.http.get(
+      this.baseURL,
+      {
+        headers : new HttpHeaders().set('Content-Type', 'application/json' ),
+        params  : new HttpParams()
+          .set('r','scraper/api/view')
+          .set('id',id)
+      }
+    ).map(data => {
+      console.log(data);
+      return  DocumentParser.parseJSONString(data);
+    });
   }
 }
