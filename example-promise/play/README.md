@@ -6,19 +6,19 @@ Let's play with Promises ...
 - [Q](https://github.com/kriskowal/q)
 
 # Installation
-From the `example-promise` folder :
+From the `play` folder :
 
     npm install
 
 Then run each example manually :
-	
-	node chaining-arg.js 
-	 
+
+	node chaining-arg.js
+
 # Usage
 
 simply run each example manually. For example :
-	
-	node chaining-arg.js 
+
+	node chaining-arg.js
 
 For more information please refer to inline comments.
 
