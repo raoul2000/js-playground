@@ -29,6 +29,6 @@ function subscribe(es, ul) {
   });
 }
 
-subscribe(new EventSource('/sse'),         document.getElementById('es-messages'));
-subscribe(new EventSourcePolyfill('/sse'), document.getElementById('es-polyfill-messages'));
+subscribe(new EventSource('/my-sse'),         document.getElementById('es-messages'));
+//subscribe(new EventSourcePolyfill('/sse'), document.getElementById('es-polyfill-messages'));
 </script>
