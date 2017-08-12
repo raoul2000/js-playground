@@ -1,0 +1,24 @@
+{
+  "name": "example-electron",
+  "version": "0.0.1",
+  "description": "sample electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tray": "electron main-tray.js"
+  },
+  "keywords": [
+    "playground",
+    "electron"
+  ],
+  "author": "https://github.com/raoul2000",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.0"
+  },
+  "dependencies": {
+    "electron-positioner": "^2.0.3",
+    "vue": "^2.4.2"
+  }
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF8">
+<title>vuejs</title>
+<script src="./node_modules/vue/dist/vue.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<div id="app">
+	  <h1>{{ message | capitalize }}</h1>
+		<hr/>
+		<button v-on:click="reverseMessage">
+			Reverse Hello World ({{ reverseCount === 0 ? 'try it ! ' : 'you tried '+reverseCount }})
+		</button>
+		<p v-if="reverseCount > 0">Title Reverse Detected !! Alaaaarm !!</p>
+		<span v-bind:title="title">
+			Passez votre souris sur moi pendant quelques secondes
+			pour voir mon titre lié dynamiquement ! <b>v-bind:title</b>
+		</span>
+		<p>{{ name }}<br/>{{ uppercaseName }}</p>
+		<input v-model="name" placeholder="enter your name">
+		<ol>
+	    <li v-for="(todo, index)  in todos">
+	      {{ todo.text }} (index = {{index}}) ( {{ parentMessage }})
+	    </li>
+	  </ol>
+		<hr/>
+		<todo-item
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id">
+    </todo-item>
+		<hr/>
+		<h2>Ask your question</h2>
+		<p>
+	    Posez votre question (réponse par Oui ou Non) :
+	    <input v-model="question">
+	  </p>
+	  <p>{{ answer }}</p>
+		<hr/>
+		<ul id="repeat-object" class="demo">
+			<div v-for="(value, key, index) in object">
+			  {{ index }}. {{ key }} : {{ value }}
+			</div>
+		</ul>
+		<h3>even numbers</h3>
+		<ul>
+			<li v-for="n in evenNumbers">{{ n }}</li>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript">
+
+Vue.component('todo-item', {
+  // Le composant todo-item accepte maintenant une
+  // « prop » qui est comme un attribut personnalisé.
+  // Cette prop est appelée todo.
+  props: ['todo'],
+  template: '<li>{{ todo.text }}</li>'
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue !',
+		title : 'Vous avez affiché cette page le ' + new Date(),
+		name : '',
+		reverseCount : 0,
+		parentMessage: 'Parent',
+		todos: [
+      { text: 'Apprendre JavaScript' },
+      { text: 'Apprendre Vue' },
+      { text: 'Créer quelque chose de génial' }
+    ],
+		groceryList: [
+      { id: 0, text: 'Légumes' },
+      { id: 1, text: 'Fromage' },
+      { id: 2, text: 'Tout ce que les humains sont supposés manger' }
+    ],
+		question: '',
+    answer: 'Je ne peux pas vous donner une réponse avant que vous ne posiez une question !',
+		object: {
+      firstName: 'John',
+      lastName: 'Doe',
+      age: 30
+    },
+		numbers: [ 1, 2, 3, 4, 5 ]
+  },
+	methods: {
+    reverseMessage: function () {
+      this.message = this.message.split('').reverse().join('');
+			this.reverseCount++;
+    }
+  },
+	// observer
+	// see https://fr.vuejs.org/v2/guide/computed.html#Observateurs
+	watch: {
+    // à chaque fois que la question change, cette fonction s'exécutera
+    question: function (newQuestion) {
+      this.answer = "J'attends que vous arrêtiez de taper..."
+    }
+  },
+	// computed values with accessor (get) and mutator (set)
+	computed: {
+    // un accesseur (getter) calculé
+    uppercaseName: {
+			get : function () {
+	      // `this` refers to the vue instance
+				if(this.name) {
+					return this.name.toUpperCase();
+				} else {
+					return '';
+				}
+	    },
+			set : function(newValue) {
+				this.name = newValue.toLowerCase();
+			}
+		},
+		evenNumbers: function () {
+	    return this.numbers.filter(function (number) {
+	      return number % 2 === 0
+	    })
+	  }
+  },
+	// filter - seem to not work
+	filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  },
+	// life cycle hook
+	created: function () {
+    // `this` est une référence à l'instance de vm
+    console.log('created : message is: ' + this.message);
+  },
+	beforeUpdate: function() {
+		console.log('beforeUpdate');
+	},
+	updated : function() {
+		console.log('updated: name is = '+this.name);
+	} // more hooks available - see https://fr.vuejs.org/v2/guide/instance.html#Diagramme-du-cycle-de-vie
+})
+</script>
+</html>
