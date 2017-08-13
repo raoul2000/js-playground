@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF8">
+<title>vuejs</title>
+</head>
+<body>
+	<h1>app</h1>
+	<div id="app">
+		<p>items to download</p>
+		<download-item
+      v-for="item in toDownload"
+      v-bind:item="item"
+      v-bind:url="item.url">
+    </download-item>
+	</div>
+</body>
+<script src="../node_modules/vue/dist/vue.min.js" charset="utf-8"></script>
+<script src="app.js" charset="utf-8"></script>
+</html>

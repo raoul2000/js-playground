@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF8">
+<title>vuejs</title>
+<script src="./node_modules/vue/dist/vue.min.js" charset="utf-8"></script>
+</head>
+<body>
+	<h1>app</h1>
+	<div id="app">
+		<p>todo-item component</p>
+		<todo-item
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id">
+    </todo-item>
+
+		<p>todo-item2 component : defined in external file</p>
+		<todo-item2
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id">
+    </todo-item2>
+
+	</div>
+</body>
+
+<script type="text/javascript">
+	require('./todo-item2.vue');
+
+Vue.component('todo-item', {
+  props: ['todo'],
+	template: '<li>{{ todo.text }}</li>'
+});
+
+var app = new Vue({
+  el: '#app',
+  data: {
+		todos: [
+      { text: 'Apprendre JavaScript' },
+      { text: 'Apprendre Vue' },
+      { text: 'Créer quelque chose de génial' }
+    ],
+		groceryList: [
+      { id: 0, text: 'Légumes' },
+      { id: 1, text: 'Fromage' },
+      { id: 2, text: 'Tout ce que les humains sont supposés manger' }
+    ]
+  }
+})
+</script>
+</html>

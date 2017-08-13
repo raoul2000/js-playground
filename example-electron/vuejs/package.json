@@ -19,6 +19,10 @@
   },
   "dependencies": {
     "electron-positioner": "^2.0.3",
+    "element-ui": "^1.4.2",
+    "request": "^2.81.0",
+    "request-progress": "^3.0.0",
+    "rxjs-es": "^5.0.0-beta.12",
     "vue": "^2.4.2"
   }
 }
