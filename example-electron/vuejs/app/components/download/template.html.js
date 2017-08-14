@@ -1,4 +1,4 @@
-module. exports = `
+module.exports = `
 <li>
   {{ item.name }}
   <button
@@ -8,7 +8,7 @@ module. exports = `
   </button>
 
   {{inProgress}}<br/>
-  
+
   <div
     v-if="count > 0"
     v-bind:style="{ color: activeColor}">

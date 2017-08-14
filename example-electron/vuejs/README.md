@@ -11,6 +11,8 @@ From the `example-electron`folder :
 
     npm install
 
+To run the router demo :
+    npm run router-demo
 # Usage
 
 	npm start

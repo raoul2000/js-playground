@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF8">
+<title>vuejs</title>
+</head>
+<body>
+	<div id="app">
+	  <h1>Bonjour l'application !</h1>
+	  <p>
+	    <!-- utilisez le composant router-link pour la navigation. -->
+	    <!-- spécifiez le lien en le passant à la prop `to` -->
+	    <!-- `<router-link>` sera rendu en tag `<a>` par défaut -->
+	    <router-link to="/download">Aller à Download</router-link>
+	    <router-link to="/foo">Aller à Foo</router-link>
+	    <router-link to="/bar">Aller à Bar</router-link>
+	  </p>
+	  <!-- balise pour le composant router-view -->
+	  <!-- le composant correspondant à la route sera rendu ici -->
+	  <router-view></router-view>
+	</div>
+
+</body>
+<script src="../node_modules/vue/dist/vue.js" charset="utf-8"></script>
+<script src="../node_modules/vue-router/dist/vue-router.js"></script>
+<script src="app-router.js" charset="utf-8"></script>
+</html>
