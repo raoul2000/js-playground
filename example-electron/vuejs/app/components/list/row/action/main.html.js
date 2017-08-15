@@ -2,7 +2,7 @@ module.exports = `
 <div>
   <button
     v-on:click="proceed"
-    v-bind:disabled="selected && selected.length === 0"
+    v-bind:disabled="selected === null || selected.length === 0"
   >
     proceed
   </button>

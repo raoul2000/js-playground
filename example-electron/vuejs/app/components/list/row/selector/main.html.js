@@ -1,21 +1,19 @@
 module.exports = `
   <div>
-    <select v-model="selected" v-on:change="selectionChange">
-      <option v-for="option in item.options" v-bind:value="option">
-      {{option}}
-      </option>
+
+    <select v-model="type" v-on:change="typeChange">
+      <option v-bind:value="null">select type...</option>
+      <option value="1">type 1</option>
+      <option value="2">type 2</option>
+      <option value="3">type 3</option>
     </select>
 
-    <select v-model="selected" v-on:change="selectionChange0">
-      <option v-for="option in options0" v-bind:value="option.id">
-      {{option.value}}
-      </option>
-    </select>
-
-    <select v-model="selected1" v-if="show1">
+    <select v-model="selected1" v-show="show1()" v-on:change="select1Change">
+      <option v-bind:value="null">select ...</option>
       <option v-for="option in options1" v-bind:value="option.id">
       {{option.value}}
       </option>
     </select>
+
   </div>
 `;
