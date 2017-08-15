@@ -1,0 +1,25 @@
+module.exports = `
+  <tr>
+    <td>
+      {{item.name}}
+    </td>
+    <td>
+      <my-selector
+        v-bind:item="item"
+        v-bind:options0="options0"
+        v-bind:key="item.id"
+        v-on:selected="optionSelected"
+      >
+      </my-selector>
+    </td>
+    <td>
+      {{selected}}
+    </td>
+    <td>
+      <my-action
+        v-bind:selected="selected"
+      >
+      </my-action>
+    </td>
+  </tr>
+`;

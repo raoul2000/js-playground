@@ -23,7 +23,7 @@ const app = new Vue({
   created: function () {
     // `this` est une référence à l'instance de vm
     console.log('created');
-    this.$router.push('/bar');  // default route
+    this.$router.push('/foo');  // default route
     this.loading = false;
   }
 }).$mount('#app');
