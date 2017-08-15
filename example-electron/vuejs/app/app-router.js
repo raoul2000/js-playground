@@ -13,5 +13,17 @@ const router = new VueRouter({
 });
 
 const app = new Vue({
-  router
+  router,
+  data : function() {
+    return {
+      loading: true,
+      message : "hello !"
+    };
+  },
+  created: function () {
+    // `this` est une référence à l'instance de vm
+    console.log('created');
+    this.$router.push('/bar');  // default route
+    this.loading = false;
+  }
 }).$mount('#app');

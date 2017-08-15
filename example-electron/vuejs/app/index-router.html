@@ -6,18 +6,23 @@
 </head>
 <body>
 	<div id="app">
-	  <h1>Bonjour l'application !</h1>
-	  <p>
-	    <!-- utilisez le composant router-link pour la navigation. -->
-	    <!-- spécifiez le lien en le passant à la prop `to` -->
-	    <!-- `<router-link>` sera rendu en tag `<a>` par défaut -->
-	    <router-link to="/download">Aller à Download</router-link>
-	    <router-link to="/foo">Aller à Foo</router-link>
-	    <router-link to="/bar">Aller à Bar</router-link>
-	  </p>
-	  <!-- balise pour le composant router-view -->
-	  <!-- le composant correspondant à la route sera rendu ici -->
-	  <router-view></router-view>
+		<div v-show="loading">
+			loading ...
+		</div>
+		<div v-show="!loading" style="display:none">
+		  <h1>Bonjour l'application ! {{message}}</h1>
+		  <p>
+		    <!-- utilisez le composant router-link pour la navigation. -->
+		    <!-- spécifiez le lien en le passant à la prop `to` -->
+		    <!-- `<router-link>` sera rendu en tag `<a>` par défaut -->
+		    <router-link to="/download">Aller à Download</router-link>
+		    <router-link to="/foo">Aller à Foo</router-link>
+		    <router-link to="/bar">Aller à Bar</router-link>
+		  </p>
+		  <!-- balise pour le composant router-view -->
+		  <!-- le composant correspondant à la route sera rendu ici -->
+		  <router-view></router-view>
+		</div>
 	</div>
 
 </body>
