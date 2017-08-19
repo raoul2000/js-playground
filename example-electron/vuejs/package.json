@@ -7,6 +7,7 @@
     "start": "electron main.js",
     "router-demo": "electron router-demo.js",
     "material-demo": "electron material-demo.js",
+    "vuetify-demo": "electron vuetify-demo.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tray": "electron main-tray.js"
   },
@@ -30,6 +31,7 @@
     "rxjs-es": "^5.0.0-beta.12",
     "vue": "^2.4.2",
     "vue-material": "^0.7.4",
-    "vue-router": "^2.7.0"
+    "vue-router": "^2.7.0",
+    "vuetify": "^0.14.11"
   }
 }

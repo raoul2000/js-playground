@@ -13,6 +13,10 @@ From the `example-electron`folder :
 
 To run the router demo :
     npm run router-demo
+Other demo :
+
+      npm run material-demo
+      npm run vuetify-demo
 # Usage
 
 	npm start
