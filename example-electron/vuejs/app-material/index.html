@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF8">
+  <title>material vue</title>
+
+  <link rel="stylesheet" href="../node_modules/roboto-fontface/css/roboto/roboto-fontface.css">
+  <link rel="stylesheet" href="../node_modules/material-design-icons-iconfont/dist/material-design-icons.css">
+  <link rel="stylesheet" href="../node_modules/vue-material/dist/vue-material.css">
+</head>
+<body>
+  material
+  <div id="app">
+    <md-toolbar>
+      <md-button class="md-icon-button" @click="toggleLeftSidenav">
+        <md-icon>menu</md-icon>
+      </md-button>
+      <h1 class="md-title">Vue Material Demo</h1>
+    </md-toolbar>
+
+    <div class="main-content" style="padding:16px">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, rerum? Error sunt, aperiam dolores, atque expedita molestiae tenetur. Quis eveniet accusamus velit explicabo adipisci reiciendis modi eaque quas, officia excepturi.</p>
+    </div>
+
+    <md-sidenav class="md-left" ref="leftSidenav" @open="open('Left')" @close="close('Left')">
+
+      <div class="phone-viewport">
+        <md-toolbar md-theme="white">
+          <span class="md-title">Single Expand</span>
+        </md-toolbar>
+        <md-list>
+          <md-list-item>
+              <md-icon>whatshot</md-icon>
+              <span>News</span>
+
+              <md-list-expand>
+              <md-list>
+                  <md-list-item class="md-inset">World</md-list-item>
+                  <md-list-item class="md-inset">Americas</md-list-item>
+                  <md-list-item class="md-inset">Europe</md-list-item>
+              </md-list>
+              </md-list-expand>
+          </md-list-item>
+        </md-list>
+    </md-sidenav>
+  </div>
+</body>
+<script src="../node_modules/vue/dist/vue.min.js" charset="utf-8"></script>
+<script src="../node_modules/vue-material/dist/vue-material.js"></script>
+<script type="text/javascript">
+
+  Vue.use(VueMaterial)
+  var App = new Vue({
+    el: '#app',
+    methods: {
+      toggleLeftSidenav() {
+        this.$refs.leftSidenav.toggle();
+      },
+      toggleRightSidenav() {
+        this.$refs.rightSidenav.toggle();
+      },
+      closeRightSidenav() {
+        this.$refs.rightSidenav.close();
+      },
+      open(ref) {
+        console.log('Opened: ' + ref);
+      },
+      close(ref) {
+        console.log('Closed: ' + ref);
+      }
+    }
+  })
+</script>
+</html>
