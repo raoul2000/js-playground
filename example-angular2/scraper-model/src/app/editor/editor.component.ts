@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NodeModel, DocumentModel } from '../service/model';
 import { DocumentParser } from '../service/doc-parser';
 import { DocumentSerializer } from '../service/doc-serializer';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ScraperDataService } from '../service/scraper-data'
+import { DataAPI } from '../service/data-api'
+
 
 @Component({
   selector: 'app-editor',
@@ -14,20 +16,46 @@ export class EditorComponent implements OnInit {
   public nodes: Array<any>;
   public doc: DocumentModel;
   private selectedNode: NodeModel;
+  public modelLoaded:boolean = false;
+  public createMode:boolean = false;
 
   title = 'Scraper';
 
   constructor(
     private api: ScraperDataService,
-    private router: Router
+    private scraperAPI:DataAPI,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    if (this.api.selectedDoc) {
-      console.log('ngOnInit', this.api.selectedDoc);
-      this.doc = this.api.selectedDoc;
-      this.nodes = [this.doc.getRootNode()];
-    }
+    this.route.url.map(segments => segments.join('')).subscribe(url => {
+      console.log(url);
+      if( url === 'create' ) {
+          this.doc = new DocumentModel("tmp");
+          this.nodes = [this.doc.getRootNode()];
+          this.modelLoaded = true;
+          this.createMode = true;
+      } else {
+
+        this.route.paramMap.subscribe((params: ParamMap) => {
+          const id = params.get('id');
+          console.log("id = ",id);
+          this.scraperAPI.view(id)
+          .subscribe(
+            res => {
+              console.log(res);
+              this.doc = res;
+              this.nodes = [res.getRootNode()];
+              this.modelLoaded = true;
+              this.createMode = false;
+            },
+            error => {
+              console.error('ERROR',error);
+            });
+          });
+      }
+    });
   }
 
   nodeSelectedEvent(node: NodeModel) {
@@ -38,11 +66,44 @@ export class EditorComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  update(){
+    this.scraperAPI.update(this.doc)
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      error => {
+        console.error('ERROR',error);
+      }
+    );
+    /*
+      this.api.saveDocument(this.doc).subscribe(res => {
+        console.log("saved", res);
+        this.router.navigate(['/']);
+      });
+      */
+  }
+  create() {
+    this.scraperAPI.create(this.doc)
+    .subscribe(
+      res => {
+        console.log(res);
+        this.doc = res;
+        this.nodes = [res.getRootNode()];
+        this.createMode = false;
+      },
+      error => {
+        console.error('ERROR',error);
+      }
+    );
+
+  }
   save() {
-    this.api.saveDocument(this.doc).subscribe(res => {
-      console.log("saved", res);
-      this.router.navigate(['/']);
-    });
+    if(this.createMode ) {
+      this.create();
+    } else {
+      this.update();
+    }
   }
   deselect() {
     this.selectedNode = null;

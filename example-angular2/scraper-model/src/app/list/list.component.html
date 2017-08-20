@@ -1,5 +1,6 @@
 <button type="button" name="button" (click)="getList()">GET LIST</button>
 <button type="button" name="button" (click)="createModel()">CREATE</button>
+<button type="button" name="button" (click)="updateModel()">UPDATE</button>
 <button type="button" name="button" (click)="view()">VIEW</button>
 <div class="container">
   <div class="row">
@@ -19,7 +20,7 @@
 
       <div class="btn-toolbar" role="toolbar" aria-label="toolbar">
         <div class="btn-group" role="group" aria-label="actions">
-          <button (click)="newDocument()" class="btn btn-primary" type="submit">
+          <button (click)="create()" class="btn btn-primary" type="submit">
             <span class="glyphicon glyphicon-plus"></span>
             Add
           </button>
@@ -36,7 +37,7 @@
             <th>actions</th>
           </tr>
         </thead>
-        <tr *ngFor="let item of items">
+        <tr *ngFor="let item of itemInfo">
           <td title="id:{{item.id}}">{{item.name}}</td>
           <td>
             <div class="btn-group btn-group-sm" role="group" aria-label="...">
