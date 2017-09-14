@@ -34,13 +34,28 @@ exports.reflect = function(promise) {
 };
 
 /**
+ * Test if a Promise reflection result is resolved or not.
+ *
+ * @param  {object} reflectionObject see reflect
+ * @return {boolean}                 True is resolved
+ */
+exports.isResolved = function(reflectionObject) {
+  if( typeof reflectionObject === "object" && reflectionObject.hasOwnProperty('resolved')) {
+    return reflectionObject.resolved;
+  } else {
+    throw new Error('the argument is not a reflection object');
+  }
+};
+
+
+/**
  * Creates and return an array of functions. Each function invokes *fn* with one
  * argument from the *tasks* array and returns a Promise.
  *
- * @param  {[type]}   tasks            [description]
- * @param  {Function} fn               [description]
- * @param  {Boolean}  [withReflect=true] [description]
- * @return {[type]}                    [description]
+ * @param  {[type]}   tasks            list of arguments used to invoke the function fn
+ * @param  {Function} fn               function returning a Promise and invoked for each item in the tasks array
+ * @param  {Boolean}  [withReflect=true] when TRUE, the returned Promise is never rejected (see reject)
+ * @return {Array}                    Array containing functions
  */
 exports.createPromiseFuncs = function (tasks, fn, withReflect = true) {
   return tasks.map( task => () =>  withReflect ? exports.reflect(fn(task)) : fn(task)  );
@@ -48,8 +63,8 @@ exports.createPromiseFuncs = function (tasks, fn, withReflect = true) {
 
 /**
  * Returns a Promise that is fullfilled when all tasks are settled.
- * Each task is executed in sequence. If the promise is resolved, its value is an array containing
- * the value or the reflect objet of each task in the sequence. 
+ * Each task is executed in SEQUENCE. If the promise is resolved, its value is an array containing
+ * the value or the reflect objet of each task in the sequence.
  *
  * @see https://hackernoon.com/functional-javascript-resolving-promises-sequentially-7aac18c4431e
  * @param  {Array}   tasks list of arguments used to invoke the function fn
@@ -66,11 +81,14 @@ exports.serial = function (tasks, fn, withReflect = true) {
 };
 
 /**
- * [description]
- * @param  {[type]}   tasks [description]
- * @param  {Function} fn    [description]
- * @param  {Boolean}  [withReflect=true] [description]
- * @return {[type]}         [description]
+* Returns a Promise that is fullfilled when all tasks are settled.
+* Each task is executed in PARALLEL . If the promise is resolved, its value is an array containing
+* the value or the reflect objet of each task in the sequence.
+*
+ * @param  {[type]}   tasks list of arguments used to invoke the function fn
+ * @param  {Function} fn   function returning a Promise and invoked for each item in the tasks array
+ * @param  {Boolean}  [withReflect=true] when TRUE, the returned Promise is never rejected (see reject)
+ * @return {[type]}         Resolved Promise array (see reflec)
  */
 exports.parallel = function (tasks, fn, withReflect = true) {
   return Promise.all(
