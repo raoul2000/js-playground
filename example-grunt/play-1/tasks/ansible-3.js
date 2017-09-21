@@ -57,6 +57,8 @@ exports.createPlaybook = function(name, grunt, role) {
   grunt.log.ok('remoteFolderPath : ',remoteFolderPath);
   grunt.log.ok('role             : ',role);
 
+  let remoteFolderList = [];
+
   ////////////////////////////////////////////////////////////////////////////
   // create playbook folder
 
@@ -75,7 +77,7 @@ exports.createPlaybook = function(name, grunt, role) {
       'tasks' : []
     };
     let srcBasePath   = path.join( baseFolderPath, thisRole);
-    let countCopyFile = 0, countCcreateEmptyFolder = 0, countSetExecutable = 0;
+    let countCopyFile = 0, countCreateEmptyFolder = 0, countSetExecutable = 0;
 
     grunt.file.expand({
       'cwd' : srcBasePath
@@ -87,6 +89,20 @@ exports.createPlaybook = function(name, grunt, role) {
       let newTask = null;
       if( grunt.file.isFile(srcPath)) {
         countCopyFile++;
+        // Ansible will not create parent folder if it doesn't already exists on the target
+        // To prevent error during file copy, check that parent folder exists
+        let remoteParentfolder = path.posix.dirname(trgPath);
+        if( ! remoteFolderList.find( f => f === remoteParentfolder) ) {
+          remoteFolderList.push(remoteParentfolder);  // cache tested folders
+          ansiblePlaybook.tasks.push({
+            "name" : `ensure folder ${remoteParentfolder} exists`,
+            "file" : {
+              "path" : remoteParentfolder,
+              "state" : "directory"
+            }
+          });
+        }
+        // now build the file copy task
         newTask = {
           "name" : `copy ../${thisRole}/${item} to ${trgPath}`,
           "copy" : {
@@ -100,7 +116,7 @@ exports.createPlaybook = function(name, grunt, role) {
           newTask.copy.mode = 'u=rwx,g=rx,o=rx';
         }
       }else if(isEmptyDir(grunt, srcPath)) {
-        countCcreateEmptyFolder++;
+        countCreateEmptyFolder++;
         newTask = {
           "name" : `create empty folder ${trgPath}`,
           "file" : {
@@ -113,12 +129,11 @@ exports.createPlaybook = function(name, grunt, role) {
         grunt.verbose.ok('adding new task', newTask);
         ansiblePlaybook.tasks.push(newTask);
       }
-
     }); // for each file in the current role
 
     grunt.log.ok(`stats :
       copy files (executable) = ${countCopyFile} (${countSetExecutable}),
-      create empty folder     = ${countCcreateEmptyFolder},
+      create empty folder     = ${countCreateEmptyFolder},
       total tasks             = ${ansiblePlaybook.tasks.length}
     `);
     if( ansiblePlaybook.tasks.length) {
