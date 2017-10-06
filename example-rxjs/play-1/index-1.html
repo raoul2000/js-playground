@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="node_modules/rxjs/bundles/Rx.js" charset="utf-8"></script>
+    <title></title>
+  </head>
+  <body>
+
+  <script type="text/javascript">
+    // stream 1 : data handler only -----------------------
+    let stream$ = Rx.Observable.create((observer) => {
+      observer.next(1); // emit value 1 into the stream
+    });
+
+    stream$.subscribe((data) => {
+      console.log(data);
+    })
+
+    // stream 2 : data and error handlers --------------------
+    let stream2$ = Rx.Observable.create((observer) => {
+      
+      observer.next(2); // emit value 1 into the stream
+      observer.error('error message'); // emit an error. After this error
+      // nothing can be emited into the stream
+      observer.next("no emitted"); 
+      
+    });
+
+    stream2$.subscribe(
+      (data) => console.log(data),
+      (error) => console.log(error)
+     );
+
+    // stream 3 : data and error handlers --------------------
+    let stream3$ = Rx.Observable.create((observer) => {
+      
+      observer.next('a'); 
+      observer.next('b');
+      observer.complete('info'); // inform observer that the stream is now closed      
+    });
+
+    stream3$.subscribe(
+      (data) => console.log(data),
+      (error) => console.log(error),
+      () => console.log("COMPLETE")
+     );
+
+    // stream 4 : a stream providing a clean up function ----------------------------------
+    let stream4$ = Rx.Observable.create((observer) => {
+      
+      observer.next('a'); 
+      observer.next('b');
+      observer.complete('info'); // inform observer that the stream is now closed     
+      return function() {
+        console.log('CLEAN UP');
+      }
+    });
+
+    let subscription4 = stream4$.subscribe(
+      (data) => console.log(data),
+      (error) => console.log(error),
+      () => console.log("COMPLETE")
+     );
+     
+     // explicitely invoke the clean up function
+    setTimeout(() => {
+      subscription4.unsubscribe() // here we invoke the cleanup function
+    }, 3000)     
+
+
+
+
+  </script>
+  </body>
+</html>

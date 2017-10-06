@@ -1,0 +1,11 @@
+{
+  "name": "play-1",
+  "version": "1.0.0",
+  "description": "playing (and learning) rxjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
