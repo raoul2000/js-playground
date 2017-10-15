@@ -2,13 +2,10 @@ import Html exposing (..)
 import Html.Events exposing (..)
 import Random exposing (..)
 
-
-
 type alias Model = { diceFace : Int }
 
 model : Model
-model =
-  { diceFace = 1 }
+model = { diceFace = 1 }
 
 type Msg = Roll | NewFace Int
 
@@ -34,7 +31,7 @@ view  model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
-  
+
 init : ( Model, Cmd Msg)
 init =
   ( model , Cmd.none)
