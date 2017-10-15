@@ -32,7 +32,7 @@ view  taskList =
   div []
   [
     h1 [] [ text "task list"]
- ,  Array.map taskView taskList
+ ,  List.map (\task -> task.name) taskList
   ]
 
 taskView : Task -> Html Msg
