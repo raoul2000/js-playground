@@ -1,5 +1,5 @@
 import Html exposing (..)
-import Array
+import Html.Attributes exposing (..)
 
 
 type alias Task = { name : String, completed : Bool }
@@ -11,7 +11,7 @@ type Msg
 init : (TaskList, Cmd Msg)
 init = (
    [
-    Task "buy milk"  False,
+    Task "buy milk"  True,
     Task "buy bread"  False
   ], Cmd.none)
 
@@ -32,14 +32,28 @@ view  taskList =
   div []
   [
     h1 [] [ text "task list"]
- ,  List.map (\task -> task.name) taskList
+  ,  hr [] []
+  ,  renderTaskList taskList
   ]
 
-taskView : Task -> Html Msg
-taskView task =
-  div [] [
-    text task.name
-  ]
+
+renderTaskList : TaskList -> Html Msg
+renderTaskList taskList =
+  ul [] (
+    List.map renderSingleTask taskList
+  )
+
+renderSingleTask : Task -> Html Msg
+renderSingleTask task =
+  li
+    [ classList
+      [
+        ("completed", task.completed)
+      ]
+    ]
+    [
+      text task.name
+    ]
 
 
 subscriptions : TaskList -> Sub Msg
