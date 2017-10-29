@@ -13,6 +13,7 @@ type Msg
   = None
   | AddTask
   | UpdateNewTaskName String
+  | ToggleTaskComplete String
 
 init : (TaskList, Cmd Msg)
 init = (
@@ -35,9 +36,19 @@ update msg model =
     AddTask ->
       (
         { model |
-            list =  Task model.newTaskName False :: model.list
+            list =  List.append  model.list [Task model.newTaskName False]
           , newTaskName = "" }
         , Cmd.none
+      )
+    ToggleTaskComplete taskName ->
+      (
+       { model |
+          list = List.map (\n ->
+            if n.name == taskName then
+              { n | completed = not n.completed}
+              else n) model.list
+       }
+       , Cmd.none
       )
 
 
@@ -65,14 +76,15 @@ renderTaskList taskList =
 
 renderSingleTask : Task -> Html Msg
 renderSingleTask task =
-  li
-    [ classList
+  li [ classList
       [
         ("completed", task.completed)
       ]
     ]
     [
-      text task.name
+      input [ type_ "checkbox", onClick (ToggleTaskComplete task.name)  ] []
+    , text (task.name ++ toString task.completed)
+
     ]
 
 
