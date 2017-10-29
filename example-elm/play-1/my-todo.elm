@@ -1,46 +1,59 @@
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 
 
-type alias Task = { name : String, completed : Bool }
-type alias TaskList = { list : List Task}
+type alias Task     = { name : String, completed : Bool }
+type alias TaskList = {
+  list : List Task,
+  newTaskName : String
+}
 
 type Msg
   = None
-  | NewTask String
+  | AddTask
+  | UpdateNewTaskName String
 
 init : (TaskList, Cmd Msg)
 init = (
    { list = [
-    Task  "buy milk"  True,
-    Task "buy bread"  False
-  ]}, Cmd.none)
+        Task  "buy milk"  True,
+        Task "buy bread"  False
+      ]
+  , newTaskName = ""}, Cmd.none)
 
-
-isCompleted : Task -> Bool
-isCompleted task =
-  task.completed
 
 update : Msg -> TaskList -> (TaskList, Cmd Msg)
 update msg model =
   case msg of
     None ->
       (model, Cmd.none)
-    NewTask name ->
-      (model, Cmd.none)
---      ( { name = name, completed = False } :: model.list , Cmd.none)
+    UpdateNewTaskName value->
+      (
+        {model | newTaskName = value}
+      , Cmd.none)
+    AddTask ->
+      (
+        { model |
+            list =  Task model.newTaskName False :: model.list
+          , newTaskName = "" }
+        , Cmd.none
+      )
 
 
 view : TaskList -> Html Msg
 view  taskList =
   div []
   [
-    h1 [] [ text "task list"]
+     h1 [] [ text "task list"]
   ,  hr [] []
   ,  renderTaskList taskList
-  ,  input [ placeholder "Text to reverse", onInput NewTask ] []
-  ,  button [] [ text "new task" ]
+  ,  input [ placeholder "task name"
+           , value taskList.newTaskName
+           , onInput UpdateNewTaskName
+           ]
+           []
+  ,  button [ onClick AddTask ] [ text "new task" ]
   ]
 
 
