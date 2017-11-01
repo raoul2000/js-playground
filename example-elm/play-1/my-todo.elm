@@ -36,6 +36,9 @@ update msg model =
       , Cmd.none)
     AddTask ->
       (
+        if model.newTaskName == "" then
+          model
+        else
         { model |
             list =  List.append  model.list [Task model.newTaskName False]
           , newTaskName = "" }
