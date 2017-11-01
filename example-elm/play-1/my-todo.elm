@@ -42,6 +42,8 @@ update msg model =
       (
         if model.newTaskName == "" then
           model
+        else if taskNameAlreadyExist model.newTaskName model then
+          model
         else
         { model |
             list =  List.append  model.list [Task model.newTaskName False]
@@ -123,8 +125,19 @@ view  taskList =
            ]
            []
   ,  button [ onClick AddTask ] [ text "new task" ]
+  , div [] [ validateNewTask taskList ]
   ]
 
+validateNewTask : TaskList -> Html Msg
+validateNewTask taskList =
+  if taskNameAlreadyExist taskList.newTaskName taskList then
+    span [] [ text "task name already exists"]
+  else
+    span [] []
+
+taskNameAlreadyExist : String -> TaskList -> Bool
+taskNameAlreadyExist newTaskName taskList =
+  not (List.length (List.filter ( \task ->  task.name == newTaskName) taskList.list) == 0)
 
 renderTaskList : TaskList -> Html Msg
 renderTaskList taskList =
