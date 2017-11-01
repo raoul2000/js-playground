@@ -74,9 +74,44 @@ update msg model =
         , Cmd.none
       )
 
+-- view
+
+appWrapperStyle : Attribute msg
+appWrapperStyle =
+  style
+    [ ("margin"  , "1em")
+    , ("padding" , "1em")
+    ]
+
+listStyle : Attribute msg
+listStyle =
+  style
+   [ ("padding" , "0px") ]
+
+listItemStyle : Attribute msg
+listItemStyle =
+  style
+    [ ( "list-style" , "none")
+    , ( "line-height", "2em")
+    ]
+
+completedStyle : Attribute msg
+completedStyle =
+  style
+  [ ("color", "#aca6a6")
+  , ("text-decoration",  "line-through")
+  ]
+
+uncompletedStyle : Attribute msg
+uncompletedStyle =
+  style
+  [ ("color", "inherit")]
+
+
+
 view : TaskList -> Html Msg
 view  taskList =
-  div []
+  div [ appWrapperStyle ]
   [
      h1 [] [ text "task list"]
   ,  hr [] []
@@ -93,13 +128,13 @@ view  taskList =
 
 renderTaskList : TaskList -> Html Msg
 renderTaskList taskList =
-  ul [] (
+  ul [ listStyle ] (
     List.map renderSingleTask taskList.list
   )
 
 renderSingleTask : Task -> Html Msg
 renderSingleTask task =
-  li [ classList
+  li [ listItemStyle,  classList
       [
         ("completed", task.completed)
       ]
@@ -109,7 +144,8 @@ renderSingleTask task =
             , checked task.completed
             , onClick (ToggleTaskComplete task.name)
             ] []
-    , text (task.name ++ toString task.completed)
+    , span [ if task.completed then completedStyle else uncompletedStyle ]
+           [  text (task.name ++ " ")]
     , button [ onClick (DeleteTask task.name)] [ text "delete"]
     ]
 
