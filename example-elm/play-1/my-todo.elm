@@ -14,6 +14,7 @@ type Msg
   | AddTask
   | UpdateNewTaskName String
   | ToggleTaskComplete String
+  | DeleteTask String
 
 init : (TaskList, Cmd Msg)
 init = (
@@ -49,6 +50,13 @@ update msg model =
               else n) model.list
        }
        , Cmd.none
+      )
+    DeleteTask taskName ->
+      (
+        { model |
+           list = List.filter ( \task -> not (task.name == taskName) ) model.list
+        }
+        , Cmd.none
       )
 
 
@@ -87,6 +95,7 @@ renderSingleTask task =
             , onClick (ToggleTaskComplete task.name)
             ] []
     , text (task.name ++ toString task.completed)
+    , button [ onClick (DeleteTask task.name)] [ text "delete"]
 
     ]
 
