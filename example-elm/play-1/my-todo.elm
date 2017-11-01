@@ -82,10 +82,14 @@ renderSingleTask task =
       ]
     ]
     [
-      input [ type_ "checkbox", onClick (ToggleTaskComplete task.name)  ] []
+      input [ type_ "checkbox"
+            , checked task.completed
+            , onClick (ToggleTaskComplete task.name)
+            ] []
     , text (task.name ++ toString task.completed)
 
     ]
+
 
 
 subscriptions : TaskList -> Sub Msg
