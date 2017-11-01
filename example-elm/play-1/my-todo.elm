@@ -15,6 +15,7 @@ type Msg
   | UpdateNewTaskName String
   | ToggleTaskComplete String
   | DeleteTask String
+  | DeleteCompletedTasks
 
 init : (TaskList, Cmd Msg)
 init = (
@@ -32,16 +33,20 @@ update msg model =
       (model, Cmd.none)
     UpdateNewTaskName value->
       (
-        {model | newTaskName = value}
-      , Cmd.none)
-    AddTask ->
+        { model |
+          newTaskName = value
+        }
+        , Cmd.none
+      )
+    AddTask -> -- TODO : validate task name uniqueness
       (
         if model.newTaskName == "" then
           model
         else
         { model |
             list =  List.append  model.list [Task model.newTaskName False]
-          , newTaskName = "" }
+          , newTaskName = ""
+        }
         , Cmd.none
       )
     ToggleTaskComplete taskName ->
@@ -49,7 +54,7 @@ update msg model =
        { model |
           list = List.map (\n ->
             if n.name == taskName then
-              { n | completed = not n.completed}
+              { n | completed = not n.completed }
               else n) model.list
        }
        , Cmd.none
@@ -61,7 +66,13 @@ update msg model =
         }
         , Cmd.none
       )
-
+    DeleteCompletedTasks ->
+      (
+        { model |
+           list = List.filter ( \task -> not task.completed ) model.list
+        }
+        , Cmd.none
+      )
 
 view : TaskList -> Html Msg
 view  taskList =
@@ -69,6 +80,7 @@ view  taskList =
   [
      h1 [] [ text "task list"]
   ,  hr [] []
+  ,  button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks"]
   ,  renderTaskList taskList
   ,  input [ placeholder "task name"
            , value taskList.newTaskName
@@ -99,10 +111,7 @@ renderSingleTask task =
             ] []
     , text (task.name ++ toString task.completed)
     , button [ onClick (DeleteTask task.name)] [ text "delete"]
-
     ]
-
-
 
 subscriptions : TaskList -> Sub Msg
 subscriptions model =
