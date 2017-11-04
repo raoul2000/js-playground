@@ -12,11 +12,12 @@ subscriptions model =
 -- Model
 type alias Model = {
   topic : String,
-  gifUrl : String
+  gifUrl : String,
+  busy : Bool
 }
 
 init : (Model, Cmd Msg)
-init = (Model "cats" "waiting.gif", Cmd.none)
+init = (Model "cats" "waiting.gif" False,  getRandomGif "cats" )
 
 -- update
 type Msg =
@@ -28,12 +29,12 @@ update  msg model =
   case msg of
     MorePlease ->
       (
-        model,
+      { model | busy = True },
         getRandomGif model.topic
       )
     NewGif (Ok newUrl) ->
       (
-        { model | gifUrl = newUrl},
+        { model | gifUrl = newUrl , busy = False},
         Cmd.none
       )
     NewGif (Err _) ->
@@ -65,7 +66,7 @@ view model =
     [
       h2 [] [ text model.topic ]
     , img [ src  model.gifUrl ] []
-    , button [ onClick MorePlease ] [ text "More Please ! "]
+    , button [ onClick MorePlease ] [ text ("More Please ! " ++ toString model.busy)]
     ]
 
 
