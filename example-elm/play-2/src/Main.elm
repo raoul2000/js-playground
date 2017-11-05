@@ -1,26 +1,28 @@
 module App exposing (..)
 
 import Message exposing (Msg(..))
-import Model exposing (Model)
+import Model exposing (Model, PlayerId, Player)
 import View exposing (view)
 import Html exposing (Html, div, text, program)
-
 
 -- MODEL
 
 init : ( Model, Cmd Msg )
 init =
-    ( "Hello", Cmd.none )
+    ({ players = [ Player "1" "tom"
+                  , Player "2" "bob"
+                  , Player "3" "alf"
+                  ]
+      , name = "dummy"
+      }
+    , Cmd.none )
 
 -- MESSAGES
 
-
 -- VIEW
 
-
-
-
 -- UPDATE
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -34,10 +36,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
-
-
 -- MAIN
-
 
 main : Program Never Model Msg
 main =
