@@ -1,10 +1,12 @@
 module App exposing (..)
 
+import Message exposing (Msg(..))
+import Model exposing (Model)
+import View exposing (view)
 import Html exposing (Html, div, text, program)
 
--- MODEL
 
-type alias Model =   String
+-- MODEL
 
 init : ( Model, Cmd Msg )
 init =
@@ -12,15 +14,11 @@ init =
 
 -- MESSAGES
 
-type Msg = NoOp
 
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
-    div []
-        [ text model ]
+
 
 -- UPDATE
 
