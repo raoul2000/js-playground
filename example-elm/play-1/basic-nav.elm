@@ -6,13 +6,18 @@ import Html.Attributes exposing (href)
 import Navigation exposing (Location)
 import UrlParser exposing (..)
 
--- ROUTING
+-- based on : https://www.elm-tutorial.org/fr/07-routage/cover.html
+-- see also : https://medium.com/@nithstong/spa-simple-with-elm-navigation-630bdfdbef94
 
+-- ROUTING
+-- define all possible routes
+-- with or without parameter (e.g. EditRoute "stringId")
 type Route
     = ViewRoute
     | AboutRoute
     | EditRoute String
     | NotFoundRoute
+
 
 matchers : Parser (Route -> a) a
 matchers =
@@ -22,6 +27,8 @@ matchers =
         , map EditRoute (s "edit" </> string)
         ]
 
+-- Returns a route from a Location using the matchers
+-- defined above
 parseLocation : Location -> Route
 parseLocation location =
     case (parseHash matchers location) of
@@ -38,6 +45,10 @@ initialModel : Route -> Model
 initialModel route =
   { text = "hello", route = route }
 
+-- this is a special init function that take a Location as aargument
+-- this init function is required by our main which is not Html.program anymore
+-- but Navigation.program. This one will send a message each time the browser location
+-- changes
 init : Location -> ( Model, Cmd Msg )
 init location =
     let
@@ -84,7 +95,7 @@ update msg model =
                 newRoute =
                     parseLocation location
             in
-                ( { model | route = newRoute }, Cmd.none )
+                ( {  model | route = newRoute }, Cmd.none )
         NoOp ->
             ( model, Cmd.none )
 
@@ -95,6 +106,8 @@ subscriptions model =
     Sub.none
 
 -- MAIN
+-- Not the usual Html.program !! .. but a new one that sends message when the browser
+-- location changes
 main : Program Never Model Msg
 main =
     Navigation.program OnLocationChange
