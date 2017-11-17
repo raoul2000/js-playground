@@ -22,7 +22,8 @@ type Route
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map ViewRoute  (s "view" )
+        [ map ViewRoute  top
+        , map ViewRoute  (s "view" )
         , map AboutRoute (s "about")
         , map EditRoute (s "edit" </> string)
         ]
@@ -70,6 +71,8 @@ view model =
         [ a [ href "#view" ] [ text "view"]
         , text " | "
         , a [href "#about"]  [ text "about"]
+        , text " | "
+        , a [href "#edit/123"]  [ text "edit (123)"]
         , page model
         ]
 
