@@ -1,10 +1,9 @@
 module App exposing (..)
-
---import Html exposing (Html,  div, text, program)
-
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onClick)
 
+-- example : https://github.com/gribouille/elm-treeview/blob/master/src/Treeview.elm
 
 -- MODEL
 
@@ -12,6 +11,7 @@ import Html.Attributes exposing (..)
 type alias Node =
     { id : String
     , name : String
+    , state : NodeState
     , children : Children
     }
 
@@ -19,6 +19,8 @@ type alias Node =
 type Children
     = Children (List Node)
 
+type NodeState
+    = Opened | Closed
 
 type alias Options =
     { showRootNode : Bool
@@ -36,28 +38,34 @@ initialModel =
     Model
         (Node "id1"
             "name1"
+            Opened
             (Children
                 [ Node
                     "id1.1"
                     "name1.1"
+                    Opened
                     (Children [])
                 , Node
                     "id1.2"
                     "name1.2"
+                    Opened
                     (Children
                         [ Node
                             "id1.2.1"
                             "name1.2.1"
+                            Opened
                             (Children [])
                         , Node
                             "id1.2.2"
                             "name1.2.2"
+                            Opened
                             (Children [])
                         ]
                     )
                 , Node
                     "id1.3"
                     "name1.3"
+                    Opened
                     (Children [])
                 ]
             )
@@ -76,6 +84,7 @@ init =
 
 type Msg
     = NoOp
+    | ToggleVisibility Node
 
 
 
@@ -100,13 +109,19 @@ renderChildren children =
 
 renderNode : Node -> Html Msg
 renderNode node =
-    li [ class "node-item" ]
+    li [  class "node-item"
+       ,  onClick (ToggleVisibility node)]
         (List.append
             [ text node.id
             , text " "
             , text node.name
             ]
-            (List.map renderChildren [ node.children ])
+            ( if node.state == Opened then
+                List.map renderChildren [ node.children ]
+              else
+                []
+              )
+--            (List.map renderChildren [ node.children ])
         )
 
 
@@ -129,7 +144,18 @@ view model =
         , renderTree model
         ]
 
+toggleVisibility : Model -> Node -> Model
+toggleVisibility model node
+  = model
+--  =   { model | root = List.map (toggleItem node.id) [model.root] }
 
+
+toggleItem : String -> Node -> Node
+toggleItem id node =
+  if node.id == id then
+    {node | state = (if node.state == Opened then Closed else Opened)}
+  else
+    node
 
 -- UPDATE
 
@@ -138,7 +164,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
-            ( model, Cmd.none )
+          ( model, Cmd.none )
+        ToggleVisibility node ->
+          ( toggleVisibility model node , Cmd.none )
 
 
 
