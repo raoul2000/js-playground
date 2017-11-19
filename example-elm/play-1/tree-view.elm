@@ -105,15 +105,6 @@ isEmptyList nodeList =
 -- VIEW
 
 
-renderChildren : Children -> Html Msg
-renderChildren (Children nodeList) =
-    if isEmptyList nodeList then
-        Html.text ""
-    else
-        ul []
-            (List.map renderNode nodeList)
-
-
 renderNode : Node -> Html Msg
 renderNode node =
     li [ class "node-item" ]
@@ -128,6 +119,15 @@ renderNode node =
                 []
             )
         )
+
+
+renderChildren : Children -> Html Msg
+renderChildren (Children nodeList) =
+    if isEmptyList nodeList then
+        Html.text ""
+    else
+        ul []
+            (List.map renderNode nodeList)
 
 
 renderTree : Model -> Html Msg
