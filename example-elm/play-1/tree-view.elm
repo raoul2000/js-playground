@@ -109,10 +109,9 @@ renderChildren children =
 
 renderNode : Node -> Html Msg
 renderNode node =
-    li [  class "node-item"
-       ,  onClick (ToggleVisibility node)]
+    li [  class "node-item" ]
         (List.append
-            [ text node.id
+            [ span [ onClick (ToggleVisibility node) ]  [  text node.id ]
             , text " "
             , text node.name
             ]
@@ -146,16 +145,18 @@ view model =
 
 toggleVisibility : Model -> Node -> Model
 toggleVisibility model node
-  = model
---  =   { model | root = List.map (toggleItem node.id) [model.root] }
+--  = model
+  =   { model | root =  (toggleItem node.id model.root)  }
 
 
 toggleItem : String -> Node -> Node
 toggleItem id node =
-  if node.id == id then
+  if node.id ==  Debug.log "node Id" id then
     {node | state = (if node.state == Opened then Closed else Opened)}
   else
-    node
+    case node.children of
+      Children nodeList ->
+        { node | children = Children (List.map ( toggleItem id ) nodeList ) }
 
 -- UPDATE
 
