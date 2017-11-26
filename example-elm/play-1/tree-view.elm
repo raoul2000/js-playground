@@ -101,15 +101,34 @@ isEmptyList nodeList =
     List.length nodeList == 0
 
 
+nodeHasChildren : Node -> Bool
+nodeHasChildren node =
+    childrenNodeList node.children
+        |> isEmptyList
+        |> not
 
 -- VIEW
+
+
+renderFoldButton : Node -> Html Msg
+renderFoldButton node =
+    if nodeHasChildren node then
+        if node.state == Opened then
+            span [ onClick (ToggleVisibility node) ] [ text "[-]" ]
+        else
+            span [ onClick (ToggleVisibility node) ] [ text "[+]" ]
+    else
+        span [] []
 
 
 renderNode : Node -> Html Msg
 renderNode node =
     li [ class "node-item" ]
         (List.append
-            [ span [ onClick (ToggleVisibility node) ] [ text node.id ]
+            [ span []
+                [ renderFoldButton node
+                , text node.id
+                ]
             , text " "
             , text node.name
             ]
