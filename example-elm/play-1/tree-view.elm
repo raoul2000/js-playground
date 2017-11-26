@@ -107,6 +107,8 @@ nodeHasChildren node =
         |> isEmptyList
         |> not
 
+
+
 -- VIEW
 
 
@@ -173,25 +175,46 @@ view model =
 -- UPDATE
 
 
+toggleNodeVisibility : Node -> Node
+toggleNodeVisibility node =
+    { node
+        | state =
+            (if node.state == Opened then
+                Closed
+             else
+                Opened
+            )
+    }
+
+
+
+-- toggle visibility state for a node
+
+
 toggleVisibility : Model -> Node -> Model
 toggleVisibility model node =
     { model | root = (toggleItem node.id model.root) }
 
 
+
+-- toggle the value of the state property for a Node using its id
+-- Starting from a node this function recursively browse the tree
+-- until it finds the node with the correct Id
+
+
 toggleItem : String -> Node -> Node
 toggleItem id node =
     if node.id == Debug.log "node Id" id then
-        { node
-            | state =
-                (if node.state == Opened then
-                    Closed
-                 else
-                    Opened
-                )
-        }
+        toggleNodeVisibility node
     else
         { node
-            | children = Children (List.map (toggleItem id) (childrenNodeList node.children))
+            | children =
+                Children
+                    (node.children
+                        |> \(Children nodeList) -> --we could also use function childrenNodeList instead of an anonmous function
+                            nodeList
+                        |> List.map (toggleItem id)
+                    )
         }
 
 
