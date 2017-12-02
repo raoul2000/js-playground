@@ -1,6 +1,11 @@
 module Model exposing (..)
 
-import Router exposing (..)
+
+type Route
+    = ViewAllRoute
+    | AboutRoute
+    | EditPlayerRoute PlayerId
+    | NotFoundRoute
 
 
 type alias PlayerId = String

@@ -2,12 +2,7 @@ module Router exposing (..)
 
 import Navigation exposing (Location)
 import UrlParser exposing (..)
-
-
-type Route
-    = ViewAllRoute
-    | AboutRoute
-    | NotFoundRoute
+import Model exposing (..)
 
 
 matchers : Parser (Route -> a) a
@@ -15,7 +10,9 @@ matchers =
     oneOf
         [ map ViewAllRoute top
         , map AboutRoute (s "about")
+        , map EditPlayerRoute (s "edit" </> string)
         ]
+
 
 
 

@@ -4,22 +4,26 @@ import Model exposing (Model, Player)
 import Message exposing (Msg(..))
 import Html exposing (Html, div, text, a, program)
 import Html.Attributes exposing (href)
-import Router exposing (..)
 
 import ViewAll exposing (viewAll)
 import About   exposing (about)
+import EditPlayer   exposing (editPlayer)
+
 
 
 renderMainView : Model -> Html Msg
 renderMainView model =
     case model.route of
-        ViewAllRoute ->
+        Model.ViewAllRoute ->
             viewAll model
 
-        AboutRoute ->
+        Model.AboutRoute ->
             about model
 
-        NotFoundRoute ->
+        Model.EditPlayerRoute string ->
+          editPlayer model string
+
+        Model.NotFoundRoute ->
             div [] [ text "NOT FOUND route " ]
 
 
