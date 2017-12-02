@@ -26,10 +26,6 @@ init location =
         )
 
 
-
---        ( initialModel currentRoute, Cmd.none )
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
