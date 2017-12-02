@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "postinstall" : "elm-package install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev-server" : "http-server -o",
     "make" : "elm-make ./src/Main.elm --output=main.js"

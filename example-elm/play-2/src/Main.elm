@@ -3,6 +3,7 @@ module App exposing (..)
 import Message exposing (Msg(..))
 import Model exposing (Model, PlayerId, Player)
 import View exposing (view)
+import Update exposing (update)
 import Html exposing (Html, div, text, program)
 
 -- MODEL
@@ -17,20 +18,6 @@ init =
       }
     , Cmd.none )
 
--- MESSAGES
-
--- VIEW
-
--- UPDATE
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
--- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
