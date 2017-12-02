@@ -4,8 +4,12 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
+{--
+This is a exercice to represent a tree using elm.
+example : https://github.com/gribouille/elm-treeview/blob/master/src/Treeview.elm
+--}
 
--- example : https://github.com/gribouille/elm-treeview/blob/master/src/Treeview.elm
+
 -- MODEL
 
 

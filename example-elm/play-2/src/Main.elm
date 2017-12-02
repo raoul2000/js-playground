@@ -4,30 +4,44 @@ import Message exposing (Msg(..))
 import Model exposing (Model, PlayerId, Player)
 import View exposing (view)
 import Update exposing (update)
-import Html exposing (Html, div, text, program)
+import Router exposing (..)
+import Navigation exposing (Location)
 
--- MODEL
 
-init : ( Model, Cmd Msg )
-init =
-    ({ players = [ Player "1" "tom"
-                  , Player "2" "bob"
-                  , Player "3" "alf"
-                  ]
-      , name = "dummy"
-      }
-    , Cmd.none )
+init : Location -> ( Model, Cmd Msg )
+init location =
+    let
+        currentRoute =
+            parseLocation location
+    in
+        ( { players =
+                [ Player "1" "tom"
+                , Player "2" "bob"
+                , Player "3" "alf"
+                ]
+          , name = "dummy"
+          , route = currentRoute
+          }
+        , Cmd.none
+        )
+
+
+
+--        ( initialModel currentRoute, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
+
+
 -- MAIN
+
 
 main : Program Never Model Msg
 main =
-    program
+    Navigation.program OnLocationChange
         { init = init
         , view = view
         , update = update

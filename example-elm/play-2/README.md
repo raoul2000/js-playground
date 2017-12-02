@@ -7,10 +7,10 @@ Install *node* dependencies and the *elm* dependencies too.
 npm Install
 ```
 
-## Build
+## Make
 
 ```
-npm run build
+npm run make
 ```
 
 ## Run

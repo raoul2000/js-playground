@@ -1,5 +1,7 @@
 module Model exposing (..)
 
+import Router exposing (..)
+
 
 type alias PlayerId = String
 type alias Player = {
@@ -9,5 +11,6 @@ type alias Player = {
 
 type alias Model = {
   players : List Player,
-  name    : String
+  name    : String,
+  route   : Route
 }
