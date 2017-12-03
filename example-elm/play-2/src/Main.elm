@@ -19,6 +19,7 @@ init location =
                 , Player "2" "bob"
                 , Player "3" "alf"
                 ]
+          , playerForm = Player "0" "new name"
           , name = "dummy"
           , route = currentRoute
           }
