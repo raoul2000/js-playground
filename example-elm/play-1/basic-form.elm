@@ -26,7 +26,7 @@ type alias Model =
 
 model : Model
 model =
-    Model "" "" ""
+    Model "bob" "" ""
 
 
 
@@ -59,7 +59,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ input [ type_ "text", placeholder "Name", onInput Name ] []
+        [ input [ type_ "text", value model.name, placeholder "Name", onInput Name ] []
         , input [ type_ "password", placeholder "Password", onInput Password ] []
         , input [ type_ "password", placeholder "Re-enter Password", onInput PasswordAgain ] []
         , viewValidation model

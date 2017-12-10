@@ -5,6 +5,7 @@ import Model exposing (Model, PlayerId, Player)
 import Router exposing (..)
 
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -15,14 +16,17 @@ update msg model =
             in
                 ( { model | route = newRoute }, Cmd.none )
         ChangePlayerName newName ->
-          let
-              theForm = model.playerForm
-          in
-          (
-            { model |
-              playerForm = ({ theForm | name = newName})
-          }
-          , Cmd.none
-          )
+          case model.playerForm of
+              Just theForm ->
+                    (
+                      { model |
+                        playerForm =  Just ( { theForm | name = newName})
+                    }
+                    , Cmd.none
+                    )
+
+              Nothing ->
+                  ( model, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )

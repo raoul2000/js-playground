@@ -20,7 +20,7 @@ type alias Player =
 
 type alias Model =
     { players : List Player
-    , playerForm : Player
+    , playerForm : Maybe Player
     , name : String
     , route : Route
     }

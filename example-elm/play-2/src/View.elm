@@ -20,8 +20,8 @@ renderMainView model =
         Model.AboutRoute ->
             about model
 
-        Model.EditPlayerRoute string ->
-          editPlayer model string
+        Model.EditPlayerRoute playerId ->
+            editPlayer model playerId
 
         Model.NotFoundRoute ->
             div [] [ text "NOT FOUND route " ]

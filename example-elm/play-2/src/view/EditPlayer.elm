@@ -9,16 +9,24 @@ import Html.Events exposing (onInput)
 
 editPlayer : Model -> PlayerId -> Html Msg
 editPlayer model playerId =
-    let
-        maybePlayer =
-            findPlayerById model playerId
-    in
-        case maybePlayer of
-            Just player ->
-                editPlayerForm player
+    case model.playerForm of
+        Just playerForm ->
+            editPlayerForm (Debug.log "juyst" playerForm)
 
-            Nothing ->
-                playerNotFound playerId
+        Nothing ->
+            let
+                maybePlayer =
+                    findPlayerById model playerId
+            in
+                case maybePlayer of
+                    Just player ->
+                        let
+                          m = {model | playerForm = Player player.id player.name }
+                        in
+                            editPlayerForm (Debug.log "m.playerForm" m.playerForm)
+
+                    Nothing ->
+                        playerNotFound playerId
 
 
 editPlayerForm : Player -> Html Msg
