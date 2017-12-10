@@ -26,7 +26,8 @@ update msg model =
                     )
 
               Nothing ->
-                  ( model, Cmd.none )
+                  ( { model |
+                    playerForm =  Just ( Player "" newName  )}, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
