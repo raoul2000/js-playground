@@ -31,7 +31,6 @@ type alias Model =
 Find a player by its Id and returns a Maybe Player
 --}
 
-
 findPlayerById : Model -> PlayerId -> Maybe Player
 findPlayerById model playerId =
     List.head <|

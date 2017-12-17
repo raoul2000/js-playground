@@ -10,7 +10,6 @@ import About   exposing (about)
 import EditPlayer   exposing (editPlayer)
 
 
-
 renderMainView : Model -> Html Msg
 renderMainView model =
     case model.route of
@@ -21,7 +20,7 @@ renderMainView model =
             about model
 
         Model.EditPlayerRoute playerId ->
-            editPlayer model playerId
+            editPlayer (Debug.log "model=" model) playerId
 
         Model.NotFoundRoute ->
             div [] [ text "NOT FOUND route " ]
