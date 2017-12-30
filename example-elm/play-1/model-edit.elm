@@ -49,10 +49,10 @@ findPlayerById list playerId =
 
 
 type Msg
-    = StartEdit PlayerId
-    | StopEdit
+    = StartEditPlayer PlayerId
     | UpdatePlayerName String
     | SaveChanges
+    | CancelEditPlayer
 
 
 
@@ -84,6 +84,7 @@ renderPlayerForm model =
                     ]
                     []
                 , button [ onClick SaveChanges ] [ text "Save" ]
+                , button [ onClick CancelEditPlayer ] [ text "Cancel" ]
                 ]
 
 
@@ -91,34 +92,34 @@ renderPlayersList : Model -> Html Msg
 renderPlayersList model =
     let
         renderSinglePlayer player =
-            div []
+            li []
                 [ text player.name
-                , button [ onClick (StartEdit player.id) ] [ text "Start edit" ]
+                , if model.playerForm == Nothing then
+                    button [ onClick (StartEditPlayer player.id) ] [ text "Start edit" ]
+                  else
+                    div [] []
                 ]
     in
-        div []
+        ul []
             (List.map renderSinglePlayer model.players)
 
 
 
 -- UPDATE
 
-
+{--
+Start edition of player by Id. Assign the player form to the model of the matching
+player
+--}
 startEditModel : Model -> PlayerId -> Model
 startEditModel model playerId =
     { model | playerForm = (findPlayerById model.players playerId) }
 
-
-addplayerForm : Model -> List Player
-addplayerForm model =
-    case model.playerForm of
-        Nothing ->
-            model.players
-
-        Just player ->
-            player :: model.players
-
-
+{--
+Modifies the player list of the model by replacing the model of playerId with
+the player form if it is no empty. Returns the updated player list.
+If no player form is available, returns the player list with no change
+--}
 updateplayer : Model -> List Player
 updateplayer model =
     case model.playerForm of
@@ -135,7 +136,16 @@ updateplayer model =
         Nothing ->
             model.players
 
+{--
+Clears the player form and returns the model
+--}
+cancelEditplayer : Model -> Model
+cancelEditplayer model =
+    { model | playerForm = Nothing }
 
+{--
+Clear the player form and updates the player list
+--}
 stopEditModel : Model -> Model
 stopEditModel model =
     { model
@@ -143,7 +153,10 @@ stopEditModel model =
         , playerForm = Nothing
     }
 
-
+{--
+Modofies the player form name with the value passed as argument and returns the
+updated model
+--}
 updatePlayerName : Model -> String -> Model
 updatePlayerName model newName =
     case model.playerForm of
@@ -157,17 +170,23 @@ updatePlayerName model newName =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        StartEdit playerId ->
+        StartEditPlayer playerId ->
+            -- copy the model of player 'plauerId' to the player form which is
+            -- going to be modified by user
             ( startEditModel model playerId, Cmd.none )
 
-        StopEdit ->
-            ( stopEditModel model, Cmd.none )
-
         UpdatePlayerName newName ->
+            -- the player is being edited, its name
             ( updatePlayerName model newName, Cmd.none )
 
         SaveChanges ->
+            -- player edit is done : update the player model with
+            -- values entered in the player form
             ( stopEditModel model, Cmd.none )
+
+        CancelEditPlayer ->
+            -- user canceled player edition
+            ( cancelEditplayer model, Cmd.none )
 
 
 
