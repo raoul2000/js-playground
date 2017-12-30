@@ -1,7 +1,8 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput, onClick)
 
 
 -- MODEL
@@ -36,13 +37,22 @@ init =
     )
 
 
+findPlayerById : List Player -> PlayerId -> Maybe Player
+findPlayerById list playerId =
+    list
+        |> List.filter (\player -> player.id == playerId)
+        |> List.head
+
+
 
 -- MESSAGES
 
 
 type Msg
-    = StartEdit
+    = StartEdit PlayerId
     | StopEdit
+    | UpdatePlayerName String
+    | SaveChanges
 
 
 
@@ -52,47 +62,51 @@ type Msg
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "players"]
-        , renderPlayers model
+        [ h1 [] [ text "players" ]
+        , renderPlayersList model
         , renderPlayerForm model
-
         ]
-{--
-    if model.playerForm == Nothing then
-        div []
-            [ button [ onClick StartEdit ] [ text "Start edit" ]
-            , text "Widget"
-            ]
-    else
-        div []
-            [ button [ onClick StopEdit ] [ text "Stop edit" ]
-            , text "Widget"
-            ]
---}
+
 
 renderPlayerForm : Model -> Html Msg
 renderPlayerForm model =
-    _
+    case model.playerForm of
+        Nothing ->
+            div []
+                [ text "no edit" ]
 
-renderPlayers : Model -> Html Msg
-renderPlayers model =
-    let
-        renderSinglePlayer player =     div []
-                [ text player.name
-                , button [ onClick StartEdit ] [ text "Start edit" ]
+        Just player ->
+            div []
+                [ input
+                    [ placeholder "player name"
+                    , value player.name
+                    , onInput UpdatePlayerName
+                    ]
+                    []
+                , button [ onClick SaveChanges ] [ text "Save" ]
                 ]
 
+
+renderPlayersList : Model -> Html Msg
+renderPlayersList model =
+    let
+        renderSinglePlayer player =
+            div []
+                [ text player.name
+                , button [ onClick (StartEdit player.id) ] [ text "Start edit" ]
+                ]
     in
-      div []
-      (List.map renderSinglePlayer model.players)
+        div []
+            (List.map renderSinglePlayer model.players)
+
 
 
 -- UPDATE
 
 
-startEditModel : Model -> Model
-startEditModel model =
-    { model | playerForm = Just (Player "0" "New") }
+startEditModel : Model -> PlayerId -> Model
+startEditModel model playerId =
+    { model | playerForm = (findPlayerById model.players playerId) }
 
 
 addplayerForm : Model -> List Player
@@ -105,21 +119,54 @@ addplayerForm model =
             player :: model.players
 
 
+updateplayer : Model -> List Player
+updateplayer model =
+    case model.playerForm of
+        Just updatedPlayer ->
+            List.map
+                (\player ->
+                    if player.id == updatedPlayer.id then
+                        updatedPlayer
+                    else
+                        player
+                )
+                model.players
+
+        Nothing ->
+            model.players
+
+
 stopEditModel : Model -> Model
 stopEditModel model =
     { model
-        | players = addplayerForm model
+        | players = updateplayer model
         , playerForm = Nothing
     }
+
+
+updatePlayerName : Model -> String -> Model
+updatePlayerName model newName =
+    case model.playerForm of
+        Just player ->
+            { model | playerForm = Just { player | name = newName } }
+
+        Nothing ->
+            model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        StartEdit ->
-            ( startEditModel model, Cmd.none )
+        StartEdit playerId ->
+            ( startEditModel model playerId, Cmd.none )
 
         StopEdit ->
+            ( stopEditModel model, Cmd.none )
+
+        UpdatePlayerName newName ->
+            ( updatePlayerName model newName, Cmd.none )
+
+        SaveChanges ->
             ( stopEditModel model, Cmd.none )
 
 
