@@ -1,6 +1,7 @@
 module Update exposing (update)
 
 import Message exposing (Msg(..))
+import Navigation exposing (..)
 
 --import Model exposing (Model, PlayerId, Player, Route)
 
@@ -55,7 +56,7 @@ updateModelOnSavePlayer model =
 
         Nothing ->
             model
-    , Cmd.none
+    , newUrl "/"
     )
 
 
