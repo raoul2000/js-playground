@@ -4,24 +4,17 @@ import Model exposing (..)
 import Message exposing (Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 
 
 editPlayer : Model -> PlayerId -> Html Msg
 editPlayer model playerId =
-          let
-              maybePlayer =
-                  findPlayerById model playerId
-          in
-              case maybePlayer of
-                  Just player ->
-                      let
-                        m = {model | playerForm = Player player.id player.name }
-                      in
-                          editPlayerForm (Debug.log "m.playerForm" m.playerForm)
+    case model.playerForm of
+        Just playerForm ->
+            editPlayerForm playerForm
 
-                  Nothing ->
-                      playerNotFound playerId
+        Nothing ->
+            playerNotFound playerId
 
 
 editPlayerForm : Player -> Html Msg
@@ -33,7 +26,8 @@ editPlayerForm player =
             , onInput ChangePlayerName
             ]
             []
-        , button [] [ text "save"]
+        , button
+            [ onClick SavePlayerForm ] [ text "save" ]
         ]
 
 

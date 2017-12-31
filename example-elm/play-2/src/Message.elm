@@ -6,3 +6,4 @@ type Msg
     = NoOp
     | OnLocationChange Location
     | ChangePlayerName String
+    | SavePlayerForm

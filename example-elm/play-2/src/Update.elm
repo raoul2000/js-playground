@@ -2,7 +2,6 @@ module Update exposing (update)
 
 import Message exposing (Msg(..))
 
-
 --import Model exposing (Model, PlayerId, Player, Route)
 
 import Model exposing (..)
@@ -19,8 +18,12 @@ updateOnLocationChange route model =
             in
                 case aPlayer of
                     Just player ->
-                        ( { model | route = route
-                                  , playerForm = Just (Player player.id player.name) }, Cmd.none )
+                        ( { model
+                            | route = route
+                            , playerForm = Just (Player player.id player.name)
+                          }
+                        , Cmd.none
+                        )
 
                     Nothing ->
                         ( { model | route = route, playerForm = Nothing }, Cmd.none )
@@ -29,17 +32,47 @@ updateOnLocationChange route model =
             ( { model | route = route }, Cmd.none )
 
 
+updatePlayerList : List Player -> Player -> List Player
+updatePlayerList playerList playerForm =
+    List.map
+        (\player ->
+            if player.id == playerForm.id then
+                playerForm
+            else
+                player
+        )
+        playerList
+
+
+updateModelOnSavePlayer : Model -> ( Model, Cmd Msg )
+updateModelOnSavePlayer model =
+    ( case model.playerForm of
+        Just playerForm ->
+            { model
+                | players = updatePlayerList model.players playerForm
+                , playerForm = Nothing
+            }
+
+        Nothing ->
+            model
+    , Cmd.none
+    )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         OnLocationChange location ->
             updateOnLocationChange (Router.parseLocation location) model
 
+        SavePlayerForm ->
+            updateModelOnSavePlayer model
+
         ChangePlayerName newName ->
             case model.playerForm of
                 Just theForm ->
                     ( { model
-                        | playerForm = Just ({ theForm | name = newName })
+                        | playerForm = Just ({ theForm | name = (Debug.log "newName=" newName) })
                       }
                     , Cmd.none
                     )
