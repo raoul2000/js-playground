@@ -3,6 +3,7 @@ module Update exposing (update)
 import Message exposing (Msg(..))
 import Navigation exposing (..)
 
+
 --import Model exposing (Model, PlayerId, Player, Route)
 
 import Model exposing (..)
@@ -68,6 +69,12 @@ update msg model =
 
         SavePlayerForm ->
             updateModelOnSavePlayer model
+
+        CancelPlayerFormEdit ->
+            ( { model
+                | playerForm = Nothing }
+            , newUrl "/"
+            )
 
         ChangePlayerName newName ->
             case model.playerForm of

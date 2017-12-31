@@ -28,6 +28,8 @@ editPlayerForm player =
             []
         , button
             [ onClick SavePlayerForm ] [ text "save" ]
+        , button
+            [ onClick CancelPlayerFormEdit ] [ text "cancel" ]
         ]
 
 

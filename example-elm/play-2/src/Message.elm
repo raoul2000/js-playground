@@ -7,3 +7,4 @@ type Msg
     | OnLocationChange Location
     | ChangePlayerName String
     | SavePlayerForm
+    | CancelPlayerFormEdit
