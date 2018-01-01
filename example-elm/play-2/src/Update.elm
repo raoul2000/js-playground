@@ -22,7 +22,7 @@ updateOnLocationChange route model =
                     Just player ->
                         ( { model
                             | route = route
-                            , playerForm = Just (Player player.id player.name)
+                            , playerForm = Just (Player player.id player.name player.rank)
                           }
                         , Cmd.none
                         )
@@ -72,9 +72,40 @@ update msg model =
 
         CancelPlayerFormEdit ->
             ( { model
-                | playerForm = Nothing }
+                | playerForm = Nothing
+              }
             , newUrl "/"
             )
+
+        ChangePlayerRank newRank ->
+            case model.playerForm of
+                Just theForm ->
+                    let
+                        rankResult =
+                            String.toInt
+                                (if String.isEmpty newRank then
+                                    "0"
+                                 else
+                                    newRank
+                                )
+                    in
+                        case rankResult of
+                            Err msg ->
+                                ( model, Cmd.none )
+
+                            Ok intRank ->
+                                ( { model
+                                    | playerForm = Just ({ theForm | rank = intRank })
+                                  }
+                                , Cmd.none
+                                )
+
+                Nothing ->
+                    ( { model
+                        | playerForm = Just (Player "" "" 0)
+                      }
+                    , Cmd.none
+                    )
 
         ChangePlayerName newName ->
             case model.playerForm of
@@ -87,7 +118,7 @@ update msg model =
 
                 Nothing ->
                     ( { model
-                        | playerForm = Just (Player "" newName)
+                        | playerForm = Just (Player "" newName 0)
                       }
                     , Cmd.none
                     )

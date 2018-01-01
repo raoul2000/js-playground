@@ -26,6 +26,13 @@ editPlayerForm player =
             , onInput ChangePlayerName
             ]
             []
+        , input
+            [ placeholder "player rank"
+            , value (toString player.rank)
+            , onInput ChangePlayerRank
+            ]
+            []
+        , hr [] []
         , button
             [ onClick SavePlayerForm ] [ text "save" ]
         , button

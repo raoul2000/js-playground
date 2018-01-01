@@ -15,16 +15,16 @@ init location =
             parseLocation (Debug.log "init - location" location)
     in
         ( { players =
-                [ Player "1" "tom"
-                , Player "2" "bob"
-                , Player "3" "alf"
+                [ Player "1" "tom" 0
+                , Player "2" "bob" 0
+                , Player "3" "alf" 0
                 ]
           , playerForm = Nothing
           , name = "dummy"
           , route = currentRoute
           }
           -- force a newUrl in order to correctly handle the case where user
-          -- directly access to the player edit form 
+          -- directly access to the player edit form
         , newUrl location.hash
         )
 

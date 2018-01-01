@@ -15,6 +15,7 @@ type alias PlayerId =
 type alias Player =
     { id : PlayerId
     , name : String
+    , rank : Int
     }
 
 
