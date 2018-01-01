@@ -7,6 +7,11 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 
 
+{--
+Displays the appropriate view depending on the playerForm property
+--}
+
+
 editPlayer : Model -> PlayerId -> Html Msg
 editPlayer model playerId =
     case model.playerForm of
@@ -15,6 +20,12 @@ editPlayer model playerId =
 
         Nothing ->
             playerNotFound playerId
+
+
+
+{--
+Displays the player edit form
+--}
 
 
 editPlayerForm : Player -> Html Msg
@@ -34,14 +45,18 @@ editPlayerForm player =
             []
         , hr [] []
         , button
-            [ onClick SavePlayerForm ] [ text "save" ]
+            [ onClick SavePlayerForm ]
+            [ text "save" ]
         , button
-            [ onClick CancelPlayerFormEdit ] [ text "cancel" ]
+            [ onClick CancelPlayerFormEdit ]
+            [ text "cancel" ]
         ]
 
 
 
--- trying to edit a player that doesn't exist (its id could not be found)
+{--
+trying to edit a player that doesn't exist (its id could not be found)
+--}
 
 
 playerNotFound : PlayerId -> Html Msg
