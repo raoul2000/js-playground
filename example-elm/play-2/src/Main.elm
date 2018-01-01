@@ -5,14 +5,14 @@ import Model exposing (Model, PlayerId, Player)
 import View exposing (view)
 import Update exposing (update)
 import Router exposing (..)
-import Navigation exposing (Location)
+import Navigation exposing (..)
 
 
 init : Location -> ( Model, Cmd Msg )
 init location =
     let
         currentRoute =
-            parseLocation location
+            parseLocation (Debug.log "init - location" location)
     in
         ( { players =
                 [ Player "1" "tom"
@@ -23,7 +23,9 @@ init location =
           , name = "dummy"
           , route = currentRoute
           }
-        , Cmd.none
+          -- force a newUrl in order to correctly handle the case where user
+          -- directly access to the player edit form 
+        , newUrl location.hash
         )
 
 
