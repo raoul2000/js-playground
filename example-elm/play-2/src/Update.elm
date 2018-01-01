@@ -33,7 +33,10 @@ updateOnLocationChange route model =
         _ ->
             ( { model | route = route }, Cmd.none )
 
-
+{--
+Replaces in the player list a player record with a new one and returns the
+new updated player list
+--}
 updatePlayerList : List Player -> Player -> List Player
 updatePlayerList playerList playerForm =
     List.map
@@ -45,7 +48,10 @@ updatePlayerList playerList playerForm =
         )
         playerList
 
-
+{--
+Updates the model by modifying the player list taking into account the player form
+entered by user. Once done, navigate to the home page
+--}
 updateModelOnSavePlayer : Model -> ( Model, Cmd Msg )
 updateModelOnSavePlayer model =
     ( case model.playerForm of
@@ -59,6 +65,61 @@ updateModelOnSavePlayer model =
             model
     , newUrl "/"
     )
+
+{--
+Convert the new Ranks from String to Int and on success updates the player form
+rank field
+--}
+updateModelOnPlayerRankChange : Model -> String -> ( Model, Cmd Msg )
+updateModelOnPlayerRankChange model newRank =
+    case model.playerForm of
+        Just theForm ->
+            let
+                rankResult =
+                    String.toInt
+                        (if String.isEmpty newRank then
+                            "0"
+                         else
+                            newRank
+                        )
+            in
+                case rankResult of
+                    Err msg ->
+                        ( model, Cmd.none )
+
+                    Ok intRank ->
+                        ( { model
+                            | playerForm = Just ({ theForm | rank = intRank })
+                          }
+                        , Cmd.none
+                        )
+
+        Nothing ->
+            ( { model
+                | playerForm = Just (Player "" "" 0)
+              }
+            , Cmd.none
+            )
+
+{--
+Update the player form name field
+--}
+updateModelOnPlayerNameChange : Model -> String -> ( Model, Cmd Msg )
+updateModelOnPlayerNameChange model newName =
+    case model.playerForm of
+        Just theForm ->
+            ( { model
+                | playerForm = Just ({ theForm | name = (Debug.log "newName=" newName) })
+              }
+            , Cmd.none
+            )
+
+        Nothing ->
+            ( { model
+                | playerForm = Just (Player "" newName 0)
+              }
+            , Cmd.none
+            )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -78,50 +139,10 @@ update msg model =
             )
 
         ChangePlayerRank newRank ->
-            case model.playerForm of
-                Just theForm ->
-                    let
-                        rankResult =
-                            String.toInt
-                                (if String.isEmpty newRank then
-                                    "0"
-                                 else
-                                    newRank
-                                )
-                    in
-                        case rankResult of
-                            Err msg ->
-                                ( model, Cmd.none )
-
-                            Ok intRank ->
-                                ( { model
-                                    | playerForm = Just ({ theForm | rank = intRank })
-                                  }
-                                , Cmd.none
-                                )
-
-                Nothing ->
-                    ( { model
-                        | playerForm = Just (Player "" "" 0)
-                      }
-                    , Cmd.none
-                    )
+            updateModelOnPlayerRankChange model newRank
 
         ChangePlayerName newName ->
-            case model.playerForm of
-                Just theForm ->
-                    ( { model
-                        | playerForm = Just ({ theForm | name = (Debug.log "newName=" newName) })
-                      }
-                    , Cmd.none
-                    )
-
-                Nothing ->
-                    ( { model
-                        | playerForm = Just (Player "" newName 0)
-                      }
-                    , Cmd.none
-                    )
+            updateModelOnPlayerNameChange model newName
 
         NoOp ->
             ( model, Cmd.none )
