@@ -3,7 +3,7 @@
 const assert = require('chai').assert;
 const miner = require('../src/miner');
 
-describe('objects propetry as object',function(done){
+describe('objects properties as object',function(done){
 
 	it('extracts property "post" with type object',function(done){
 		let result = miner.mine(

@@ -4,7 +4,7 @@ const assert = require('chai').assert;
 const miner = require('../src/miner');
 
 
-describe('objects propetry values as array',function(done){
+describe('objects properties values as array',function(done){
 
 	it('extracts property with type [text]',function(done){
 		let result = miner.mine(
