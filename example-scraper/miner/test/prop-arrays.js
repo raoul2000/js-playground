@@ -24,7 +24,7 @@ describe('objects properties values as array',function(done){
 		let result = miner.mine(
 			{
 				text : {
-					selector : "p > ul > li",
+					selector : "ul > li",
 					type : ["html"]
 				}
 			},
@@ -43,7 +43,7 @@ describe('objects properties values as array',function(done){
 		let result = miner.mine(
 			{
 				text : {
-					selector : "p > ul > li",
+					selector : "ul > li",
 					type : ["@class"]
 				}
 			},
