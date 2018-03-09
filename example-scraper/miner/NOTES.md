@@ -1,7 +1,7 @@
 
 
 
-- [ ] : Pagination syntax - see [x-ray](https://github.com/matthewmueller/x-ray)
+- [ ] Pagination syntax - see [x-ray](https://github.com/matthewmueller/x-ray)
 
 ```js
 x('https://blog.ycombinator.com/', '.post', [{
@@ -13,7 +13,7 @@ x('https://blog.ycombinator.com/', '.post', [{
   .write('results.json')
 ```
 
-- [ ] : add inline converter - see [scrape-it](https://github.com/IonicaBizau/scrape-it)
+- [ ] add inline converter - see [scrape-it](https://github.com/IonicaBizau/scrape-it)
 
 ```js
 scrapeIt("https://ionicabizau.net", {
@@ -27,5 +27,38 @@ scrapeIt("https://ionicabizau.net", {
                 selector: ".date"
               , convert: x => new Date(x)
             }
+
+```
+
+## Usage Examples
+
+```js
+// single page mining
+mine( 'http://hostname/path/index.html', model);
+
+// multiple page mining : apply the model to several url
+mine( [
+    'http://hostname/path/index.html',
+    'http://hostname/path/product.html'
+  ],
+  model);
+
+// simple named page mining
+mine( {
+    "name" : "site name",
+    "url"  : 'http://hostname/path/index.html'
+  },
+  model);
+  
+// multiple names page mining
+mine( [{
+    "name" : "site name",
+    "url"  : 'http://hostname/path/index.html'
+  },
+  {
+    "name" : "site name 2",
+    "url"  : 'http://hostname/path/prodcut.html'
+  }] ,
+  model);
 
 ```
