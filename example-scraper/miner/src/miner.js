@@ -70,7 +70,7 @@ function extractPrimitiveValue(valueDef, selector, html) {
 
   let result = null;
   try {
-    if( valueDef.type === 'text' ){
+    if( valueDef.type === 'text' ){ ////////////////////////////
       if( valueDef.isArray === true) {
         result = [];
         $(selector).each(function(i,elem){
@@ -80,7 +80,7 @@ function extractPrimitiveValue(valueDef, selector, html) {
         result = $(selector).first().text();
       }
     }
-    else if ( valueDef.type === "html") {
+    else if ( valueDef.type === "html") { /////////////////////
       if( valueDef.isArray === true) {
         result = [];
         $(selector).each(function(i,elem){
@@ -90,7 +90,7 @@ function extractPrimitiveValue(valueDef, selector, html) {
         result = $(selector).first().html();
       }
     }
-    else if ( valueDef.type.startsWith('@')) {
+    else if ( valueDef.type.startsWith('@')) { ///////////////
       let attrName = valueDef.type.substring(1);
       if( valueDef.isArray === true) {
         result = [];
@@ -136,7 +136,12 @@ function extractProperty(model, html) {
 
   if( parsedType.isObject === true) {
     const $ = cheerio.load(html);
-    if( parsedType.isArray === true ) {
+
+    if( ! parsedType.isArray ) {
+      // mine single object
+      return extractObject(model.type, $(model.selector).first().html());
+    } else {
+      // mine an array of objects
       let objects = [];
       $(model.selector).each(function(i,elem){
         objects.push(
@@ -144,8 +149,6 @@ function extractProperty(model, html) {
         );
       });
       return objects;
-    } else {
-      return extractObject(model.type, $(model.selector).first().html());
     }
   }
   else {
@@ -162,11 +165,12 @@ function extractProperty(model, html) {
  */
 function extractObject(model, html) {
   var result = {};
-  for (var i = 0; i < Object.keys(model).length; i++) {
-    var propName  = Object.keys(model)[i];
-    var propDef   = model[propName];
+  let modelKeys = Object.keys(model);
+  for (var i = 0; i < modelKeys.length; i++) {
+    var propertyName         = modelKeys[i];
+    var propertyDefinition   = model[propertyName];
 
-    result[propName] = extractProperty(propDef, html);
+    result[propertyName] = extractProperty(propertyDefinition, html);
   }
   return result;
 }
