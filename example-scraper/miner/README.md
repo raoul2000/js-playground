@@ -46,15 +46,15 @@ First two having a value that is an array of text and the last one is the value 
 {
   "title" : {
     "selector" : "body > div.post > h1",
-    "value" : ["text"]
+    "type" : ["text"]
   },
   "paragraphs" : {
     "selector" : "body > div.post > p",
-    "value" : ["text"]
+    "type" : ["text"]
   },
   "addresses" : {
     "selector" : "body > div.post > a",
-    "value" : ["@href"]
+    "type" : ["@href"]
   }
 }
 ```

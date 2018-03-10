@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require('chai').assert;
-const miner = require('../src/miner');
+const miner  = require('../src/miner');
 
 describe('objects properties as simple value',function(done){
 

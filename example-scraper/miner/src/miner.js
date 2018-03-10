@@ -12,16 +12,16 @@ function parseString(val) {
 
 /**
  * Parse the type definition string passed as argumet.
- * Valid avlues for type : "text", ["text"], "html", ["html"], "@attr", ["@attr"]
+ * Valid values for type are : "text", ["text"], "html", ["html"], "@attr", ["@attr"]
  * or any model object "{}" or ["{}"]
  *
  * Example :
  *   - type = ["text"]
  *   - result = {
- *      type : "text",
- *      isArray : true,
+ *      type     : "text",
+ *      isArray  : true,
  *      isObject : false
- *     }
+ *    }
  *
  * @param  {string} type the type definition
  * @return {object}      the parsed type
@@ -157,7 +157,8 @@ function extractProperty(model, html) {
 }
 
 /**
- * Extract all properties defined in the model, from the html
+ * Extract all properties defined in the model, from the html.
+ * If
  *
  * @param  {object} model properties definition
  * @param  {text} html  the mine
@@ -175,6 +176,29 @@ function extractObject(model, html) {
   return result;
 }
 
-exports.mine = function(model, html) {
-  return extractObject(model, html);
+/**
+ * Mine the HTML according to the extractionPlan
+ *
+ * @param  {mixed} extractionPlan describe how to mine
+ * @param  {string} html           the data to explore
+ * @return {mixed}                mining result
+ */
+exports.mine = function(extractionPlan, html) {
+
+  if( typeof extractionPlan === "string")
+  {
+    // the extractionPlan is considered as a selector
+    let selector = extractionPlan;
+    let parsedType = parseType("text");
+    return extractPrimitiveValue(parsedType, selector, html);
+  }
+  else if( Array.isArray(extractionPlan))
+  {
+    // the extractionPlan is a list os selectors
+    return extractionPlan.map( selector => exports.mine(selector, html));
+  }
+  else
+  {
+    return extractObject(extractionPlan, html);
+  }
 };

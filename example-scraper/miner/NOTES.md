@@ -32,33 +32,100 @@ scrapeIt("https://ionicabizau.net", {
 
 ## Usage Examples
 
-```js
-// single page mining
-mine( 'http://hostname/path/index.html', model);
+### single page mining
 
-// multiple page mining : apply the model to several url
+- call
+
+```js
+mine( "http://hostname/path/index.html", model);
+```
+
+- result
+
+```json
+{
+  "source" : "http://hostname/path/index.html",
+  "data"   : {}
+}
+```
+
+### multiple page mining
+- call
+
+```js
 mine( [
-    'http://hostname/path/index.html',
-    'http://hostname/path/product.html'
+    "http://hostname/path/index.html",
+    "http://hostname/path/product.html"
   ],
   model);
+```
+- result
 
-// simple named page mining
+```json
+[{
+  "source" : "http://hostname/path/index.html",
+  "data"   : {}
+},{
+  "source" : "http://hostname/path/product.html",
+  "data"   : {}
+}]
+```
+
+### simple named page mining
+
+- call
+
+```js
 mine( {
     "name" : "site name",
-    "url"  : 'http://hostname/path/index.html'
+    "url"  : "http://hostname/path/index.html"
   },
   model);
-  
-// multiple names page mining
+```
+
+- result
+
+```json
+{
+  "source" : {
+      "name" : "site name",
+      "url"  : "http://hostname/path/index.html"
+  },
+  "data"   : {}
+}
+```
+
+### multiple names page mining
+
+- call
+
+```js
 mine( [{
     "name" : "site name",
-    "url"  : 'http://hostname/path/index.html'
+    "url"  : "http://hostname/path/index.html"
   },
   {
     "name" : "site name 2",
-    "url"  : 'http://hostname/path/prodcut.html'
+    "url"  : "http://hostname/path/prodcut.html"
   }] ,
   model);
-
 ```
+
+- result
+
+```json
+[{
+  "source" : {
+      "name" : "site name",
+      "url"  : "http://hostname/path/index.html"
+  },
+  "data"   : {}
+},
+{
+  "source" : {
+      "name" : "site name 2",
+      "url"  : "http://hostname/path/product.html"
+  },
+  "data"   : {}
+}
+]```

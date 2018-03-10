@@ -1,7 +1,7 @@
 "use strict";
 
 // test stuff here
-// 
+//
 const cheerio = require('cheerio');
 //console.log(cheerio.version);
 
@@ -15,8 +15,8 @@ let selector = 'p > ul > li';
 
 const $html = cheerio.load(html);
 
-//console.log(cheerio("#root",$html));
-console.log($html("ul > li").length);
+//console.log($html("ul > li").length);
+console.log($html("ul[id]"));
 
 /*
 cheerio("p").each(function(i,elem){
