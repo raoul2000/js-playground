@@ -177,7 +177,9 @@ function extractObject(model, html) {
 }
 
 /**
- * Mine the HTML according to the extractionPlan
+ * Mine the HTML according to the extractionPlan.
+ * The extraction plan can be a simple string representing a selector,
+ *
  *
  * @param  {mixed} extractionPlan describe how to mine
  * @param  {string} html           the data to explore
@@ -198,11 +200,16 @@ exports.mine = function(extractionPlan, html) {
   }
   else if( Array.isArray(extractionPlan))
   {
-    // the extractionPlan is a list os selectors
-    return extractionPlan.map( selector => exports.mine(selector, html));
+    // the extractionPlan is a actually a list of extraction plans
+    return extractionPlan.map( plan => exports.mine(plan, html));
+  }
+  else if( typeof extractionPlan === "object")
+  {
+    // the extraction plan is a complex object
+    return extractObject(extractionPlan, html);
   }
   else
   {
-    return extractObject(extractionPlan, html);
+    throw new Error("unsupported extraction plan");
   }
 };

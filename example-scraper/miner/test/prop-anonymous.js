@@ -41,7 +41,9 @@ describe('anonymous property extraction',function(done){
 	});
 
 	it('throws an exception if NULL is passed',function(done){
-		expect(miner.mine(null, "<p/>")).to.throw(new Error("invalid extraction plan"));
+		expect( () => {
+			miner.mine(null, "<p/>");
+		}).to.throw("invalid extraction plan");
 		done();
 	});
 
