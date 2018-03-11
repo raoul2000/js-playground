@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require('chai').assert;
+const expect = require('chai').expect;
 const miner  = require('../src/miner');
 
 describe('anonymous property extraction',function(done){
@@ -23,6 +24,24 @@ describe('anonymous property extraction',function(done){
 			text</p>`
 		);
 		assert.deepEqual(result,['text 1', 'some value']);
+		done();
+	});
+
+	it('returns an empty array if passed empty array',function(done){
+		let result = miner.mine([],
+			`<p> text
+				<b>text 1</b>
+				<b>text 2
+					<div>some value</div>
+				</b>
+			text</p>`
+		);
+		assert.deepEqual(result,[]);
+		done();
+	});
+
+	it('throws an exception if NULL is passed',function(done){
+		expect(miner.mine(null, "<p/>")).to.throw(new Error("invalid extraction plan"));
 		done();
 	});
 

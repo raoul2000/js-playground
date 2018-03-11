@@ -185,6 +185,10 @@ function extractObject(model, html) {
  */
 exports.mine = function(extractionPlan, html) {
 
+  if( ! extractionPlan ) {
+    throw new Error("invalid extraction plan");
+  }
+
   if( typeof extractionPlan === "string")
   {
     // the extractionPlan is considered as a selector
