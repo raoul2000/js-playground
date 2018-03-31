@@ -20,12 +20,10 @@ function crawlUrl(url, extractionPlan) {
 
 exports.start = function( itinerary , extractionPlan ) {
 
-  if( typeof itinerary === 'string') {
-    // itinerary is assumed to be an URL
+  if( typeof itinerary === 'string') {      // itinerary is assumed to be an URL
     return crawlUrl(itinerary,extractionPlan);
   }
-  else if( Array.isArray(itinerary)) {
-    // itinerary is an array of URL
+  else if( Array.isArray(itinerary)) {      // itinerary is an array of URL
     return new Promise( (resolve, reject ) => {
       // create task list
       let tasks = itinerary.map( url => {
@@ -42,5 +40,19 @@ exports.start = function( itinerary , extractionPlan ) {
         else    { resolve(results.map( r => r.value)); }
       });
     }); // new Promise (end)
+  }
+  else if (typeof itinerary === 'object') { // itinerary is url+name
+    if(  itinerary.hasOwnProperty('url') && itinerary.hasOwnProperty('name')) {
+      return crawlUrl(itinerary.url, extractionPlan)
+      .then(result => Object.assign(result,{
+        'source' : itinerary
+      })); // overwritte the source = url
+    } else {
+      return Promise.reject({
+        'source': itinerary,
+        "data"  : null,
+        "error" : "missing property : 'url' and 'name' are mandatory properties, and one of them is missing"
+      });
+    }
   }
 };

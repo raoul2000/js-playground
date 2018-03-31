@@ -8,13 +8,7 @@ const URL_PAGE1 = 'http://127.0.0.1:8080/page-1.html';
 const URL_PAGE2 = 'http://127.0.0.1:8080/page-2.html';
 const URL_PAGE_NOT_FOUND = 'http://127.0.0.1:8080/page-NOT_FOUND.html';
 
-const URL_LIST = [
-	URL_PAGE1,
-	URL_PAGE_NOT_FOUND
-	//URL_PAGE2
-];
-
-describe('crawler',function(done){
+describe('crawler with array',function(done){
 
 	it('crawl a list of URL',function(done){
     return crawler.start([

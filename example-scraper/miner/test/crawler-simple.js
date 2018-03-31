@@ -6,7 +6,7 @@ const crawler = require('../src/crawler');
 
 const TEST_BASE_URL = 'http://127.0.0.1:8080/page-1.html';
 
-describe('crawler',function(done){
+describe('crawler with string',function(done){
 
 	it('crawl a simple URL',function(done){
     return crawler.start(TEST_BASE_URL, "h1")
