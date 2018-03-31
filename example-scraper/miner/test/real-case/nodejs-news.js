@@ -8,9 +8,7 @@ crawler.start(TEST_BASE_URL, {
     "post": {
       "selector": "div.post",
       "type": [{
-        "title": {
-          "selector": '.post-header > h3.title'
-        }
+        "title": '.post-header > h3.title'
       }]
     }
   })

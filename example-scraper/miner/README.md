@@ -4,7 +4,7 @@ This is an attempt to implement a *Miner* able to extract data from web pages...
 
 ## Syntax
 
-For a given *propertyName* :
+For a given *propertyName* its definition can be provided as an object :
 
 ```
 {
@@ -17,6 +17,8 @@ For a given *propertyName* :
 }
 ```
 If no **type** is provided, **text** is default.
+If the property value is a string, then it is assumed to be the selecor. If it's an array, it must contain
+one single item assued to be the selector. The property type is an array.
 
 ## Primitive Type  Property
 
@@ -28,7 +30,12 @@ Extracts the title of a post. Only the first matching result is extracted. By de
   }
 }
 ```
-
+In short notation :
+```json
+{
+  "title" : "body > div.post > h1"
+}
+```
 
 The result :
 ```json
@@ -46,7 +53,7 @@ First two having a value that is an array of text and the last one is the value 
 {
   "title" : {
     "selector" : "body > div.post > h1",
-    "type" : ["text"]
+    "type" : "text"
   },
   "paragraphs" : {
     "selector" : "body > div.post > p",
@@ -63,7 +70,7 @@ The Result :
 
 ```json
 {
-  "title" : ["this is the main title"],
+  "title" : "this is the main title",
   "paragraphs" : ["this is the first paragraphs", "this is the second paragraph"],
   "addresses" : [
     "http://hostname/path/to/ressource",
@@ -71,6 +78,15 @@ The Result :
   ]
 }
 ```
+
+Using the short notation it is possible to extract *title* and *paragraphs* :
+```json
+{
+  "title"      : "body > div.post > h1",
+  "paragraphs" : ["body > div.post > p"]
+}
+```
+This is possible because the default type *text* is appropriate for these 2 properties. The addresses property can't be extract using the short notation.
 
 ## Single Object
 
@@ -144,7 +160,6 @@ The result :
       "This is the first paragraph of the text",
       "And here is the second paragraph"
     ]
-  }
-  ]
+  }]
 }
 ```

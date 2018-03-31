@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "server": "http-server ./test/www",
-    "test": "mocha test/"
+    "test": "mocha test/",
+    "nodejs-news": "node test/real-case/nodejs-news.js"
   },
   "keywords": [
     "scraper"

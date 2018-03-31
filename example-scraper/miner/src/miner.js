@@ -115,23 +115,49 @@ function extractPrimitiveValue(valueDef, selector, html) {
  *  'selector' : 'div.article', // Mandatory
  *  'type' : 'text' // optional
  * }
+ * shortcuts :
+ * model = "selector"
+ * model = ["selector"]
+ *
  * Note that if model.type is an object, the 'extractObject' function
  * is called (recursive)
  *
- * @param  {object} model object describing the property to extract
+ * @param  {object|string} model object describing the property to extract or
+ * selector when provided as a string
  * @param  {string} html  the HTML string the property is extracted from
  * @return {object | string}       the property
  */
-function extractProperty(model, html) {
+function extractProperty(propertyDefinition, html) {
 
   // validate model
-  if( typeof model !== 'object' ) {
-    throw new Error("object expected");
+  if( Array.isArray(propertyDefinition)){
+    if( propertyDefinition.length !== 1) {
+      throw new Error("array must contain exactly one selector");
+    }
   }
-  else if( ! model.hasOwnProperty('selector')) {
-    throw new Error("missing selector");
+  else if( typeof propertyDefinition === 'object') {
+    if( ! propertyDefinition.hasOwnProperty('selector') ) {
+      throw new Error("missing property 'selector'");
+    }
+  } else if(typeof propertyDefinition !== 'string') {
+    throw new Error("string or object expected");
   }
-  // process model
+
+  // process propertyDefinition
+
+  let model = propertyDefinition;
+  if( typeof propertyDefinition === 'string') {
+    model = {
+      "type"     : "text",
+      "selector" : propertyDefinition
+    };
+  } else if( Array.isArray(propertyDefinition)) {
+    model = {
+      "type"     : ["text"],
+      "selector" : propertyDefinition[0]
+    };
+  }
+
   var parsedType = parseType(model.type || "text");
 
   if( parsedType.isObject === true) {
