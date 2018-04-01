@@ -4,7 +4,43 @@ const request = require('request-promise-native');
 const async   = require('async');
 const bob     = require('./miner');
 
+/**
+ * options = {
+ *  "name" : "multi page",
+ *  "url" : 'http://hostname:port/path',
+ *  "nextUrl" : {
+ *    "selector" : "h1 > div.post > a",
+ *    "type" : "@href"
+ *  },
+ *  "limit" : 10
+ * }
+ * @param  {[type]} options        [description]
+ * @param  {[type]} extractionPlan [description]
+ * @return {[type]}                [description]
+ */
+function crawlUrlMultipage(options, extractionPlan) {
+  return request(url)
+  .then( page => (
 
+    {
+    'source' : url,
+    'data'   : bob.mine(extractionPlan, page)
+  }))
+  .catch( err => ({
+    'source' : url,
+    'data'   : null,
+    'error'  : err
+  }));
+}
+
+
+/**
+ * Load a page and extract data from it
+ * 
+ * @param  {string} url            URL of the page to process
+ * @param  {object} extractionPlan extraction plan definition used to extract data
+ * @return {Promise}                Promise result of extraction
+ */
 function crawlUrl(url, extractionPlan) {
   return request(url)
   .then( page => ({

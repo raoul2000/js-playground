@@ -129,3 +129,41 @@ mine( [{
   "data"   : {}
 }
 ]```
+
+### Follow up
+
+- call
+
+```js
+mine( {
+    "name" : "site name",
+    "url"  : "http://hostname/path/index.html",
+    "nextUrl" : {
+      "selector" : "div.post > p > a",
+      "type"     : "@href",
+      "limit"    : 3
+    }
+  },
+  model);
+```
+
+- result
+
+```json
+[{
+  "source" : {
+      "name" : "site name",
+      "url"  : "http://hostname/path/index.html",
+      "page" : 1
+  },
+  "data"   : {}
+},
+{
+  "source" : {
+      "name" : "site name",
+      "url"  : "http://hostname/path/p2.html",
+      "page" : 2
+  },
+  "data"   : {}
+}
+]```
