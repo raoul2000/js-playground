@@ -33,7 +33,7 @@ function crawlUrlMultipage(options, extractionPlan, index = 0) {
   return request(options.url)
   .then( page => {
     let result = {
-      'source' : options.url,
+      'source' : { 'url' : options.url },
       'data'   : bob.mine(extractionPlan, page)
     };
     console.log(`index = ${index} : result = `,result);
@@ -42,9 +42,11 @@ function crawlUrlMultipage(options, extractionPlan, index = 0) {
     } else {
       let nextPage = bob.mine({ "url" : options.nextUrl}, page);
       if( nextPage.url ) {
+
         console.log("nextPage (raw) : ",nextPage.url);
         options.url = normalizeNextUrl(options.url, nextPage.url);
         console.log("nextPage (norm): ",options.url);
+
         return crawlUrlMultipage(options, extractionPlan, index + 1)
         .then( nextResult => {
           return [result].concat(nextResult);
@@ -106,17 +108,12 @@ exports.start = function( itinerary , extractionPlan ) {
     }); // new Promise (end)
   }
   else if (typeof itinerary === 'object') { // itinerary is url+name
-    if(  itinerary.hasOwnProperty('url') && itinerary.hasOwnProperty('name')) {
+    if(  itinerary.hasOwnProperty('url') ) {
       return crawlUrlMultipage(itinerary, extractionPlan)
       .then( result => {
         console.log(result);
+        return result;
       });
-      /*
-      return crawlUrl(itinerary.url, extractionPlan)
-      .then(result => Object.assign(result,{
-        'source' : itinerary
-      })); // overwritte the source = url
-      */
     } else {
       return Promise.reject({
         'source': itinerary,

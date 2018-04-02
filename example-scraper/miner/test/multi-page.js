@@ -15,7 +15,7 @@ describe('crawler multi pages',function(done){
 				"selector" : "a",
 				"type"     : "@href"
 			}
-		}, "h1")
+		}, { title : "h1", text : "p"})
     .then( result => {
 			console.log("final = ",result);
       done();

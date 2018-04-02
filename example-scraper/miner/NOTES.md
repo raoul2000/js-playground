@@ -77,7 +77,6 @@ mine( [
 
 ```js
 mine( {
-    "name" : "site name",
     "url"  : "http://hostname/path/index.html"
   },
   model);
@@ -88,7 +87,6 @@ mine( {
 ```json
 {
   "source" : {
-      "name" : "site name",
       "url"  : "http://hostname/path/index.html"
   },
   "data"   : {}
@@ -101,11 +99,9 @@ mine( {
 
 ```js
 mine( [{
-    "name" : "site name",
     "url"  : "http://hostname/path/index.html"
   },
   {
-    "name" : "site name 2",
     "url"  : "http://hostname/path/prodcut.html"
   }] ,
   model);
@@ -116,14 +112,12 @@ mine( [{
 ```json
 [{
   "source" : {
-      "name" : "site name",
       "url"  : "http://hostname/path/index.html"
   },
   "data"   : {}
 },
 {
   "source" : {
-      "name" : "site name 2",
       "url"  : "http://hostname/path/product.html"
   },
   "data"   : {}
