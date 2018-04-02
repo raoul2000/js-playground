@@ -31,19 +31,10 @@ describe('crawler with object',function(done){
 			"NOT_URL" : TEST_BASE_URL
 		}, "h1")
     .then( result => {
-			console.log(result);
       done(new Error("should have failed"));
     })
     .catch( err => {
-			console.log("ERROR");
-			//done();
-			assert.deepEqual(err, {
-				"source" : {
-					"url" : TEST_BASE_URL
-				},
-        "error" : 'missing property : \'url\' and \'name\' are mandatory properties, and one of them is missing',
-        'data'  : null
-      });
+			assert.deepEqual(err, { source: null, data: null, error: 'missing property : \'url\'' });
       done();
     });
 	});

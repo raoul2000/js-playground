@@ -116,9 +116,9 @@ exports.start = function( itinerary , extractionPlan ) {
       });
     } else {
       return Promise.reject({
-        'source': itinerary,
+        'source': null,
         "data"  : null,
-        "error" : "missing property : 'url' and 'name' are mandatory properties, and one of them is missing"
+        "error" : "missing property : 'url'"
       });
     }
   }
