@@ -10,13 +10,10 @@ function normalizeNextUrl(baseUrl, nextUrl) {
   let result = new URL(nextUrl, baseUrl);
   return result.href;
 }
-
 exports.normalizeNextUrl = normalizeNextUrl;
-
 
 /**
  * options = {
- *  "name"    : "multi page",
  *  "url"     : 'http://hostname:port/path',
  *  "nextUrl" : {
  *    "selector" : "h1 > div.post > a",
@@ -24,13 +21,17 @@ exports.normalizeNextUrl = normalizeNextUrl;
  *  },
  *  "maxJump"  : 10
  * }
- * @param  {[type]} options        [description]
+ * @param  {string|object} options the url of the page when string,
  * @param  {[type]} extractionPlan [description]
  * @param  {Number} [jumpCount=0]  [description]
  * @return {[type]}                [description]
  */
-function crawlUrlMultipage(options, extractionPlan, jumpCount = 0) {
+function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = []) {
   //console.log("crawling url : "+options.url);
+ //console.log(visitedUrl);
+ if( visitedUrl.length === 0) {
+   visitedUrl.push(options.url);
+ }
   return request(options.url)
   .then( page => {
     let result = {
@@ -43,15 +44,17 @@ function crawlUrlMultipage(options, extractionPlan, jumpCount = 0) {
     } else {
       let nextPage = bob.mine({ "url" : options.nextUrl}, page);
       if( nextPage.url ) {
-
-        //console.log("nextPage (raw) : ",nextPage.url);
         options.url = normalizeNextUrl(options.url, nextPage.url);
-        //console.log("nextPage (norm): ",options.url);
-
-        return crawlUrlMultipage(options, extractionPlan, jumpCount + 1)
-        .then( nextResult => {
-          return [result].concat(nextResult);
-        });
+        if ( ! visitedUrl.includes(options.url)) {
+          visitedUrl.push(options.url);
+          return crawlUrlMultipage(options, extractionPlan, jumpCount + 1, visitedUrl)
+          .then( nextResult => {
+            return [result].concat(nextResult);
+          });
+        } else { // loop detected
+          //console.log("loop detected");
+          return result;
+        }
       } else {
         return result;
       }
@@ -63,32 +66,19 @@ function crawlUrlMultipage(options, extractionPlan, jumpCount = 0) {
     'error'  : err
   }));
 }
-
-
 /**
- * Load a page and extract data from it
+ * Start the mining for the given itinerary and using the extractionPlan
  *
- * @param  {string} url            URL of the page to process
- * @param  {object} extractionPlan extraction plan definition used to extract data
- * @return {Promise}                Promise result of extraction
+ * @param  {mixed} itinerary      string, object or array describing the pages
+ * to mine
+ * @param  {mixed} extractionPlan string, object or array describing how to
+ * extract data from a page
+ * @return {Promise}              resolved by the extraction result
  */
-function crawlUrl(url, extractionPlan) {
-  return request(url)
-  .then( page => ({
-    'source' : url,
-    'data'   : bob.mine(extractionPlan, page)
-  }))
-  .catch( err => ({
-    'source' : url,
-    'data'   : null,
-    'error'  : err
-  }));
-}
-
 exports.start = function( itinerary , extractionPlan ) {
 
   if( typeof itinerary === 'string') {      // itinerary is assumed to be an URL
-    return crawlUrl(itinerary,extractionPlan);
+    return crawlUrlMultipage({ "url" : itinerary}, extractionPlan);
   }
   else if( Array.isArray(itinerary)) {      // itinerary is an array of URL
     return new Promise( (resolve, reject ) => {
