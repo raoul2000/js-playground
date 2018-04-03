@@ -34,13 +34,15 @@ scrapeIt("https://ionicabizau.net", {
 
 ### single page mining
 
-- call
+In its simplest form, pass an url and an object describing the *Data Extraction Plan*.
 
 ```js
 mine( "http://hostname/path/index.html", model);
 ```
 
-- result
+The call returns a Promise of result. When it is resolved, the result is an object with 2 properties :
+- `source` : contains the url
+- `data` : the data extracted from the page according to the extraction plan
 
 ```json
 {
@@ -53,11 +55,13 @@ mine( "http://hostname/path/index.html", model);
 - call
 
 ```js
-mine( [
+mine(
+  [
     "http://hostname/path/index.html",
     "http://hostname/path/product.html"
   ],
-  model);
+  model
+);
 ```
 - result
 
@@ -76,19 +80,19 @@ mine( [
 - call
 
 ```js
-mine( {
+mine(
+  {
     "url"  : "http://hostname/path/index.html"
   },
-  model);
+  model
+);
 ```
 
 - result
 
 ```json
 {
-  "source" : {
-      "url"  : "http://hostname/path/index.html"
-  },
+  "source" :  "http://hostname/path/index.html",
   "data"   : {}
 }
 ```
@@ -98,66 +102,57 @@ mine( {
 - call
 
 ```js
-mine( [{
+mine(
+  [{
     "url"  : "http://hostname/path/index.html"
   },
   {
     "url"  : "http://hostname/path/prodcut.html"
   }] ,
-  model);
+  model
+);
 ```
 
 - result
 
 ```json
 [{
-  "source" : {
-      "url"  : "http://hostname/path/index.html"
-  },
+  "source" :  "http://hostname/path/index.html",
   "data"   : {}
 },
 {
-  "source" : {
-      "url"  : "http://hostname/path/product.html"
-  },
+  "source" :  "http://hostname/path/product.html",
   "data"   : {}
-}
-]```
+}]
+```
 
 ### Follow up
 
 - call
 
 ```js
-mine( {
-    "name" : "site name",
+mine(
+  {
     "url"  : "http://hostname/path/index.html",
     "nextUrl" : {
       "selector" : "div.post > p > a",
-      "type"     : "@href",
-      "limit"    : 3
+      "type"     : "@href"
     }
+    "maxJump"    : 3
   },
-  model);
+  model
+);
 ```
 
 - result
 
 ```json
 [{
-  "source" : {
-      "name" : "site name",
-      "url"  : "http://hostname/path/index.html",
-      "page" : 1
-  },
+  "source" : "http://hostname/path/index.html",
   "data"   : {}
 },
 {
-  "source" : {
-      "name" : "site name",
-      "url"  : "http://hostname/path/p2.html",
-      "page" : 2
-  },
+  "source" :  "http://hostname/path/p2.html",
   "data"   : {}
-}
-]```
+}]
+```

@@ -22,32 +22,33 @@ exports.normalizeNextUrl = normalizeNextUrl;
  *    "selector" : "h1 > div.post > a",
  *    "type"     : "@href"
  *  },
- *  "limit"  : 10
+ *  "maxJump"  : 10
  * }
  * @param  {[type]} options        [description]
  * @param  {[type]} extractionPlan [description]
+ * @param  {Number} [jumpCount=0]  [description]
  * @return {[type]}                [description]
  */
-function crawlUrlMultipage(options, extractionPlan, index = 0) {
-  console.log("crawling url : "+options.url);
+function crawlUrlMultipage(options, extractionPlan, jumpCount = 0) {
+  //console.log("crawling url : "+options.url);
   return request(options.url)
   .then( page => {
     let result = {
-      'source' : { 'url' : options.url },
+      'source' : options.url,
       'data'   : bob.mine(extractionPlan, page)
     };
-    console.log(`index = ${index} : result = `,result);
-    if( options.hasOwnProperty('nextUrl') === false || index === options.limit) {
+    //console.log(`jumpCount = ${jumpCount} : result = `,result);
+    if( options.hasOwnProperty('nextUrl') === false || jumpCount === options.maxJump) {
       return result;
     } else {
       let nextPage = bob.mine({ "url" : options.nextUrl}, page);
       if( nextPage.url ) {
 
-        console.log("nextPage (raw) : ",nextPage.url);
+        //console.log("nextPage (raw) : ",nextPage.url);
         options.url = normalizeNextUrl(options.url, nextPage.url);
-        console.log("nextPage (norm): ",options.url);
+        //console.log("nextPage (norm): ",options.url);
 
-        return crawlUrlMultipage(options, extractionPlan, index + 1)
+        return crawlUrlMultipage(options, extractionPlan, jumpCount + 1)
         .then( nextResult => {
           return [result].concat(nextResult);
         });
@@ -111,7 +112,6 @@ exports.start = function( itinerary , extractionPlan ) {
     if(  itinerary.hasOwnProperty('url') ) {
       return crawlUrlMultipage(itinerary, extractionPlan)
       .then( result => {
-        console.log(result);
         return result;
       });
     } else {

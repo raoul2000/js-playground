@@ -14,9 +14,7 @@ describe('crawler with object',function(done){
 		}, "h1")
     .then( result => {
       assert.deepEqual(result, {
-        'source' : {
-					"url" : TEST_BASE_URL
-				},
+        'source' :  TEST_BASE_URL,
         'data'   : 'page 1 : title'
       });
       done();
