@@ -4,14 +4,28 @@ const cheerio = require('cheerio');
 const request = require('request-promise-native');
 const async   = require('async');
 const bob     = require('./miner');
-var URL     = require('url-parse');
+var URL       = require('url-parse');
 
+/**
+ * Turns a possibly relative url into an absolute url relatively to baseUrl
+ * @param  {string} baseUrl base URL
+ * @param  {string} nextUrl the url (possibly relative) to normalize
+ * @return {string}         the normalozed url
+ */
 function normalizeNextUrl(baseUrl, nextUrl) {
   let result = new URL(nextUrl, baseUrl);
   return result.href;
 }
 exports.normalizeNextUrl = normalizeNextUrl;
 
+
+function requestProvider(url, delay) {
+  return new Promise( (resolve, reject) => {
+    setTimeout( () => {
+      resolve( request(url));
+    }, delay);
+  });
+}
 /**
  * options = {
  *  "url"     : 'http://hostname:port/path',
@@ -32,7 +46,8 @@ function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = 
  if( visitedUrl.length === 0) {
    visitedUrl.push(options.url);
  }
-  return request(options.url)
+ //return request(options.url)
+ return requestProvider(options.url,2000)
   .then( page => {
     let result = {
       'source' : options.url,

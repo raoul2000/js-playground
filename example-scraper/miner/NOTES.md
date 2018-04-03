@@ -47,7 +47,7 @@ The call returns a Promise of result. When it is resolved, the result is an obje
 ```json
 {
   "source" : "http://hostname/path/index.html",
-  "data"   : {}
+  "data"   : {...}
 }
 ```
 
@@ -68,10 +68,10 @@ mine(
 ```json
 [{
   "source" : "http://hostname/path/index.html",
-  "data"   : {}
+  "data"   : {...}
 },{
   "source" : "http://hostname/path/product.html",
-  "data"   : {}
+  "data"   : {...}
 }]
 ```
 
@@ -93,7 +93,7 @@ mine(
 ```json
 {
   "source" :  "http://hostname/path/index.html",
-  "data"   : {}
+  "data"   : {...}
 }
 ```
 
@@ -118,11 +118,11 @@ mine(
 ```json
 [{
   "source" :  "http://hostname/path/index.html",
-  "data"   : {}
+  "data"   : {...}
 },
 {
   "source" :  "http://hostname/path/product.html",
-  "data"   : {}
+  "data"   : {...}
 }]
 ```
 
@@ -149,10 +149,10 @@ mine(
 ```json
 [{
   "source" : "http://hostname/path/index.html",
-  "data"   : {}
+  "data"   : {...}
 },
 {
   "source" :  "http://hostname/path/p2.html",
-  "data"   : {}
+  "data"   : {...}
 }]
 ```
