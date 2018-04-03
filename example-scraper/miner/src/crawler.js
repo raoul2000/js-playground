@@ -18,14 +18,45 @@ function normalizeNextUrl(baseUrl, nextUrl) {
 }
 exports.normalizeNextUrl = normalizeNextUrl;
 
+/**
+ * creates and return a random integer.
+ *
+ * @param  {int}  min min integer if max is provided, otherwise max value
+ * @param  {int} max max integer
+ * @return {int}     random integer
+ */
+function randomDelay(delay) {
+  let min = 0, max = 0;
+  if( ! delay ) {
+    return 0;
+  }else if( typeof delay === 'object') {
+    //var {a:aa = 10, b:bb = 5} = {a: 3};
+    ({min,max} = delay);
+  } else if (typeof delay === 'string') {
+    max = parseInt(delay,10);
+  } else if (typeof delay === 'number') {
+    max = delay;
+  } else {
+    throw new TypeError('Expected all arguments to be numbers');
+  }
 
-function requestProvider(url, delay) {
+	if (max === undefined) {
+		max = min;
+		min = 0;
+	}
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+exports.randomDelay = randomDelay;
+
+function requestProvider(options) {
+  let delay = randomDelay(options.delay);
   return new Promise( (resolve, reject) => {
     setTimeout( () => {
-      resolve( request(url));
+      resolve( request(options.url));
     }, delay);
   });
 }
+
 /**
  * options = {
  *  "url"     : 'http://hostname:port/path',
@@ -33,7 +64,11 @@ function requestProvider(url, delay) {
  *    "selector" : "h1 > div.post > a",
  *    "type"     : "@href"
  *  },
- *  "maxJump"  : 10
+ *  "maxJump"  : 10,
+ *  "delay" : {
+ *    "min" : 1000,
+ *    "max" : 4000
+ *  }
  * }
  * @param  {string|object} options the url of the page when string,
  * @param  {[type]} extractionPlan [description]
@@ -47,7 +82,7 @@ function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = 
    visitedUrl.push(options.url);
  }
  //return request(options.url)
- return requestProvider(options.url,2000)
+ return requestProvider(options,2000)
   .then( page => {
     let result = {
       'source' : options.url,
