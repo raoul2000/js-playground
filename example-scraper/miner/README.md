@@ -37,7 +37,7 @@ To be able to mine, Bob needs 2 arguments :
 In its simplest form, the *itinerary* is the url of the page you want to mine.
 
 ```js
-mine( "http://hostname/path/index.html", extractionPlan);
+bob.work( "http://hostname/path/index.html", extractionPlan);
 ```
 
 ## The Extraction Plan
