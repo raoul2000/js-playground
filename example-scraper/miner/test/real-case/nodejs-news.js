@@ -2,9 +2,7 @@
 
 const crawler = require('../../src/crawler');
 
-const TEST_BASE_URL = 'https://foundation.nodejs.org/news';
-
-crawler.start(TEST_BASE_URL, {
+crawler.start('https://foundation.nodejs.org/news', {
     "post": {
       "selector": "div.post",
       "type": [{
@@ -13,7 +11,7 @@ crawler.start(TEST_BASE_URL, {
     }
   })
   .then(result => {
-    console.log("FROM : "+TEST_BASE_URL);
+    console.log("FROM : https://foundation.nodejs.org/news");
     console.log(`found ${result.data.post.length} news`);
     console.log("-------------------------------------");
     result.data.post.forEach( aPost => {
