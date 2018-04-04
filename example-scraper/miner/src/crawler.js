@@ -30,8 +30,7 @@ function randomDelay(delay) {
   if( ! delay ) {
     return 0;
   }else if( typeof delay === 'object') {
-    //var {a:aa = 10, b:bb = 5} = {a: 3};
-    ({min,max} = delay);
+    ({min=0,max=5000} = delay);
   } else if (typeof delay === 'string') {
     max = parseInt(delay,10);
   } else if (typeof delay === 'number') {
@@ -52,7 +51,7 @@ function requestProvider(options) {
   let delay = randomDelay(options.delay);
   return new Promise( (resolve, reject) => {
     setTimeout( () => {
-      resolve( request(options.url));
+      resolve( request(options));
     }, delay);
   });
 }
