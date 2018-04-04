@@ -1,6 +1,5 @@
 "use strict";
 
-const cheerio = require('cheerio');
 const request = require('request-promise-native');
 const async   = require('async');
 const bob     = require('./miner');
@@ -20,10 +19,13 @@ exports.normalizeNextUrl = normalizeNextUrl;
 
 /**
  * creates and return a random integer.
- *
- * @param  {int}  min min integer if max is provided, otherwise max value
- * @param  {int} max max integer
- * @return {int}     random integer
+ * If an object is povided, it should have following format :
+ * delay = {
+ *  'min' : int, // minimum value
+ *  'max' : int // maximum value
+ * }
+ * @param  {mixed} delay  object or integer
+ * @return {int}        random integer value
  */
 function randomDelay(delay) {
   let min = 0, max = 0;
@@ -38,15 +40,17 @@ function randomDelay(delay) {
   } else {
     throw new TypeError('Expected all arguments to be numbers');
   }
-
-	if (max === undefined) {
-		max = min;
-		min = 0;
-	}
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 exports.randomDelay = randomDelay;
 
+/**
+ * Perform a possibly delayed HTTP request using provided options.
+ *
+ * @param  {object} options Request option object that can contain additional
+ * properties (like 'delay' for example)
+ * @return {Promise}         Promise resvoled by the request result
+ */
 function requestProvider(options) {
   let delay = randomDelay(options.delay);
   return new Promise( (resolve, reject) => {
@@ -75,19 +79,15 @@ function requestProvider(options) {
  * @return {[type]}                [description]
  */
 function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = []) {
-  //console.log("crawling url : "+options.url);
- //console.log(visitedUrl);
  if( visitedUrl.length === 0) {
    visitedUrl.push(options.url);
  }
- //return request(options.url)
  return requestProvider(options,2000)
   .then( page => {
     let result = {
       'source' : options.url,
       'data'   : bob.mine(extractionPlan, page)
     };
-    //console.log(`jumpCount = ${jumpCount} : result = `,result);
     if( options.hasOwnProperty('nextUrl') === false || jumpCount === options.maxJump) {
       return result;
     } else {
@@ -101,7 +101,6 @@ function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = 
             return [result].concat(nextResult);
           });
         } else { // loop detected
-          //console.log("loop detected");
           return result;
         }
       } else {

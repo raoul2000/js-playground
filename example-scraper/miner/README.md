@@ -20,7 +20,7 @@ If no **type** is provided, **text** is default.
 If the property value is a string, then it is assumed to be the selecor. If it's an array, it must contain
 one single item assued to be the selector. The property type is an array.
 
-## Primitive Type  Property
+## Primitive Type Property
 
 Extracts the title of a post. Only the first matching result is extracted. By default, the **type** is **text**.
 ```json
