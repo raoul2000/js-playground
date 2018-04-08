@@ -1,8 +1,8 @@
 "use strict";
 
-const crawler = require('../../src/crawler');
+const bob = require('../index');
 
-crawler.start('https://foundation.nodejs.org/news', {
+bob.work('https://foundation.nodejs.org/news', {
     "post": {
       "selector": "div.post",
       "type": [{

@@ -1,9 +1,8 @@
 "use strict";
 
-const crawler = require('../../src/crawler');
+const bob = require('../index');
 
-
-crawler.start('https://www.nytimes.com/', "h1.story-heading > a")
+bob.work('https://www.nytimes.com/', "h1.story-heading > a")
   .then(result => {
     console.log(result.data);
   })

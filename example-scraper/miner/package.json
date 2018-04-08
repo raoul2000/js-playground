@@ -1,12 +1,13 @@
 {
   "name": "miner",
   "version": "0.0.1",
-  "description": "A web page crazy miner",
+  "description": "Bob is a web miner",
   "main": "index.js",
   "scripts": {
     "server": "http-server ./test/www",
     "test": "mocha test/",
-    "nodejs-news": "node test/real-case/nodejs-news.js"
+    "nodejs-news": "node example/nodejs-news.js",
+    "nyt-headline": "node example/new-york-time-headline.js"
   },
   "keywords": [
     "scraper"

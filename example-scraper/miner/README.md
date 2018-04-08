@@ -113,7 +113,7 @@ bob.work(
     "nextUrl" : {
       "selector" : "div.post > p > a",
       "type"     : "@href"
-    }
+    },
     "maxJump"    : 3
   },
   model
