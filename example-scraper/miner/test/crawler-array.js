@@ -10,10 +10,54 @@ const URL_PAGE_NOT_FOUND = 'http://127.0.0.1:8080/page-NOT_FOUND.html';
 
 describe('crawler with array',function(done){
 
-	it('crawl a list of URL',function(done){
+	it('crawl a list of string URL',function(done){
     return crawler.start([
 				URL_PAGE1,
 				URL_PAGE2
+			], "h1"
+		)
+    .then( result => {
+      assert.deepEqual(result, [{
+        'source' : URL_PAGE1,
+        'data'   : 'page 1 : title'
+      },
+			{
+				'source' : URL_PAGE2,
+				'data'   : 'page 2 : title'
+			}]);
+      done();
+    })
+    .catch( err => {
+      done(err);
+    });
+	});
+
+	it('crawl a list of objects URL',function(done){
+    return crawler.start([
+				{ "url" : URL_PAGE1},
+				{ "url" : URL_PAGE2}
+			], "h1"
+		)
+    .then( result => {
+      assert.deepEqual(result, [{
+        'source' : URL_PAGE1,
+        'data'   : 'page 1 : title'
+      },
+			{
+				'source' : URL_PAGE2,
+				'data'   : 'page 2 : title'
+			}]);
+      done();
+    })
+    .catch( err => {
+      done(err);
+    });
+	});
+
+	it('crawl a list of mixed objects/string URL',function(done){
+    return crawler.start([
+				URL_PAGE1,
+				{ "url" : URL_PAGE2}
 			], "h1"
 		)
     .then( result => {
