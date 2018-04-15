@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>client</title>
+    <script
+			  src="https://code.jquery.com/jquery-2.2.4.min.js"
+			  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+			  crossorigin="anonymous"></script>
+    <script src="./js/view-reports.js" charset="utf-8"></script>
+    <script src="./js/view-live.js" charset="utf-8"></script>
+    <script src="./js/API-client.js" charset="utf-8"></script>
+    <script src="./js/app.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="report-list">
+      <h1>reports</h1>
+      <div id="reports-onair">
+      </div>
+      <div id="reports-archived">
+      </div>
+    </div>
+
+    <div id="live-report">
+      <h1>Live Report</h1>
+      <button id="btn-refresh">refresh</button>
+      <div id="report-items">
+          <div>last</div>
+      </div>
+
+    </div>
+  </body>
+</html>
