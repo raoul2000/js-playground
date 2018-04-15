@@ -5,12 +5,9 @@
       "title" : "report 1",
       "onair" : true,
       "items" : [
-        { "id" :  201, "content" : "content 201"},
-        { "id" :  202, "content" : "content 202"},
-        { "id" :  200, "content" : "content 200"},
-        { "id" : 11, "content" : "content11"},
-        { "id" : 12, "content" : "content12"},
-        { "id" : 13, "content" : "content13"}
+        { "id" : 3, "content" : "content 3"},
+        { "id" : 2, "content" : "content 2"},
+        { "id" : 1, "content" : "content 1"}
       ]
     },
     {

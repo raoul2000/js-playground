@@ -10,12 +10,12 @@ let viewLive = {
       var newNode = document.createElement("div");
       newNode.innerHTML = item.content;
       itemsContainer.insertAdjacentElement('afterbegin', newNode);
-      debugger;
       //itemsContainer.insertBefore(newNode, itemsContainer.firstChild);
     }
   },
-
+// TODO : reverse MODIFIES the array !!
   render : function(report) {
+    debugger;
     if( viewLive.current === null) {
       report.items.reverse().forEach( viewLive.renderItem);
       viewLive.current = report;
@@ -23,6 +23,7 @@ let viewLive = {
       let newItems = [];
       report.items.find( newItem => {
         if( newItem.id !== viewLive.current.items[0].id) {
+          debugger;
           newItems.push(newItem);
           //viewLive.renderItem(newItem);
           return false;
