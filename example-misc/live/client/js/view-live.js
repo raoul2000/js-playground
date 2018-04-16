@@ -13,26 +13,27 @@ let viewLive = {
       //itemsContainer.insertBefore(newNode, itemsContainer.firstChild);
     }
   },
-// TODO : reverse MODIFIES the array !!
   render : function(report) {
-    debugger;
     if( viewLive.current === null) {
-      report.items.reverse().forEach( viewLive.renderItem);
+      // reverse loop to first push the oldest item
+      for (var i = report.items.length - 1; i >= 0; --i) {
+        viewLive.renderItem(report.items[i]);
+      }
       viewLive.current = report;
     } else {
       let newItems = [];
       report.items.find( newItem => {
         if( newItem.id !== viewLive.current.items[0].id) {
-          debugger;
           newItems.push(newItem);
-          //viewLive.renderItem(newItem);
           return false;
         } else {
           return true;
         }
       });
       console.log("new items = ", newItems);
-      newItems.reverse().forEach( viewLive.renderItem );
+      for (var i = newItems.length - 1; i >= 0; --i) {
+        viewLive.renderItem(newItems[i]);
+      }
       viewLive.current.items = report.items;
     }
   },
