@@ -1,18 +1,30 @@
 
+
 let viewLive = {
   current : null,
-  renderItem : function(item) {
-    console.log(item.id);
-    let itemsContainer = document.getElementById('report-items');
-    if( itemsContainer.childElementCount === 0) {
-      itemsContainer.innerHTML = `<div>${item.content}</div>`;
-    } else {
-      var newNode = document.createElement("div");
-      newNode.innerHTML = item.content;
-      itemsContainer.insertAdjacentElement('afterbegin', newNode);
-      //itemsContainer.insertBefore(newNode, itemsContainer.firstChild);
+  itemsContainer : null,
+
+  getItemContainerNode : function() {
+    if( ! viewLive.itemsContainer) {
+      viewLive.itemsContainer = document.getElementById('report-items');
     }
+    return viewLive.itemsContainer;
   },
+
+  createItemHTML : function(item) {
+    return  `<div>${item.content}</div>`;
+  },
+
+  createItemNode : function(item) {
+    var itemNode = document.createElement("div");
+    itemNode.innerHTML = viewLive.createItemHTML(item);
+    return itemNode;
+  },
+
+  renderItem : function(item) {
+    viewLive.getItemContainerNode().insertAdjacentElement('afterbegin',  viewLive.createItemNode(item));
+  },
+  
   render : function(report) {
     if( viewLive.current === null) {
       // reverse loop to first push the oldest item

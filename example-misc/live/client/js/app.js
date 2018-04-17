@@ -15,8 +15,9 @@ function showLiveReport() {
 
 
 
-$( document ).ready(function() {
 
+$( document ).ready(function() {
+  console.log('ready');
   document.getElementById('reports-onair').addEventListener('click',(event) => {
     console.log("click");
     if( event.target.dataset.reportId && event.target.dataset.onair === "true") {

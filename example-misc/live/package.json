@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "faker": "^4.1.0"
+    "easytimer": "^1.1.1",
+    "faker": "^4.1.0",
+    "nanobar": "^0.4.2",
+    "timeago.js": "^3.0.2"
   }
 }
