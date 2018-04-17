@@ -1,7 +1,12 @@
+
+
+
+// Time and Progress bar ///////////////////////////////////////////////////
+
+
 function notifyError(error) {
   console.error(error);
 }
-
 
 function showReports() {
   document.getElementById("report-list").style.display = "inherit";
@@ -13,22 +18,42 @@ function showLiveReport() {
   document.getElementById("live-report").style.display = "inherit";
 }
 
-
-
-
-$( document ).ready(function() {
+function initApp() {
   console.log('ready');
-  document.getElementById('reports-onair').addEventListener('click',(event) => {
-    console.log("click");
-    if( event.target.dataset.reportId && event.target.dataset.onair === "true") {
-      showLiveReport();
+  let appElement = document.getElementById('afp-liveReport-app');
+
+  liveTimer.initialize(() => {
+    viewLive.refreshReport(APIClient, notifyError);
+  });
+
+
+  appElement.addEventListener('click',(event) => {
+    if( event.target.dataset.reportId ) {
       viewLive.loadReport(event.target.dataset.reportId, APIClient, notifyError);
+      showLiveReport();
+      if (event.target.dataset.onair === "true") {
+        liveTimer.showProgress().start();
+      }
     }
   });
 
   document.getElementById('btn-refresh').addEventListener('click',(event)=> {
     viewLive.refreshReport(APIClient, notifyError);
-  })
+    liveTimer.reset();
+  });
+
+  document.getElementById('btn-view-report-list').addEventListener('click',(event)=> {
+    liveTimer.hideProgress().stop();
+    showReports();
+  });
+
+  viewReports.loadReportList(APIClient, notifyError);
   showReports();
-  viewReport.loadReportList(APIClient, notifyError);
-});
+}
+
+var bootstrap = function(evt){
+  if (evt.target.readyState === "complete") {
+    initApp();
+  }
+}
+document.addEventListener('readystatechange', bootstrap, false);

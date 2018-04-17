@@ -24,7 +24,7 @@ let viewLive = {
   renderItem : function(item) {
     viewLive.getItemContainerNode().insertAdjacentElement('afterbegin',  viewLive.createItemNode(item));
   },
-  
+
   render : function(report) {
     if( viewLive.current === null) {
       // reverse loop to first push the oldest item
@@ -50,8 +50,12 @@ let viewLive = {
     }
   },
 
+  clear : function() {
+    viewLive.current = null;
+    viewLive.getItemContainerNode().innerHTML = "";
+  },
   loadReport : function(reportId, APIClient, notifyError) {
-    viewLive.currentReport = null;
+    viewLive.clear();
     APIClient.getReport(reportId)
       .then(viewLive.render)
       .catch(notifyError);

@@ -3,16 +3,22 @@
   <head>
     <meta charset="utf-8">
     <title>client</title>
-    <script
+    <!--script
 			  src="https://code.jquery.com/jquery-2.2.4.min.js"
 			  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-			  crossorigin="anonymous"></script>
+			  crossorigin="anonymous"></script -->
+    <script src="./js/lib/jquery.min.js" charset="utf-8"></script>
+    <script src="./js/lib/easytimer.min.js" charset="utf-8"></script>
+    <script src="../node_modules/nanobar/nanobar.min.js" charset="utf-8"></script>
+    <script src="./js/timer.js" charset="utf-8"></script>
     <script src="./js/view-reports.js" charset="utf-8"></script>
     <script src="./js/view-live.js" charset="utf-8"></script>
     <script src="./js/API-client.js" charset="utf-8"></script>
     <script src="./js/app.js" charset="utf-8"></script>
   </head>
   <body>
+
+  <div id="afp-liveReport-app">
     <div id="report-list">
       <h1>reports</h1>
       <div id="reports-onair">
@@ -24,10 +30,12 @@
     <div id="live-report">
       <h1>Report</h1>
       <button id="btn-refresh">refresh</button>
+      <button id="btn-view-report-list">list</button>
       <div id="report-items">
           <div>last</div>
       </div>
-
     </div>
+
+  </div>
   </body>
 </html>
