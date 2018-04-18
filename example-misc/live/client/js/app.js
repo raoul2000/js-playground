@@ -26,7 +26,6 @@ function initApp() {
     viewLive.refreshReport(APIClient, notifyError);
   });
 
-
   appElement.addEventListener('click',(event) => {
     if( event.target.dataset.reportId ) {
       viewLive.loadReport(event.target.dataset.reportId, APIClient, notifyError);

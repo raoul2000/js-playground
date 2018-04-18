@@ -23,12 +23,19 @@ let liveTimer = {
 
     liveTimer.timer.addEventListener('targetAchieved', function(e) {
       console.log("BOUM");
-
-      liveTimer.nanobar.go(0);
+      liveTimer.stop();
+      //liveTimer.hideProgress();
+      //liveTimer.nanobar.go(0);
+      cb();
+      /*
       setTimeout(() => {
         liveTimer.timer.reset();
       }, 1000);
-      cb();
+      */
+
+      //liveTimer.timer.reset();
+      //liveTimer.showProgress();
+      liveTimer.start();
     });
     return liveTimer;
   },

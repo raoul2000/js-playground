@@ -1,32 +1,30 @@
-
-
 let viewLive = {
-  current : null,
-  itemsContainer : null,
+  current: null,
+  itemsContainer: null,
 
-  getItemContainerNode : function() {
-    if( ! viewLive.itemsContainer) {
+  getItemContainerNode: function() {
+    if (!viewLive.itemsContainer) {
       viewLive.itemsContainer = document.getElementById('report-items');
     }
     return viewLive.itemsContainer;
   },
 
-  createItemHTML : function(item) {
-    return  `<div>${item.content}</div>`;
+  createItemHTML: function(item) {
+    return `<div>${item.content}</div>`;
   },
 
-  createItemNode : function(item) {
+  createItemNode: function(item) {
     var itemNode = document.createElement("div");
     itemNode.innerHTML = viewLive.createItemHTML(item);
     return itemNode;
   },
 
-  renderItem : function(item) {
-    viewLive.getItemContainerNode().insertAdjacentElement('afterbegin',  viewLive.createItemNode(item));
+  renderItem: function(item) {
+    viewLive.getItemContainerNode().insertAdjacentElement('afterbegin', viewLive.createItemNode(item));
   },
 
-  render : function(report) {
-    if( viewLive.current === null) {
+  render: function(report) {
+    if (viewLive.current === null) {
       // reverse loop to first push the oldest item
       for (var i = report.items.length - 1; i >= 0; --i) {
         viewLive.renderItem(report.items[i]);
@@ -34,8 +32,8 @@ let viewLive = {
       viewLive.current = report;
     } else {
       let newItems = [];
-      report.items.find( newItem => {
-        if( newItem.id !== viewLive.current.items[0].id) {
+      report.items.find(newItem => {
+        if (newItem.id !== viewLive.current.items[0].id) {
           newItems.push(newItem);
           return false;
         } else {
@@ -50,18 +48,18 @@ let viewLive = {
     }
   },
 
-  clear : function() {
+  clear: function() {
     viewLive.current = null;
     viewLive.getItemContainerNode().innerHTML = "";
   },
-  loadReport : function(reportId, APIClient, notifyError) {
+  loadReport: function(reportId, APIClient, notifyError) {
     viewLive.clear();
     APIClient.getReport(reportId)
       .then(viewLive.render)
       .catch(notifyError);
   },
 
-  refreshReport : function(APIClient, notifyError) {
+  refreshReport: function(APIClient, notifyError) {
     APIClient.getReport(viewLive.current.id)
       .then(viewLive.render)
       .catch(notifyError);
