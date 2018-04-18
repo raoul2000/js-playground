@@ -1,6 +1,6 @@
 let liveTimer = {
-  nanobar: null,
-  refreshRateSeconds: 2,
+
+  refreshRateSeconds: 5,
   timer: null,
   initialize: function(cb) {
     if (liveTimer.timer !== null) {
@@ -8,33 +8,28 @@ let liveTimer = {
       return;
     }
     liveTimer.timer = new Timer();
-    liveTimer.nanobar = new Nanobar({
-      id: 'nano-live-report',
-      class: 'nano-style'
+    NProgress.configure({
+      trickle: false,
+      showSpinner: false,
+      minimum: 0
     });
 
     liveTimer.timer.addEventListener('secondTenthsUpdated', function(e) {
       // update nanobar progress
       let currentTenthSec = liveTimer.timer.getTotalTimeValues().secondTenths;
       let totalTenthSec = (liveTimer.refreshRateSeconds * 10);
-      let progress = 100 - Math.ceil((100 * currentTenthSec) / totalTenthSec);
-      liveTimer.nanobar.go(progress);
+      let progress = (100 - Math.ceil((100 * currentTenthSec) / totalTenthSec)) / 100;
+      NProgress.set(progress);
     });
 
     liveTimer.timer.addEventListener('targetAchieved', function(e) {
       console.log("BOUM");
-      liveTimer.stop();
-      //liveTimer.hideProgress();
-      //liveTimer.nanobar.go(0);
-      cb();
-      /*
-      setTimeout(() => {
-        liveTimer.timer.reset();
-      }, 1000);
-      */
+      liveTimer.timer.stop();
+      NProgress.done();
+      NProgress.remove();
 
-      //liveTimer.timer.reset();
-      //liveTimer.showProgress();
+      cb();
+
       liveTimer.start();
     });
     return liveTimer;
@@ -47,22 +42,15 @@ let liveTimer = {
         seconds: liveTimer.refreshRateSeconds
       }
     });
-    return liveTimer;
+    NProgress.start();
   },
   stop: function() {
     liveTimer.timer.stop();
-    return liveTimer;
   },
   reset: function() {
-    liveTimer.timer.reset();
-    return liveTimer;
-  },
-  hideProgress: function() {
-    document.getElementById('nano-live-report').style.display = "none";
-    return liveTimer;
-  },
-  showProgress: function() {
-    document.getElementById('nano-live-report').style.display = "inherit";
-    return liveTimer;
+    liveTimer.timer.stop();
+    NProgress.done();
+    NProgress.remove();
+    liveTimer.start();
   }
 };

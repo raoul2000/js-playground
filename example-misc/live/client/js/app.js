@@ -31,18 +31,19 @@ function initApp() {
       viewLive.loadReport(event.target.dataset.reportId, APIClient, notifyError);
       showLiveReport();
       if (event.target.dataset.onair === "true") {
-        liveTimer.showProgress().start();
+        liveTimer.start();
       }
     }
   });
 
   document.getElementById('btn-refresh').addEventListener('click',(event)=> {
+    liveTimer.stop();
     viewLive.refreshReport(APIClient, notifyError);
-    liveTimer.reset();
+    liveTimer.start();
   });
 
   document.getElementById('btn-view-report-list').addEventListener('click',(event)=> {
-    liveTimer.hideProgress().stop();
+    liveTimer.stop();
     showReports();
   });
 
