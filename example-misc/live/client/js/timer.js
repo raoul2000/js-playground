@@ -46,11 +46,6 @@ let liveTimer = {
   },
   stop: function() {
     liveTimer.timer.stop();
-  },
-  reset: function() {
-    liveTimer.timer.stop();
-    NProgress.done();
     NProgress.remove();
-    liveTimer.start();
   }
 };
