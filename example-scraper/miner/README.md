@@ -17,7 +17,7 @@ This was an easy one for Bob who is actually able to work much harder to try to 
 - the first argument is the place to digg (here a simple URL)
 - the second is the extraction plan (here a simple jquery-like selector)
 
-At last, you may have noticed that when you ask Bob to work, he gives you back the *promise* that he will do his best, and noting more (because you never know). If no problem occured, the promise will be resolved with the data extracted by Bob, otherwise the promise will be rejeced with an error describing the problem.
+At last, you may have noticed that when you ask Bob to work, he gives you back the *promise* that he will do his best, and nothing more (because you never know). If no problem occurs, the promise will be resolved with the data extracted by Bob, otherwise the promise will be rejeced with an error describing the problem.
 
 Now you know Bob.
 
@@ -67,7 +67,7 @@ In both cases of success, the result is an object :
 
 ### Many Pages
 
-If you wan to use the same extraction plan on several pages just provide an array of urls and/or objectsn as the first argument.
+If you want to use the same extraction plan on several pages just provide an array of urls and/or objectsn as the first argument.
 
 ```js
 bob.work(
@@ -103,7 +103,7 @@ In this case the result is an array of objects :
 
 ### Follow Me
 
-There may be some cases where you don't really know the complete itinerary before to start: you only know the first step and the way to how to find the direction of the next one.
+There may be some cases where you don't really know the complete itinerary before to start: you only know the first step and the way to how to find the direction to the next one.
 
 
 ```js

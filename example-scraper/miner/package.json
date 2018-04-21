@@ -6,8 +6,8 @@
   "scripts": {
     "server": "http-server ./test/www",
     "test": "mocha test/",
-    "nodejs-news": "node example/nodejs-news.js",
-    "nyt-headline": "node example/new-york-time-headline.js"
+    "nodejs-news": "node examples/nodejs-news.js",
+    "nyt-headline": "node examples/new-york-time-headline.js"
   },
   "keywords": [
     "scraper"
@@ -21,6 +21,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "cheerio": "^1.0.0-rc.2",
+    "npm": "^5.8.0",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
     "url-parse": "^1.2.0"
