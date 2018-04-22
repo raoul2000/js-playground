@@ -21,9 +21,11 @@
   "dependencies": {
     "async": "^2.6.0",
     "cheerio": "^1.0.0-rc.2",
+    "jsdom": "^11.8.0",
     "npm": "^5.8.0",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
+    "sizzle": "^2.3.3",
     "url-parse": "^1.2.0"
   }
 }
