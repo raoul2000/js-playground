@@ -186,15 +186,15 @@ bob.work(
 );
 ```
 
-The object we ask Bob to build has one property named *postList*. The value of this property is
-an *array* that contains objects representings posts. Each object in this array has 2 properties.
-- *title* : a simple string representing the title of the post
-- *body* : a simple string representing the content of the post
+The object we ask Bob to build has one property named *postList*. This property is
+an *array* (that's its *type*) that contains objects representings posts. Each object in this array has 2 properties.
+- *title* : a string representing the title of the post
+- *body* : a string representing the content of the post
 
-Here is how it could looks like :
+Here is how the result could look like :
 
 ```json
-[{
+{
   "source" : "http://hostname/path/post-01.html",
   "data"   : {
     "postList" : [
@@ -203,10 +203,10 @@ Here is how it could looks like :
       { "title" : " the last title", "body" : "Bob is in da place !"}
     ]
   }
-}]
+}
 ```
 
-An object is made of **properties**
+An object is made of **properties**, and we are going to see now how to describe them to Bob.
 
 For a given *propertyName* its definition can be provided as an object :
 
@@ -215,16 +215,22 @@ For a given *propertyName* its definition can be provided as an object :
   "propertyName" : {
     "selector" : "jquery selector",
     "type" :
-      "text"   | "html"   | "@attributeName"   | { object } |
+       "text"  |  "html"  |  "@attributeName"  |  { object } |
       ["text"] | ["html"] | ["@attributeName"] | [{ object }]
   }
 }
 ```
-If no **type** is provided, **text** is default.
+
 If the property value is a string, then it is assumed to be the selector. If it's an array, it must contain
 one single item assumed to be the selector. The property type is an array.
 
-## Primitive Type Property
+The *selector* value is a JQuery selector.
+
+The *type* value is describing how to get a value based on the selected element.
+
+If no **type** is provided, **text** is default.
+
+#### Primitive Type Property
 
 Extracts the title of a post. Only the first matching result is extracted. By default, the **type** is **text**.
 ```json
@@ -248,7 +254,7 @@ The result :
 }
 ```
 
-## Array Property
+#### Array Property
 
 Create an object with three properties : *title* and *paragraphs* and *addresses*.
 First two having a value that is an array of text and the last one is the value of the *href* attribute
@@ -292,7 +298,7 @@ Using the short notation it is possible to extract *title* and *paragraphs* :
 ```
 This is possible because the default type *text* is appropriate for these 2 properties. The addresses property can't be extract using the short notation.
 
-## Single Object
+#### Single Object
 
 Let's extract the first post and retrieve its title and list of paragraphs. Note that the `selector` of *title* and *text* properties is **relative to the parent selector** (here : "body > div.list > div.post").
 
@@ -326,7 +332,7 @@ The result :
   }
 }
 ```
-## Array Of Object
+#### Array Of Object
 
 Now extracts all posts (title and text) : it's *almost* the same as above but this time, we enclose the object definition into an array :
 
