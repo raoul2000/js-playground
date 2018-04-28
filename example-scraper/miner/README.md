@@ -51,7 +51,7 @@ bob.work(
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0;) Gecko/20100101 Firefox/59.0'
     }    
   },
-  model
+  extractionPlan
 );
 ```
 
@@ -116,7 +116,7 @@ bob.work(
     },
     "maxJump"    : 3
   },
-  model
+  extractionPlan
 );
 ```
 
@@ -136,6 +136,78 @@ The result is an array of objects
 
 ## The Extraction Plan
 
+### A Simple Selector
+
+As we already saw, the most simple extraction plan is a [JQuery Selector](https://api.jquery.com/category/selectors/) that is evaluated on the
+page. The extracted value is the text value of the first matching element.
+
+```js
+bob.work(
+  "http://hostname/path/post-01.html",
+  "div.content > div.post > h1"
+);
+```
+In this case, the result is a simple string.
+
+If you want to extract more than one simple value using a selector, just provide an array
+where each item is a selector. Again, only the first matching element for each selector
+will be returned.
+
+```js
+bob.work(
+  "http://hostname/path/post-01.html",
+  ["div.content > div.post > h1", "div.content > div.post > p.body"]
+);
+```
+
+You will receive an aray of strings, where the first one is the title of the post, and the second
+one, the body of the post.
+
+But ok, this is quite basic right ? Bob can also provide a complete object if you tell him how to
+do. We will see that on the next chapter.
+
+### A Complex Extraction Plan
+
+If you want Bob to produce an object instead of a simple text value, you can give him an extraction
+plan describing exactly this object. Here is an example... Are you able to understand it ?
+
+```js
+bob.work(
+  "http://hostname/path/post-01.html",
+  {
+    "postList": {
+      "selector": "div.content > div.post",
+      "type": [{
+        "title": '.post-header > h3.title'
+        "body" :  'div.excerpt'
+      }]
+    }
+  }
+);
+```
+
+The object we ask Bob to build has one property named *postList*. The value of this property is
+an *array* that contains objects representings posts. Each object in this array has 2 properties.
+- *title* : a simple string representing the title of the post
+- *body* : a simple string representing the content of the post
+
+Here is how it could looks like :
+
+```json
+[{
+  "source" : "http://hostname/path/post-01.html",
+  "data"   : {
+    "postList" : [
+      { "title" : " some title", "body" : "lorem ipsum etc ..."},
+      { "title" : " some other title", "body" : "let it be etc."},
+      { "title" : " the last title", "body" : "Bob is in da place !"}
+    ]
+  }
+}]
+```
+
+An object is made of **properties**
+
 For a given *propertyName* its definition can be provided as an object :
 
 ```
@@ -149,8 +221,8 @@ For a given *propertyName* its definition can be provided as an object :
 }
 ```
 If no **type** is provided, **text** is default.
-If the property value is a string, then it is assumed to be the selecor. If it's an array, it must contain
-one single item assued to be the selector. The property type is an array.
+If the property value is a string, then it is assumed to be the selector. If it's an array, it must contain
+one single item assumed to be the selector. The property type is an array.
 
 ## Primitive Type Property
 

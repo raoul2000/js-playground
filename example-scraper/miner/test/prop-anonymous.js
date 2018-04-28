@@ -14,6 +14,14 @@ describe('anonymous property extraction',function(done){
 		done();
 	});
 
+	it('extracts the first matching text',function(done){
+		let result = miner.mine("p",
+			"<p> text <b>text 1</b> <b>text 2</b> text</p>"
+		);
+		assert.deepEqual(result,' text text 1 text 2 text');
+		done();
+	});
+
 	it('extracts all first match texts for each selector',function(done){
 		let result = miner.mine(["b", "div"],
 			`<p> text
