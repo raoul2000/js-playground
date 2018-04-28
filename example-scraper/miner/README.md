@@ -232,7 +232,8 @@ If no **type** is provided, **text** is default.
 
 #### Primitive Type Property
 
-Extracts the title of a post. Only the first matching result is extracted. By default, the **type** is **text**.
+Extracts the title of a post. Only the first matching result is extracted.
+
 ```json
 {
   "title" : {
@@ -257,7 +258,9 @@ The result :
 #### Array Property
 
 Create an object with three properties : *title* and *paragraphs* and *addresses*.
-First two having a value that is an array of text and the last one is the value of the *href* attribute
+- *title* : text of the **first** selected element
+- *paragraphs* : array of text of **all** selected elements
+- *adresses* : array of *href* attribute values for all selected elements
 
 ```json
 {
@@ -296,11 +299,11 @@ Using the short notation it is possible to extract *title* and *paragraphs* :
   "paragraphs" : ["body > div.post > p"]
 }
 ```
-This is possible because the default type *text* is appropriate for these 2 properties. The addresses property can't be extract using the short notation.
+This is possible because the default type *text* is appropriate for these 2 properties. The *addresses* property can't be extract using the short notation.
 
 #### Single Object
 
-Let's extract the first post and retrieve its title and list of paragraphs. Note that the `selector` of *title* and *text* properties is **relative to the parent selector** (here : "body > div.list > div.post").
+Let's extract the first post and retrieve its title and list of paragraphs. Note that the `selector` of *title* and *text* properties is **relative to the parent selector** (here : `body > div.list > div.post`).
 
 ```json
 {

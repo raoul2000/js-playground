@@ -1,24 +1,30 @@
 "use strict";
 
-const jsdom = require("jsdom");
+const assert = require('chai').assert;
+const expect = require('chai').expect;
+const jsdom  = require("jsdom");
 
-const dom = new jsdom.JSDOM(`<!DOCTYPE html>
-  <ul>
-    <li>item 1</li>
-    <li>item 2</li>
-    <li>item 3 <i>ital</i></li>
-  </ul>
-  <p>Hello world</p>`);
-console.log(dom.serialize());
 
-let window = dom.window;
+describe('JSDOM and JQuery features', function(done) {
 
-var $ = require('jquery')(window);
-var li = $('ul > li:last');
-console.log(li.text());
-console.log(li.html());
+  it('apply JQuery selector on HTML', function(done) {
+    const dom = new jsdom.JSDOM(`<!DOCTYPE html>
+      <ul>
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3 <i>ital</i></li>
+      </ul>
+      <p>Hello world</p>`);
+    var $ = require('jquery')(dom.window);
+    var li = $('ul > li:last');
+    assert.equal("item 3 ital",li.text());
+    assert.equal("item 3 <i>ital</i>",li.html());
 
-li = $('ul > li:gt(1)');
-console.log(li);
+    li = $('ul > li:gt(1)');
+    assert.equal("item 3 ital",li.text());
+    assert.equal("item 3 <i>ital</i>",li.html());
 
-//require("sizzle")("ul > li",dom);
+    done();
+  });
+
+});

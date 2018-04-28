@@ -34,7 +34,7 @@ describe('JSDOM features', function(done) {
     assert.equal(li["2"].textContent,"item 3");
     done();
   });
-
+/*
   it('select by last', function(done) {
     const dom = new jsdom.JSDOM(`<!DOCTYPE html>
       <p>hello world</p>
@@ -48,5 +48,5 @@ describe('JSDOM features', function(done) {
     console.log(JSON.stringify(li));
     done();
   });
-
+*/
 });
