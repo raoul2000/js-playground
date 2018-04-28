@@ -1,0 +1,131 @@
+[{
+  "source": "https://www.npmjs.com/search?q=crawler&ranking=popularity&page=0&perPage=20",
+  "data": {
+    "module": [{
+      "name": "crawler",
+      "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously"
+    }, {
+      "name": "Crawler",
+      "description": "Search for anything on web."
+    }, {
+      "name": "simplecrawler",
+      "description": "Very straightforward, event driven web crawler. Features a flexible queue interface and a basic cache mechanism with extensible backend."
+    }, {
+      "name": "osmosis",
+      "description": "Web scraper for NodeJS"
+    }, {
+      "name": "headless-chrome-crawler",
+      "description": "Distributed web crawler powered by Headless Chrome"
+    }, {
+      "name": "node-opcua-client-crawler",
+      "description": "pure nodejs OPCUA SDK - module -client-crawler"
+    }, {
+      "name": "isbot",
+      "description": "detects bots/crawlers/spiders via the user agent."
+    }, {
+      "name": "simplecrawler-referrer-filter",
+      "description": "Very straigntforward web crawler. Uses EventEmitter. Generates queue statistics and has a basic cache mechanism with extensible backend.  This version is forked in order to add the ability to filter by referrer url"
+    }, {
+      "name": "js-crawler",
+      "description": "Web crawler for Node.js"
+    }, {
+      "name": "npm-license-crawler",
+      "description": "Analyzes license information for multiple node.js modules (package.json files) as part of your software project."
+    }, {
+      "name": "simple-headless-chrome",
+      "description": "Headless Chrome abstraction to simplify the interaction with the browser. It may be used for crawling sites, test automation, etc"
+    }, {
+      "name": "sitemap-generator",
+      "description": "Easily create XML sitemaps for your website."
+    }, {
+      "name": "apify",
+      "description": "Web scraping and automation SDK"
+    }, {
+      "name": "bas",
+      "description": "Behaviour Assertion Sheets: CSS-like declarative syntax for client-side integration testing and quality assurance."
+    }, {
+      "name": "gpapi",
+      "description": "use google play protobuf api in node"
+    }, {
+      "name": "limit-request-promise",
+      "description": "http request for web scraping"
+    }, {
+      "name": "node-scrapy",
+      "description": "Simple, lightweight and expressive web scraping with Node.js"
+    }, {
+      "name": "huntsman",
+      "description": "Super configurable async web spider"
+    }, {
+      "name": "apify-client",
+      "description": "Apify API client for JavaScript"
+    }, {
+      "name": "node-webcrawler",
+      "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously"
+    }]
+  }
+}, {
+  "source": "https://www.npmjs.com/search?q=crawler&ranking=popularity&page=1&perPage=20",
+  "data": {
+    "module": [{
+      "name": "spidex",
+      "description": "A web crawler for node.js, even support hessian request."
+    }, {
+      "name": "spider-detector",
+      "description": "A tiny node module to detect spiders/crawlers quickly and comes with optional middleware for ExpressJS"
+    }, {
+      "name": "zhihu-api",
+      "description": "Unofficial API for zhihu (https://www.zhihu.com)"
+    }, {
+      "name": "hltv",
+      "description": "The unofficial HLTV Node.js API"
+    }, {
+      "name": "revenant",
+      "description": "A headless browser powered by PhantomJS functions in Node.js"
+    }, {
+      "name": "is-bot",
+      "description": "Determines if a user-agent is a bot/spider/crawler."
+    }, {
+      "name": "crawler-js",
+      "description": "Opensource Framework Crawler in Node.js"
+    }, {
+      "name": "roboto",
+      "description": "A web crawler for Nodejs."
+    }, {
+      "name": "web-auto-extractor",
+      "description": "Automatically extracts structured information from webpages"
+    }, {
+      "name": "temme",
+      "description": "Concise and convenient jQuery-like selector for node crawlers."
+    }, {
+      "name": "x-ray-crawler",
+      "description": "x-ray's crawler"
+    }, {
+      "name": "seenreq",
+      "description": "A library to test if a url(request) is crawled, usually used in a web crawler. Compatible with `request` and `node-crawler`"
+    }, {
+      "name": "sitemapper",
+      "description": "Parser for XML Sitemaps to be used with Robots.txt and web crawlers"
+    }, {
+      "name": "dhtspider",
+      "description": "Bittorrent dht network infohash spider, for engiy.com[a bittorrent resource search engine]"
+    }, {
+      "name": "crawl",
+      "description": "Website crawler and differencer"
+    }, {
+      "name": "goose-parser",
+      "description": "Multi environment webpage parser"
+    }, {
+      "name": "node-spider",
+      "description": "Generic web crawler powered by Node.js"
+    }, {
+      "name": "nintendo-switch-eshop",
+      "description": "Unofficial API lib for Nintendo Switch eShop game listing and pricing information."
+    }, {
+      "name": "taki",
+      "description": "Take a snapshot of any website."
+    }, {
+      "name": "spotlight",
+      "description": "An object crawler/property search library that works on nearly all JavaScript platforms."
+    }]
+  }
+}]

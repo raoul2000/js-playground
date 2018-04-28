@@ -3,13 +3,12 @@
 const bob = require('../index');
 
 bob.work({
-    "url": 'https://www.npmjs.com/search?q=crawler&ranking=popularity',
+    "url": 'https://www.npmjs.com/search?q=crawler&ranking=popularity&page=0&perPage=20',
     "nextUrl": {
-      "selector": ".search__searchTopbar___2R2Ol .pagination__page___300Ea > a",
-
+      "selector": ".search__searchTopbar___2R2Ol .pagination__page___300Ea:last > a",
       "type": "@href"
     },
-    "maxJump": 3
+    "maxJump": 1
   }, {
     "module": {
       "selector": "section",
@@ -21,13 +20,6 @@ bob.work({
   })
   .then(result => {
     console.log(JSON.stringify(result));
-    /*
-    console.log(`found ${result.data.module.length} modules`);
-
-    console.log("-------------------------------------");
-    result.data.module.forEach(aModule => {
-      console.log(aModule.name);
-    });*/
   })
   .catch(err => {
     console.error(err);

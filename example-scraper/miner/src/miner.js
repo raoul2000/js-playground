@@ -1,6 +1,7 @@
 "use strict";
 
 const cheerio = require('cheerio');
+const jsdom   = require("jsdom");
 
 function parseString(val) {
   if(val) {
@@ -66,7 +67,15 @@ function parseType(type){
  * @return {[type]}          [description]
  */
 function extractPrimitiveValue(valueDef, selector, html) {
-  const $ = cheerio.load(html);
+
+  let $ = null;
+  if( false ) {
+    $ = cheerio.load(html);
+  } else {
+    const dom = new jsdom.JSDOM(html);
+    $ = require('jquery')(dom.window);
+  }
+
 
   let result = null;
   try {
