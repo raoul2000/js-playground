@@ -178,7 +178,7 @@ function extractProperty(propertyDefinition, html) {
   var parsedType = parseType(model.type || "text");
 
   if( parsedType.isObject === true) {
-    const $ = parseHTML(html);
+    const $ = parseHTML(html)
 
     if( ! parsedType.isArray ) {
       // mine single object
@@ -201,7 +201,7 @@ function extractProperty(propertyDefinition, html) {
 
 /**
  * Extract all properties defined in the model, from the html.
- * If
+ *
  *
  * @param  {object} model properties definition
  * @param  {text} html  the mine
@@ -214,7 +214,16 @@ function extractObject(model, html) {
     var propertyName         = modelKeys[i];
     var propertyDefinition   = model[propertyName];
 
-    result[propertyName] = extractProperty(propertyDefinition, html);
+    if( typeof propertyDefinition === 'object' && propertyDefinition.jumpTo) {
+      let targetUrl = extractProperty(propertyDefinition.jumpTo, html);
+
+      require('./miner').start(targetUrl,propertyDefinition.jumpTo.then)
+      .then( extract => {
+          result[propertyName] = extract.data;
+      });
+    } else {
+      result[propertyName] = extractProperty(propertyDefinition, html);
+    }
   }
   return result;
 }
@@ -226,33 +235,34 @@ function extractObject(model, html) {
  *
  * @param  {mixed} extractionPlan describe how to mine
  * @param  {string} html           the data to explore
- * @return {mixed}                mining result
+ * @return {Promise}
  */
 exports.mine = function(extractionPlan, html) {
 
-  if( ! extractionPlan ) {
-    throw new Error("invalid extraction plan");
-  }
-
-  if( typeof extractionPlan === "string")
-  {
-    // the extractionPlan is considered as a selector
-    let selector = extractionPlan;
-    let parsedType = parseType("text");
-    return extractPrimitiveValue(parsedType, selector, html);
-  }
-  else if( Array.isArray(extractionPlan))
-  {
-    // the extractionPlan is a actually a list of extraction plans
-    return extractionPlan.map( plan => exports.mine(plan, html));
-  }
-  else if( typeof extractionPlan === "object")
-  {
-    // the extraction plan is a complex object
-    return extractObject(extractionPlan, html);
-  }
-  else
-  {
-    throw new Error("unsupported extraction plan");
-  }
+  return new Promise( (resolve, reject) => {
+    if( ! extractionPlan ) {
+      reject("invalid extraction plan");
+    }
+    else if( typeof extractionPlan === "string")
+    {
+      // the extractionPlan is considered as a selector
+      let selector = extractionPlan;
+      let parsedType = parseType("text");
+      resolve(extractPrimitiveValue(parsedType, selector, html));
+    }
+    else if( Array.isArray(extractionPlan))
+    {
+      // the extractionPlan is a actually a list of extraction plans
+      resolve(extractionPlan.map( plan => exports.mine(plan, html)));
+    }
+    else if( typeof extractionPlan === "object")
+    {
+      // the extraction plan is a complex object
+      resolve(extractObject(extractionPlan, html));
+    }
+    else
+    {
+      reject("unsupported extraction plan");
+    }
+  });
 };

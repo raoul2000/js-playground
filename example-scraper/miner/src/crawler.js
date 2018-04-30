@@ -76,7 +76,7 @@ function requestProvider(options) {
  * @param  {string|object} options the url of the page when string,
  * @param  {[type]} extractionPlan [description]
  * @param  {Number} [jumpCount=0]  [description]
- * @return {[type]}                [description]
+ * @return {[Promise]}                [description]
  */
 function crawlUrlMultipage(options, extractionPlan, jumpCount = 0, visitedUrl = []) {
  if( visitedUrl.length === 0) {
