@@ -160,7 +160,7 @@ bob.work(
 );
 ```
 
-You will receive an aray of strings, where the first one is the title of the post, and the second
+You will receive an array of strings, where the first one is the title of the post, and the second
 one, the body of the post.
 
 But ok, this is quite basic right ? Bob can also provide a complete object if you tell him how to
