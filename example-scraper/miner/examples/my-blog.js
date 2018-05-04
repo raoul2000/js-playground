@@ -16,6 +16,9 @@ const TEST_BASE_URL = 'http://127.0.0.1:8080/blog/index.html';
 /**
  * This is the first step where Bob will work on the post index pages to extract
  * post title and URL to the post page.
+ * Note that the tricky part here is because we want to extrfact the post title from
+ * the index page, and then on a second step, extract the post body from the post page.
+ * 
  */
 return bob.work(
   TEST_BASE_URL,
