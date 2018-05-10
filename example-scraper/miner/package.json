@@ -6,6 +6,8 @@
   "scripts": {
     "server": "http-server ./test/www",
     "test": "mocha test/",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
     "nodejs-news": "node examples/nodejs-news.js",
     "nyt-headline": "node examples/new-york-time-headline.js",
     "npm-crawler": "node examples/npm-crawler.js > ./examples/nrm-crawler.json",
@@ -19,7 +21,8 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.2",
-    "http-server": "^0.11.1"
+    "http-server": "^0.11.1",
+    "vuepress": "^0.8.4"
   },
   "dependencies": {
     "async": "^2.6.0",
