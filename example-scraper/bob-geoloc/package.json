@@ -1,0 +1,16 @@
+{
+  "name": "bob-geoloc",
+  "version": "1.0.0",
+  "description": "bob is trying to geolocate page topic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bob-the-miner": "0.0.1",
+    "exif": "^0.6.0",
+    "image-downloader": "^3.3.0"
+  }
+}
