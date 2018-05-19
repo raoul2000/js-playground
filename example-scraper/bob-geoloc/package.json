@@ -9,8 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.0",
     "bob-the-miner": "0.0.1",
     "exif": "^0.6.0",
-    "image-downloader": "^3.3.0"
+    "image-downloader": "^3.3.0",
+    "url-parse": "^1.4.0",
+    "uuid": "^3.2.1"
   }
 }
