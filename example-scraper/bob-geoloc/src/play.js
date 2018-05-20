@@ -1,31 +1,61 @@
 'use strict'
 
-const bob = require('bob-the-miner')
-const download = require('image-downloader')
-const ExifImage = require('exif').ExifImage
+const bob = require('bob-the-miner');
+const download = require('image-downloader');
+const ExifImage = require('exif').ExifImage;
 const URL       = require('url-parse');
 const asyncUtil = require('async');
 const uuidv1 = require('uuid/v1');
 
 
+/**
+ * see [bob-the-miner]
+ *
+ * @param  {string} itinerary      the url of the page to process
+ * @param  {object} extractionPlan extraction plan to get image url
+ * @return {Promise}
+ */
 function getImagesUrl(itinerary, extractionPlan) {
   console.log("getImagesUrl");
   return bob.work(itinerary, extractionPlan)
   .then( result => {
-    console.log(result)
-    return result
+    console.log(result);
+    return result;
   });
 }
-
+exports.getImagesUrl = getImagesUrl;
+/**
+ * extracted = {
+ *   "source" : "http:// etc...",
+ *   "data" : {
+ *      "url" : [
+ *        "http://...",
+ *        "/folder/image.jpg",
+ *        etc..
+ *      ]
+ *   }
+ * }
+ * @param  {[type]} extracted [description]
+ * @return {[type]}           [description]
+ */
 function normalizeUrl(extracted) {
   return extracted.data.url.map( url => {
-    let result = new URL(url, extracted.source)
+    let result = new URL(url, extracted.source);
     console.log(`original url   : ${url}`);
     console.log(`normalized url : ${result.href}`);
-    return result.href
-  } )
+    return result.href;
+  } );
 }
 
+/**
+ * Urls = [
+ * "http://host/path/file.xx",
+ * "http://host/path/file2.xx",
+ * etc ...
+ * ]
+ * @param  {array} urls absolute image url list
+ * @return {Promise}      [description]
+ */
 function downloadImages(urls) {
   console.log("downloadImages");
   let downloadTasks = urls.map( imageURL => {
@@ -39,25 +69,25 @@ function downloadImages(urls) {
           cb( null, {
             "url"      : imageURL,
             "filename" : filename
-          })
+          });
         }).catch((err) => {
-          cb(err)
-        })
-    }
+          cb(err);
+        });
+    };
   });
   return new Promise( (resolve, reject) => {
     asyncUtil.parallel(asyncUtil.reflectAll(downloadTasks),
     function(err, results) {
       if(err) {
-        reject(err)
+        reject(err);
       } else {
         resolve(results
           .filter( result => result.value)
           .map( result => result.value )
-        )
+        );
       }
     });
-  })
+  });
 }
 
 /**
@@ -76,34 +106,35 @@ function extractExif(images){
       try {
           let ex = new ExifImage({ "image" : image.filename }, function (error, exifData) {
               if (error) {
-                cb(error)
+                cb(error);
               } else {
                 cb(null,{
                   "url" : image.url,
                   "filename" : image.filename,
                   "exif" : exifData
-                })
+                });
               }
           });
       } catch (error) {
-        cb(error)
+        cb(error);
       }
-    }
-  })
+    };
+  });
   return new Promise( (resolve, reject) => {
     asyncUtil.parallel(asyncUtil.reflectAll(exifTasks),
     function(err, results) {
       if(err) {
-        reject(err)
+        reject(err);
       } else {
         resolve(results
           .filter( result => result.value)
           .map( result => result.value)
-        )
+        );
       }
-    })
-  })
+    });
+  });
 }
+
 /**
  * images = [
 * { url : "http:// ...", filename : "/folder/file.jpg", exif : {...}},
@@ -120,7 +151,7 @@ function geolocalize(images){
     .map( image => {
       console.log(`found geolocation info for image ${image.filename}`);
       console.log(JSON.stringify(image.exif.gps));
-    })
+    });
 }
 
 function main() {
@@ -132,7 +163,7 @@ function main() {
         "type" : ["@src"]
       }
     }
-  }
+  };
 
   let lbc = {
     "url" : "https://www.leboncoin.fr/ventes_immobilieres/1411275981.htm/?ca=12_s",
@@ -142,7 +173,7 @@ function main() {
         "type" : ["@src"]
       }
     }
-  }
+  };
 
   getImagesUrl(lbc.url, lbc.plan)
   .then( normalizeUrl )
@@ -151,7 +182,7 @@ function main() {
   .then( geolocalize )
   .catch( err => {
     console.error(err);
-  })
+  });
 }
 //main();
 
@@ -163,7 +194,7 @@ getImagesUrl("https://www.leboncoin.fr/ventes_immobilieres/1432564836.htm/?ca=12
 })
 .then( results => {
   console.log(results);
-})
+});
 
 function partial(){
   downloadImages([
@@ -173,7 +204,7 @@ function partial(){
   .then( results => {
     console.log(results);
     return results;
-  })
+  });
 
 }
 function partial2() {
@@ -187,6 +218,6 @@ function partial2() {
       filename: 'D:\\tmp\\image-download\\img2.jpg'
     }
   ])
-  .then( geolocalize )
+  .then( geolocalize );
 }
 //partial2()

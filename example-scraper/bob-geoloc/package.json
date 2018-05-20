@@ -4,7 +4,8 @@
   "description": "bob is trying to geolocate page topic",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "http-server ./test/www",
+    "test": "mocha test/"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
     "image-downloader": "^3.3.0",
     "url-parse": "^1.4.0",
     "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
   }
 }
