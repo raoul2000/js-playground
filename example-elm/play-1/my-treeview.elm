@@ -58,6 +58,12 @@ type Msg
     | AddChildNode
 
 
+
+{--
+Return node children as a List of Nodes
+--}
+
+
 nodeChildList : Node -> List Node
 nodeChildList node =
     case node.children of
@@ -149,6 +155,10 @@ view model =
 
 
 -- UPDATE
+{--
+Finds and return a node by its id. The search occurs on the passed
+node and recursively to its children
+--}
 
 
 findNodeById : Node -> String -> Maybe Node
@@ -159,6 +169,13 @@ findNodeById node id =
         Nothing
     else
         List.head (List.filter (\a -> False) (nodeChildList node))
+
+
+
+{--
+add a node as children of the selected node. If no node is selected
+this function has no effect and returns the model unmodified
+--}
 
 
 addChildNode : Model -> Node -> Model
