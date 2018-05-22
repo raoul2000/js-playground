@@ -22,12 +22,13 @@ type alias Node =
 type alias Model =
     { tree : Node
     , selectedNodeId : Maybe String
+    , maxNodeId : Int
     }
 
 
 initTree : Node
 initTree =
-    Node "1"
+    Node "0"
         "root"
         (Children
             [ Node "2" "child2" (Children [])
@@ -43,7 +44,7 @@ initTree =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tree = initTree, selectedNodeId = Nothing }
+    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5 }
     , Cmd.none
     )
 
@@ -55,7 +56,7 @@ init =
 type Msg
     = NoOp
     | NodeSelection Node
-    | AddChildNode
+    | AddChildNodeToSelection
 
 
 
@@ -138,7 +139,7 @@ renderTreeInfo model =
 renderTreeAction : Model -> Html Msg
 renderTreeAction model =
     div []
-        [ button [ onClick AddChildNode ] [ text "add child node" ]
+        [ button [ onClick AddChildNodeToSelection ] [ text "add child node" ]
         ]
 
 
@@ -171,21 +172,26 @@ findNodeById node id =
         List.head (List.filter (\a -> False) (nodeChildList node))
 
 
+appendChild : Node -> Node -> Node
+appendChild target newNode =
+    { target
+        | children =
+            Children (List.append (nodeChildList target) [ newNode ])
+    }
 
-{--
-add a node as children of the selected node. If no node is selected
-this function has no effect and returns the model unmodified
---}
 
-
-addChildNode : Model -> Node -> Model
-addChildNode model newNode =
-    case model.selectedNodeId of
-        Just nodeId ->
-            model
-
-        Nothing ->
-            model
+appendChildById : String -> Node -> Node -> Node
+appendChildById nodeId nodeToAppend rootNode =
+    if rootNode.id == nodeId then
+        appendChild rootNode nodeToAppend
+    else
+        { rootNode
+            | children =
+                Children
+                    (nodeChildList rootNode
+                        |> List.map (appendChildById nodeId nodeToAppend)
+                    )
+        }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -197,8 +203,22 @@ update msg model =
         NodeSelection selectedNode ->
             ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
 
-        AddChildNode ->
-            ( addChildNode model (Node "idnew" "namenew" (Children [])), Cmd.none )
+        {--
+        add a node as children of the selected node. If no node is selected
+        this function has no effect and returns the model unmodified
+        --}
+        AddChildNodeToSelection ->
+            case model.selectedNodeId of
+                Just nodeId ->
+                    ( { model
+                        | tree =
+                            appendChildById nodeId (Node "" "" (Children [])) model.tree
+                      }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 
