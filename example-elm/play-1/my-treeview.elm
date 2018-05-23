@@ -8,12 +8,16 @@ import Html.Events exposing (onClick)
 -- MODEL
 
 
+type alias NodeId =
+    String
+
+
 type Children
     = Children (List Node)
 
 
 type alias Node =
-    { id : String
+    { id : NodeId
     , name : String
     , children : Children
     }
@@ -21,7 +25,7 @@ type alias Node =
 
 type alias Model =
     { tree : Node
-    , selectedNodeId : Maybe String
+    , selectedNodeId : Maybe NodeId
     , maxNodeId : Int
     }
 
@@ -162,7 +166,7 @@ node and recursively to its children
 --}
 
 
-findNodeById : Node -> String -> Maybe Node
+findNodeById : Node -> NodeId -> Maybe Node
 findNodeById node id =
     if node.id == id then
         Just node
@@ -180,7 +184,7 @@ appendChild target newNode =
     }
 
 
-appendChildById : String -> Node -> Node -> Node
+appendChildById : NodeId -> Node -> Node -> Node
 appendChildById nodeId nodeToAppend rootNode =
     if rootNode.id == nodeId then
         appendChild rootNode nodeToAppend

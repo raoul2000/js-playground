@@ -4,17 +4,20 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
+
 {--
 This is a exercice to represent a tree using elm.
 example : https://github.com/gribouille/elm-treeview/blob/master/src/Treeview.elm
 --}
-
-
 -- MODEL
 
 
+type alias NodeId =
+    String
+
+
 type alias Node =
-    { id : String
+    { id : NodeId
     , name : String
     , state : NodeState
     , children : Children
@@ -215,9 +218,10 @@ toggleItem id node =
             | children =
                 Children
                     (node.children
-                        |> \(Children nodeList) -> --we could also use function childrenNodeList instead of an anonmous function
+                        |> \(Children nodeList) ->
+                            --we could also use function childrenNodeList instead of an anonmous function
                             nodeList
-                        |> List.map (toggleItem id)
+                                |> List.map (toggleItem id)
                     )
         }
 
