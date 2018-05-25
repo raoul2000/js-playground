@@ -85,6 +85,38 @@ hasNoChildren node =
 -- VIEW
 
 
+selectedNodeStyle : Attribute msg
+selectedNodeStyle =
+    style
+        [ ( "background-color", "black" )
+        , ( "color", "white" )
+        ]
+
+
+renderNode : Model -> Node -> Html Msg
+renderNode model node =
+    let
+        nodeStyle =
+            case model.selectedNodeId of
+                Just string ->
+                    if node.id == string then
+                        selectedNodeStyle
+                    else
+                        style []
+
+                Nothing ->
+                    style []
+    in
+        li []
+            [ div
+                [ nodeStyle
+                , onClick (NodeSelection node)
+                ]
+                [ text node.name ]
+            , renderChildren model node.children
+            ]
+
+
 renderChildren : Model -> Children -> Html Msg
 renderChildren model (Children nodeList) =
     if List.length nodeList == 0 then
@@ -95,26 +127,6 @@ renderChildren model (Children nodeList) =
                 (renderNode model)
                 nodeList
             )
-
-
-renderNode : Model -> Node -> Html Msg
-renderNode model node =
-    let
-        styleSel =
-            case model.selectedNodeId of
-                Just string ->
-                    if node.id == string then
-                        "SEL"
-                    else
-                        "NO"
-
-                Nothing ->
-                    "NO"
-    in
-        li []
-            [ div [ onClick (NodeSelection node) ] [ text (node.name ++ styleSel) ]
-            , renderChildren model node.children
-            ]
 
 
 renderTreeView : Model -> Html Msg
