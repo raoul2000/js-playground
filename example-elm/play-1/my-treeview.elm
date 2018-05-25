@@ -62,6 +62,7 @@ type Msg
     | NodeSelection Node
     | DeselectAllNodes
     | AddChildNodeToSelection
+    | DeleteSelectedNode
 
 
 
@@ -157,7 +158,9 @@ renderTreeAction : Model -> Html Msg
 renderTreeAction model =
     div []
         [ button [ onClick AddChildNodeToSelection ] [ text "add child node" ]
-        , br [] []
+        , text " "
+        , button [ onClick DeleteSelectedNode ] [ text "Delete Node" ]
+        , text " "
         , button [ onClick DeselectAllNodes ] [ text "Deselect All Nodes" ]
         ]
 
@@ -179,8 +182,7 @@ view model =
 Finds and return a node by its id. The search occurs on the passed
 node and recursively to its children
 --}
-
-
+{--
 findNodeById : Node -> NodeId -> Maybe Node
 findNodeById node id =
     if node.id == id then
@@ -189,6 +191,7 @@ findNodeById node id =
         Nothing
     else
         List.head (List.filter (\a -> False) (nodeChildList node))
+--}
 
 
 appendChild : Node -> Node -> Node
@@ -213,6 +216,39 @@ appendChildById nodeId nodeToAppend rootNode =
         }
 
 
+isChildNode : NodeId -> Node -> Bool
+isChildNode nodeId node =
+    List.filter (\node -> node.id == nodeId) (nodeChildList node)
+        |> List.isEmpty
+        |> not
+
+
+
+{--
+Delete a node by its Id, among all descendants of a given parentNode.
+--}
+
+
+deleteNodeById : NodeId -> Node -> Node
+deleteNodeById nodeId parentNode =
+    if not (isChildNode nodeId parentNode) then
+        { parentNode
+            | children =
+                Children
+                    (nodeChildList parentNode
+                        |> List.map (deleteNodeById nodeId)
+                    )
+        }
+    else
+        { parentNode
+            | children =
+                Children
+                    (nodeChildList parentNode
+                        |> List.filter (\node -> node.id /= nodeId)
+                    )
+        }
+
+
 createNodeId : Model -> NodeId
 createNodeId model =
     "node-" ++ toString model.maxNodeId
@@ -229,6 +265,9 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        {--
+        Updates the selectedNodeId property
+        --}
         NodeSelection selectedNode ->
             ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
 
@@ -253,6 +292,22 @@ update msg model =
             ( { model | selectedNodeId = Nothing }
             , Cmd.none
             )
+
+        {--
+        Delete selected node and all its descendants.
+        --}
+        DeleteSelectedNode ->
+            case model.selectedNodeId of
+                Just nodeId ->
+                    ( { model
+                        | tree = deleteNodeById nodeId model.tree
+                        , selectedNodeId = Nothing
+                      }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 
