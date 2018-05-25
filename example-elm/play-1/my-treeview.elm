@@ -60,6 +60,7 @@ init =
 type Msg
     = NoOp
     | NodeSelection Node
+    | DeselectAllNodes
     | AddChildNodeToSelection
 
 
@@ -156,6 +157,8 @@ renderTreeAction : Model -> Html Msg
 renderTreeAction model =
     div []
         [ button [ onClick AddChildNodeToSelection ] [ text "add child node" ]
+        , br [] []
+        , button [ onClick DeselectAllNodes ] [ text "Deselect All Nodes" ]
         ]
 
 
@@ -164,9 +167,9 @@ view model =
     div []
         [ h1 [] [ text "my treeview" ]
         , hr [] []
-        , renderTreeView model
         , renderTreeInfo model
         , renderTreeAction model
+        , renderTreeView model
         ]
 
 
@@ -210,6 +213,16 @@ appendChildById nodeId nodeToAppend rootNode =
         }
 
 
+createNodeId : Model -> NodeId
+createNodeId model =
+    "node-" ++ toString model.maxNodeId
+
+
+createNode : Model -> Node
+createNode model =
+    Node (createNodeId model) (toString model.maxNodeId) (Children [])
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -227,14 +240,19 @@ update msg model =
             case model.selectedNodeId of
                 Just nodeId ->
                     ( { model
-                        | tree =
-                            appendChildById nodeId (Node "" "" (Children [])) model.tree
+                        | tree = appendChildById nodeId (createNode model) model.tree
+                        , maxNodeId = model.maxNodeId + 1
                       }
                     , Cmd.none
                     )
 
                 Nothing ->
                     ( model, Cmd.none )
+
+        DeselectAllNodes ->
+            ( { model | selectedNodeId = Nothing }
+            , Cmd.none
+            )
 
 
 
