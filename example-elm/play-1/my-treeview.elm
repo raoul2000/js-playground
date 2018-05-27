@@ -278,12 +278,17 @@ update msg model =
         AddChildNodeToSelection ->
             case model.selectedNodeId of
                 Just nodeId ->
-                    ( { model
-                        | tree = appendChildById nodeId (createNode model) model.tree
-                        , maxNodeId = model.maxNodeId + 1
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        newNode =
+                            createNode model
+                    in
+                        ( { model
+                            | tree = appendChildById nodeId newNode model.tree
+                            , selectedNodeId = Just newNode.id
+                            , maxNodeId = model.maxNodeId + 1
+                          }
+                        , Cmd.none
+                        )
 
                 Nothing ->
                     ( model, Cmd.none )
