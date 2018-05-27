@@ -16,9 +16,16 @@ type Children
     = Children (List Node)
 
 
+type alias NodeData =
+    { selector : String
+    , propType : String
+    }
+
+
 type alias Node =
     { id : NodeId
     , name : String
+    , data : NodeData
     , children : Children
     }
 
@@ -34,13 +41,15 @@ initTree : Node
 initTree =
     Node "0"
         "root"
+        (NodeData "" "")
         (Children
-            [ Node "2" "child2" (Children [])
-            , Node "3" "child3" (Children [])
+            [ Node "2" "child2" (NodeData "" "") (Children [])
+            , Node "3" "child3" (NodeData "" "") (Children [])
             , Node "4"
                 "child4"
+                (NodeData "" "")
                 (Children
-                    [ Node "5" "child5" (Children []) ]
+                    [ Node "5" "child5" (NodeData "" "") (Children []) ]
                 )
             ]
         )
@@ -154,8 +163,8 @@ renderTreeInfo model =
             ]
 
 
-renderTreeAction : Model -> Html Msg
-renderTreeAction model =
+renderToolbar : Model -> Html Msg
+renderToolbar model =
     div []
         [ button [ onClick AddChildNodeToSelection ] [ text "add child node" ]
         , text " "
@@ -165,32 +174,78 @@ renderTreeAction model =
         ]
 
 
+renderSelectedNodeView : Model -> Html Msg
+renderSelectedNodeView model =
+    div [] [ text model.tree.name ]
+
+
+renderNodeEditForm : Model -> Html Msg
+renderNodeEditForm model =
+    div [] []
+
+
+renderRightPanel : Model -> Html Msg
+renderRightPanel model =
+    case model.selectedNodeId of
+        Just nodeId ->
+            renderSelectedNodeView model
+
+        Nothing ->
+            div [] [ text "select a node" ]
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text "my treeview" ]
         , hr [] []
-        , renderTreeInfo model
-        , renderTreeAction model
-        , renderTreeView model
+        , div
+            [ style
+                [ ( "width", "49%" )
+                , ( "float", "left" )
+                , ( "border-right", "4px solid #cccccc" )
+                , ( "margin", "2px" )
+                ]
+            ]
+            [ renderTreeInfo model
+            , renderToolbar model
+            , renderTreeView model
+            ]
+        , div [ style [ ( "margin", "2px" ) ] ]
+            [ renderRightPanel model ]
         ]
 
 
 
 -- UPDATE
 {--
-Finds and return a node by its id. The search occurs on the passed
-node and recursively to its children
---}
-{--
-findNodeById : Node -> NodeId -> Maybe Node
-findNodeById node id =
-    if node.id == id then
+
+findNodeById : NodeId -> Node -> Maybe Node
+findNodeById nodeId rootNode =
+    if rootNode.id == nodeId then
         Just node
-    else if hasNoChildren node then
+    else if hasNoChildren rootNode then
         Nothing
     else
-        List.head (List.filter (\a -> False) (nodeChildList node))
+      List.map (\childNode -> findNodeById nodeId childNode)
+
+        List.head (List.filter (\a -> False) (nodeChildList rootNode))
+--}
+{--
+findNode : Node -> (Node -> Bool) -> List Node
+findNode node matchFunction =
+    if (matchFunction node) then
+        [ node ]
+    else
+      let
+          results = List.map (\childNode -> findNode childNode matchFunction) (nodeChildList node)
+          List.Foldl ( \node acc -> acc) [] , results
+
+      in
+
+      List.foldl (\a b -> ) (\msgAttributeHtmlList msgHtmlHtmlList -> _) []
+
+
 --}
 
 
@@ -256,7 +311,7 @@ createNodeId model =
 
 createNode : Model -> Node
 createNode model =
-    Node (createNodeId model) (toString model.maxNodeId) (Children [])
+    Node (createNodeId model) (toString model.maxNodeId) (NodeData "" "") (Children [])
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
