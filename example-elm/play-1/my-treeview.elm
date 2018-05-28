@@ -174,9 +174,9 @@ renderToolbar model =
         ]
 
 
-renderSelectedNodeView : Model -> Html Msg
-renderSelectedNodeView model =
-    div [] [ text model.tree.name ]
+renderSelectedNodeView : Node -> Html Msg
+renderSelectedNodeView node =
+    div [] [ text node.name ]
 
 
 renderNodeEditForm : Model -> Html Msg
@@ -188,7 +188,12 @@ renderRightPanel : Model -> Html Msg
 renderRightPanel model =
     case model.selectedNodeId of
         Just nodeId ->
-            renderSelectedNodeView model
+            case (findNodeById nodeId model.tree) of
+                Just selectedNode ->
+                    renderSelectedNodeView selectedNode
+
+                Nothing ->
+                    div [] [ text "select a node" ]
 
         Nothing ->
             div [] [ text "select a node" ]
@@ -218,35 +223,23 @@ view model =
 
 
 -- UPDATE
-{--
 
-findNodeById : NodeId -> Node -> Maybe Node
-findNodeById nodeId rootNode =
-    if rootNode.id == nodeId then
-        Just node
-    else if hasNoChildren rootNode then
-        Nothing
-    else
-      List.map (\childNode -> findNodeById nodeId childNode)
 
-        List.head (List.filter (\a -> False) (nodeChildList rootNode))
---}
-{--
-findNode : Node -> (Node -> Bool) -> List Node
-findNode node matchFunction =
+findNodes : Node -> (Node -> Bool) -> List Node
+findNodes node matchFunction =
     if (matchFunction node) then
         [ node ]
     else
-      let
-          results = List.map (\childNode -> findNode childNode matchFunction) (nodeChildList node)
-          List.Foldl ( \node acc -> acc) [] , results
-
-      in
-
-      List.foldl (\a b -> ) (\msgAttributeHtmlList msgHtmlHtmlList -> _) []
+        nodeChildList node
+            |> List.map (\childNode -> findNodes childNode matchFunction)
+            |> List.concat
 
 
---}
+findNodeById : NodeId -> Node -> Maybe Node
+findNodeById nodeId rootNode =
+    (\n -> n.id == nodeId)
+        |> findNodes rootNode
+        |> List.head
 
 
 appendChild : Node -> Node -> Node
