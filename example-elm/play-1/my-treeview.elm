@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 
 
 -- MODEL
@@ -36,6 +36,7 @@ type alias Model =
     , selectedNodeId : Maybe NodeId
     , maxNodeId : Int
     , viewMode : Bool
+    , editedNodeData : NodeData
     }
 
 
@@ -59,7 +60,7 @@ initTree =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5, viewMode = True }
+    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5, viewMode = True, editedNodeData = (NodeData "" "" "") }
     , Cmd.none
     )
 
@@ -75,6 +76,10 @@ type Msg
     | AddChildNodeToSelection
     | DeleteSelectedNode
     | EditNode Node
+    | SaveEdit
+    | CancelEdit
+    | InputPropertyName String
+    | InputSelector String
 
 
 
@@ -169,11 +174,23 @@ renderTreeInfo model =
 renderToolbar : Model -> Html Msg
 renderToolbar model =
     div []
-        [ button [ onClick AddChildNodeToSelection ] [ text "add child node" ]
+        [ button
+            [ onClick AddChildNodeToSelection
+            , disabled (not (model.viewMode))
+            ]
+            [ text "add child node" ]
         , text " "
-        , button [ onClick DeleteSelectedNode ] [ text "Delete Node" ]
+        , button
+            [ onClick DeleteSelectedNode
+            , disabled (not (model.viewMode))
+            ]
+            [ text "Delete Node" ]
         , text " "
-        , button [ onClick DeselectAllNodes ] [ text "Deselect All Nodes" ]
+        , button
+            [ onClick DeselectAllNodes
+            , disabled (not (model.viewMode))
+            ]
+            [ text "Deselect All Nodes" ]
         ]
 
 
@@ -187,9 +204,14 @@ renderSelectedNodeView node =
         ]
 
 
-renderNodeEditForm : Node -> Html Msg
-renderNodeEditForm node =
-    div [] [ text "form" ]
+renderNodeEditForm : NodeData -> Html Msg
+renderNodeEditForm nodeData =
+    div []
+        [ input [ type_ "text", value nodeData.propName, placeholder "property Name", onInput InputPropertyName ] []
+        , input [ type_ "text", value nodeData.selector, placeholder "selector", onInput InputSelector ] []
+        , button [ onClick (SaveEdit) ] [ text "Save" ]
+        , button [ onClick (CancelEdit) ] [ text "Cancel" ]
+        ]
 
 
 renderRightPanel : Model -> Html Msg
@@ -201,7 +223,7 @@ renderRightPanel model =
                     if model.viewMode then
                         renderSelectedNodeView selectedNode
                     else
-                        renderNodeEditForm selectedNode
+                        renderNodeEditForm model.editedNodeData
 
                 Nothing ->
                     div [] [ text "select a node" ]
@@ -327,15 +349,57 @@ update msg model =
         EditNode node ->
             ( { model
                 | viewMode = False
+                , editedNodeData = (NodeData "" "" "")
               }
             , Cmd.none
             )
+
+        InputPropertyName string ->
+            let
+                oldNodeData =
+                    model.editedNodeData
+
+                newNodeData =
+                    { oldNodeData | propName = string }
+            in
+                ( { model
+                    | editedNodeData = newNodeData
+                  }
+                , Cmd.none
+                )
+
+        InputSelector string ->
+            let
+                oldNodeData =
+                    model.editedNodeData
+
+                newNodeData =
+                    { oldNodeData | selector = string }
+            in
+                ( { model
+                    | editedNodeData = newNodeData
+                  }
+                , Cmd.none
+                )
+
+        CancelEdit ->
+            ( { model
+                | viewMode = True
+              }
+            , Cmd.none
+            )
+
+        SaveEdit ->
+            ( model, Cmd.none )
 
         {--
         Updates the selectedNodeId property
         --}
         NodeSelection selectedNode ->
-            ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
+            if model.viewMode then
+                ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
+            else
+                ( model, Cmd.none )
 
         {--
         add a node as children of the selected node. If no node is selected
