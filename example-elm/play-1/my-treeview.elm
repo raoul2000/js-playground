@@ -17,7 +17,8 @@ type Children
 
 
 type alias NodeData =
-    { selector : String
+    { propName : String
+    , selector : String
     , propType : String
     }
 
@@ -34,6 +35,7 @@ type alias Model =
     { tree : Node
     , selectedNodeId : Maybe NodeId
     , maxNodeId : Int
+    , viewMode : Bool
     }
 
 
@@ -41,15 +43,15 @@ initTree : Node
 initTree =
     Node "0"
         "root"
-        (NodeData "" "")
+        (NodeData "pName" "selector" "type")
         (Children
-            [ Node "2" "child2" (NodeData "" "") (Children [])
-            , Node "3" "child3" (NodeData "" "") (Children [])
+            [ Node "2" "child2" (NodeData "pName" "selector" "type") (Children [])
+            , Node "3" "child3" (NodeData "pName" "selector" "type") (Children [])
             , Node "4"
                 "child4"
-                (NodeData "" "")
+                (NodeData "pName" "selector" "type")
                 (Children
-                    [ Node "5" "child5" (NodeData "" "") (Children []) ]
+                    [ Node "5" "child5" (NodeData "pName" "selector" "type") (Children []) ]
                 )
             ]
         )
@@ -57,7 +59,7 @@ initTree =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5 }
+    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5, viewMode = True }
     , Cmd.none
     )
 
@@ -72,6 +74,7 @@ type Msg
     | DeselectAllNodes
     | AddChildNodeToSelection
     | DeleteSelectedNode
+    | EditNode Node
 
 
 
@@ -153,7 +156,7 @@ renderTreeInfo model =
         txtSelectedNodeId =
             case model.selectedNodeId of
                 Just selectedNodeId ->
-                    selectedNodeId
+                    selectedNodeId ++ " viewMode = " ++ (toString model.viewMode)
 
                 Nothing ->
                     "no selection"
@@ -176,12 +179,17 @@ renderToolbar model =
 
 renderSelectedNodeView : Node -> Html Msg
 renderSelectedNodeView node =
-    div [] [ text node.name ]
+    div []
+        [ div [] [ text ("property Name : " ++ node.data.propName) ]
+        , div [] [ text ("Selector : " ++ node.data.selector) ]
+        , div [] [ text ("Type : " ++ node.data.propType) ]
+        , button [ onClick (EditNode node) ] [ text "Edit" ]
+        ]
 
 
-renderNodeEditForm : Model -> Html Msg
-renderNodeEditForm model =
-    div [] []
+renderNodeEditForm : Node -> Html Msg
+renderNodeEditForm node =
+    div [] [ text "form" ]
 
 
 renderRightPanel : Model -> Html Msg
@@ -190,7 +198,10 @@ renderRightPanel model =
         Just nodeId ->
             case (findNodeById nodeId model.tree) of
                 Just selectedNode ->
-                    renderSelectedNodeView selectedNode
+                    if model.viewMode then
+                        renderSelectedNodeView selectedNode
+                    else
+                        renderNodeEditForm selectedNode
 
                 Nothing ->
                     div [] [ text "select a node" ]
@@ -304,7 +315,7 @@ createNodeId model =
 
 createNode : Model -> Node
 createNode model =
-    Node (createNodeId model) (toString model.maxNodeId) (NodeData "" "") (Children [])
+    Node (createNodeId model) (toString model.maxNodeId) (NodeData "pName" "selector" "type") (Children [])
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -312,6 +323,13 @@ update msg model =
     case msg of
         NoOp ->
             ( model, Cmd.none )
+
+        EditNode node ->
+            ( { model
+                | viewMode = False
+              }
+            , Cmd.none
+            )
 
         {--
         Updates the selectedNodeId property
