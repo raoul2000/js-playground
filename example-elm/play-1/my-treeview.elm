@@ -40,19 +40,24 @@ type alias Model =
     }
 
 
+createDefaultNodeData : NodeData
+createDefaultNodeData =
+    { propName = "property", selector = "selector", propType = "text" }
+
+
 initTree : Node
 initTree =
     Node "0"
         "root"
-        (NodeData "pName" "selector" "type")
+        createDefaultNodeData
         (Children
-            [ Node "2" "child2" (NodeData "pName" "selector" "type") (Children [])
-            , Node "3" "child3" (NodeData "pName" "selector" "type") (Children [])
+            [ Node "2" "child2" createDefaultNodeData (Children [])
+            , Node "3" "child3" createDefaultNodeData (Children [])
             , Node "4"
                 "child4"
-                (NodeData "pName" "selector" "type")
+                createDefaultNodeData
                 (Children
-                    [ Node "5" "child5" (NodeData "pName" "selector" "type") (Children []) ]
+                    [ Node "5" "child5" createDefaultNodeData (Children []) ]
                 )
             ]
         )
@@ -60,7 +65,7 @@ initTree =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5, viewMode = True, editedNodeData = (NodeData "" "" "") }
+    ( { tree = initTree, selectedNodeId = Nothing, maxNodeId = 5, viewMode = True, editedNodeData = createDefaultNodeData }
     , Cmd.none
     )
 
@@ -73,7 +78,7 @@ type Msg
     = NoOp
     | NodeSelection Node
     | DeselectAllNodes
-    | AddChildNodeToSelection
+    | AddChildNodeToSelectedNode
     | DeleteSelectedNode
     | EditNode Node
     | SaveEdit
@@ -175,7 +180,7 @@ renderToolbar : Model -> Html Msg
 renderToolbar model =
     div []
         [ button
-            [ onClick AddChildNodeToSelection
+            [ onClick AddChildNodeToSelectedNode
             , disabled (not (model.viewMode))
             ]
             [ text "add child node" ]
@@ -297,6 +302,11 @@ appendChildById nodeId nodeToAppend rootNode =
         }
 
 
+updateNodeData : NodeId -> NodeData -> Node -> Node
+updateNodeData nodeId nodeData rootNode =
+    rootNode
+
+
 isChildNode : NodeId -> Node -> Bool
 isChildNode nodeId node =
     List.filter (\node -> node.id == nodeId) (nodeChildList node)
@@ -337,7 +347,7 @@ createNodeId model =
 
 createNode : Model -> Node
 createNode model =
-    Node (createNodeId model) (toString model.maxNodeId) (NodeData "pName" "selector" "type") (Children [])
+    Node (createNodeId model) (toString model.maxNodeId) createDefaultNodeData (Children [])
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -349,18 +359,18 @@ update msg model =
         EditNode node ->
             ( { model
                 | viewMode = False
-                , editedNodeData = (NodeData "" "" "")
+                , editedNodeData = createDefaultNodeData
               }
             , Cmd.none
             )
 
-        InputPropertyName string ->
+        InputPropertyName propertyNameValue ->
             let
                 oldNodeData =
                     model.editedNodeData
 
                 newNodeData =
-                    { oldNodeData | propName = string }
+                    { oldNodeData | propName = propertyNameValue }
             in
                 ( { model
                     | editedNodeData = newNodeData
@@ -368,13 +378,13 @@ update msg model =
                 , Cmd.none
                 )
 
-        InputSelector string ->
+        InputSelector selectorValue ->
             let
                 oldNodeData =
                     model.editedNodeData
 
                 newNodeData =
-                    { oldNodeData | selector = string }
+                    { oldNodeData | selector = selectorValue }
             in
                 ( { model
                     | editedNodeData = newNodeData
@@ -390,7 +400,16 @@ update msg model =
             )
 
         SaveEdit ->
-            ( model, Cmd.none )
+            case model.selectedNodeId of
+                Just nodeId ->
+                    ( { model
+                        | tree = updateNodeData nodeId model.editedNodeData model.tree
+                      }
+                    , Cmd.none
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         {--
         Updates the selectedNodeId property
@@ -405,7 +424,7 @@ update msg model =
         add a node as children of the selected node. If no node is selected
         this function has no effect and returns the model unmodified
         --}
-        AddChildNodeToSelection ->
+        AddChildNodeToSelectedNode ->
             case model.selectedNodeId of
                 Just nodeId ->
                     let
