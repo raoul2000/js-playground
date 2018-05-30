@@ -280,6 +280,16 @@ findNodeById nodeId rootNode =
         |> List.head
 
 
+getNodeData : NodeId -> Node -> Maybe NodeData
+getNodeData nodeId rootNode =
+    case (findNodeById nodeId rootNode) of
+        Just node ->
+            Just node.data
+
+        Nothing ->
+            Nothing
+
+
 appendChild : Node -> Node -> Node
 appendChild target newNode =
     { target
@@ -304,7 +314,18 @@ appendChildById nodeId nodeToAppend rootNode =
 
 updateNodeData : NodeId -> NodeData -> Node -> Node
 updateNodeData nodeId nodeData rootNode =
-    rootNode
+    if rootNode.id == nodeId then
+        { rootNode
+            | data = nodeData
+        }
+    else
+        { rootNode
+            | children =
+                Children
+                    (nodeChildList rootNode
+                        |> List.map (updateNodeData nodeId nodeData)
+                    )
+        }
 
 
 isChildNode : NodeId -> Node -> Bool
@@ -359,7 +380,7 @@ update msg model =
         EditNode node ->
             ( { model
                 | viewMode = False
-                , editedNodeData = createDefaultNodeData
+                , editedNodeData = node.data
               }
             , Cmd.none
             )
@@ -404,6 +425,7 @@ update msg model =
                 Just nodeId ->
                     ( { model
                         | tree = updateNodeData nodeId model.editedNodeData model.tree
+                        , viewMode = True
                       }
                     , Cmd.none
                     )
