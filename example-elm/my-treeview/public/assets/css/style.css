@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+}
+
+.treeview-container ul {
+  list-style: none;
+  padding-left: 2em;
+}

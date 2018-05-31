@@ -1,0 +1,18 @@
+{
+  "name": "my-treeview",
+  "version": "0.0.1",
+  "description": "an experiment around elm and trees",
+  "main": "app.js",
+  "scripts": {
+    "postinstall": "elm-package install",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "watch \"npm run dev:make\" ./src",
+    "dev:server": "http-server -o -c-1",
+    "dev:make": "elm-make ./src/Main.elm --output=./public/assets/js/main.js --debug"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "watch": "^1.0.2"
+  }
+}

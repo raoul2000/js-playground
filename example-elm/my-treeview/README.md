@@ -2,6 +2,7 @@
 
 This is an experiment to create a tree view with basic edition feature :
 
+
 ## Features
 
 - [x] tree representation in a hierarchical way
@@ -12,6 +13,26 @@ This is an experiment to create a tree view with basic edition feature :
 - [x] Cancel Data node edition (no modification)
 - [x] Save Data node modifications
 - [ ] folder/unfold tree node
+
+
+## Commands
+
+### Install
+```
+npm install
+```
+
+### Dev
+Start the HTTP dev server on http://localhost:8080 :
+```
+npm run dev:server
+```
+
+watch for source file change and run `elm make` on change :
+
+```
+npm run dev
+```
 
 
 # Run
