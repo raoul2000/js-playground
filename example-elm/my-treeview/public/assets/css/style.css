@@ -6,3 +6,31 @@ body {
   list-style: none;
   padding-left: 2em;
 }
+
+.selected-node {
+  background-color: black;
+  color: white;
+}
+
+.node-label {
+  cursor: pointer;
+}
+.node-label:hover {
+  text-decoration: underline;
+}
+
+li.::before {
+    content: "-"; /* Insert content that looks like bullets */
+    padding-right: 8px;
+    color: blue; /* Or a color you prefer */
+}
+
+li.collapsed::before {
+    content: "+"; /* Insert content that looks like bullets */
+    padding-right: 8px;
+    color: blue; /* Or a color you prefer */
+}
+
+li.collapsed > ul {
+  display:none;
+}

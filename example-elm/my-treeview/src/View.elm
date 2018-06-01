@@ -7,34 +7,49 @@ import Model exposing (..)
 import Message exposing (..)
 
 
-selectedNodeStyle : Attribute msg
-selectedNodeStyle =
-    style
-        [ ( "background-color", "black" )
-        , ( "color", "white" )
-        ]
+renderNodeToggler : Node -> Html Msg
+renderNodeToggler node =
+    let
+        buttonText =
+            if node.view.expanded == True then
+                "-"
+            else if hasNoChildren node then
+                " XXX "
+            else
+                "+"
+    in
+        span [ class "" ] [ text buttonText ]
+
+
+renderNodeLabel : Node -> Html Msg
+renderNodeLabel node =
+    span [ class "node-label" ]
+        [ text node.data.propName ]
 
 
 renderNode : Model -> Node -> Html Msg
 renderNode model node =
     let
-        nodeStyle =
-            case model.selectedNodeId of
-                Just string ->
-                    if node.id == string then
-                        selectedNodeStyle
-                    else
-                        style []
+        selectionClassname =
+            if model.selectedNodeId == Just node.id then
+                "selected-node"
+            else
+                ""
 
-                Nothing ->
-                    style []
+        expandedClassname =
+            if node.view.expanded then
+                "expanded-node"
+            else
+                ""
     in
         li []
             [ div
-                [ nodeStyle
+                [ class (String.join " " [ selectionClassname, expandedClassname ])
                 , onClick (NodeSelection node)
                 ]
-                [ text node.name ]
+                [ renderNodeToggler node
+                , renderNodeLabel node
+                ]
             , renderChildren model node.children
             ]
 
@@ -79,19 +94,19 @@ renderToolbar model =
     div []
         [ button
             [ onClick AddChildNodeToSelectedNode
-            , disabled (not (model.viewMode))
+            , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "add child node" ]
         , text " "
         , button
             [ onClick DeleteSelectedNode
-            , disabled (not (model.viewMode))
+            , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "Delete Node" ]
         , text " "
         , button
             [ onClick DeselectAllNodes
-            , disabled (not (model.viewMode))
+            , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "Deselect All Nodes" ]
         ]

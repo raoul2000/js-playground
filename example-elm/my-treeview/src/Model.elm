@@ -16,10 +16,15 @@ type alias NodeData =
     }
 
 
+type alias NodeView =
+    { expanded : Bool }
+
+
 type alias Node =
     { id : NodeId
     , name : String
     , data : NodeData
+    , view : NodeView
     , children : Children
     }
 
@@ -42,14 +47,16 @@ createSampleTree =
     Node "0"
         "root"
         createDefaultNodeData
+        createDefaultNodeView
         (Children
-            [ Node "2" "child2" createDefaultNodeData (Children [])
-            , Node "3" "child3" createDefaultNodeData (Children [])
+            [ Node "2" "child2" createDefaultNodeData createDefaultNodeView (Children [])
+            , Node "3" "child3" createDefaultNodeData createDefaultNodeView (Children [])
             , Node "4"
                 "child4"
                 createDefaultNodeData
+                createDefaultNodeView
                 (Children
-                    [ Node "5" "child5" createDefaultNodeData (Children []) ]
+                    [ Node "5" "child5" createDefaultNodeData createDefaultNodeView (Children []) ]
                 )
             ]
         )
@@ -60,6 +67,11 @@ createNodeId model =
     "node-" ++ toString model.maxNodeId
 
 
+createDefaultNodeView : NodeView
+createDefaultNodeView =
+    { expanded = True }
+
+
 createDefaultNodeData : NodeData
 createDefaultNodeData =
     { propName = "property", selector = "selector", propType = "text" }
@@ -67,7 +79,7 @@ createDefaultNodeData =
 
 createNode : Model -> Node
 createNode model =
-    Node (createNodeId model) (toString model.maxNodeId) createDefaultNodeData (Children [])
+    Node (createNodeId model) (toString model.maxNodeId) createDefaultNodeData createDefaultNodeView (Children [])
 
 
 

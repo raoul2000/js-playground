@@ -12468,6 +12468,7 @@ var _user$project$Model$isChildNode = F2(
 				_user$project$Model$nodeChildList(node)));
 	});
 var _user$project$Model$createDefaultNodeData = {propName: 'property', selector: 'selector', propType: 'text'};
+var _user$project$Model$createDefaultNodeView = {expanded: true};
 var _user$project$Model$createNodeId = function (model) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
@@ -12478,9 +12479,12 @@ var _user$project$Model$NodeData = F3(
 	function (a, b, c) {
 		return {propName: a, selector: b, propType: c};
 	});
-var _user$project$Model$Node = F4(
-	function (a, b, c, d) {
-		return {id: a, name: b, data: c, children: d};
+var _user$project$Model$NodeView = function (a) {
+	return {expanded: a};
+};
+var _user$project$Model$Node = F5(
+	function (a, b, c, d, e) {
+		return {id: a, name: b, data: c, view: d, children: e};
 	});
 var _user$project$Model$Model = F5(
 	function (a, b, c, d, e) {
@@ -12489,45 +12493,50 @@ var _user$project$Model$Model = F5(
 var _user$project$Model$Children = function (a) {
 	return {ctor: 'Children', _0: a};
 };
-var _user$project$Model$createSampleTree = A4(
+var _user$project$Model$createSampleTree = A5(
 	_user$project$Model$Node,
 	'0',
 	'root',
 	_user$project$Model$createDefaultNodeData,
+	_user$project$Model$createDefaultNodeView,
 	_user$project$Model$Children(
 		{
 			ctor: '::',
-			_0: A4(
+			_0: A5(
 				_user$project$Model$Node,
 				'2',
 				'child2',
 				_user$project$Model$createDefaultNodeData,
+				_user$project$Model$createDefaultNodeView,
 				_user$project$Model$Children(
 					{ctor: '[]'})),
 			_1: {
 				ctor: '::',
-				_0: A4(
+				_0: A5(
 					_user$project$Model$Node,
 					'3',
 					'child3',
 					_user$project$Model$createDefaultNodeData,
+					_user$project$Model$createDefaultNodeView,
 					_user$project$Model$Children(
 						{ctor: '[]'})),
 				_1: {
 					ctor: '::',
-					_0: A4(
+					_0: A5(
 						_user$project$Model$Node,
 						'4',
 						'child4',
 						_user$project$Model$createDefaultNodeData,
+						_user$project$Model$createDefaultNodeView,
 						_user$project$Model$Children(
 							{
 								ctor: '::',
-								_0: A4(
+								_0: A5(
 									_user$project$Model$Node,
 									'5',
 									'child5',
 									_user$project$Model$createDefaultNodeData,
+									_user$project$Model$createDefaultNodeView,
 									_user$project$Model$Children(
 										{ctor: '[]'})),
 								_1: {ctor: '[]'}
@@ -12537,11 +12546,12 @@ var _user$project$Model$createSampleTree = A4(
 			}
 		}));
 var _user$project$Model$createNode = function (model) {
-	return A4(
+	return A5(
 		_user$project$Model$Node,
 		_user$project$Model$createNodeId(model),
 		_elm_lang$core$Basics$toString(model.maxNodeId),
 		_user$project$Model$createDefaultNodeData,
+		_user$project$Model$createDefaultNodeView,
 		_user$project$Model$Children(
 			{ctor: '[]'}));
 };
@@ -12809,7 +12819,8 @@ var _user$project$View$renderToolbar = function (model) {
 					_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$AddChildNodeToSelectedNode),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$disabled(!model.viewMode),
+						_0: _elm_lang$html$Html_Attributes$disabled(
+							(!model.viewMode) || _elm_lang$core$Native_Utils.eq(model.selectedNodeId, _elm_lang$core$Maybe$Nothing)),
 						_1: {ctor: '[]'}
 					}
 				},
@@ -12830,7 +12841,8 @@ var _user$project$View$renderToolbar = function (model) {
 							_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$DeleteSelectedNode),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$disabled(!model.viewMode),
+								_0: _elm_lang$html$Html_Attributes$disabled(
+									(!model.viewMode) || _elm_lang$core$Native_Utils.eq(model.selectedNodeId, _elm_lang$core$Maybe$Nothing)),
 								_1: {ctor: '[]'}
 							}
 						},
@@ -12851,7 +12863,8 @@ var _user$project$View$renderToolbar = function (model) {
 									_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$DeselectAllNodes),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$disabled(!model.viewMode),
+										_0: _elm_lang$html$Html_Attributes$disabled(
+											(!model.viewMode) || _elm_lang$core$Native_Utils.eq(model.selectedNodeId, _elm_lang$core$Maybe$Nothing)),
 										_1: {ctor: '[]'}
 									}
 								},
@@ -12891,28 +12904,41 @@ var _user$project$View$renderTreeInfo = function (model) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$View$selectedNodeStyle = _elm_lang$html$Html_Attributes$style(
-	{
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'black'},
-		_1: {
+var _user$project$View$renderNodeLabel = function (node) {
+	return A2(
+		_elm_lang$html$Html$span,
+		{
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'color', _1: 'white'},
+			_0: _elm_lang$html$Html_Attributes$class('node-label'),
 			_1: {ctor: '[]'}
-		}
-	});
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(node.data.propName),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View$renderNodeToggler = function (node) {
+	var buttonText = _elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? '-' : (_user$project$Model$hasNoChildren(node) ? ' XXX ' : '+');
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class(''),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(buttonText),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$View$renderNode = F2(
 	function (model, node) {
-		var nodeStyle = function () {
-			var _p3 = model.selectedNodeId;
-			if (_p3.ctor === 'Just') {
-				return _elm_lang$core$Native_Utils.eq(node.id, _p3._0) ? _user$project$View$selectedNodeStyle : _elm_lang$html$Html_Attributes$style(
-					{ctor: '[]'});
-			} else {
-				return _elm_lang$html$Html_Attributes$style(
-					{ctor: '[]'});
-			}
-		}();
+		var expandedClassname = node.view.expanded ? 'expanded-node' : '';
+		var selectionClassname = _elm_lang$core$Native_Utils.eq(
+			model.selectedNodeId,
+			_elm_lang$core$Maybe$Just(node.id)) ? 'selected-node' : '';
 		return A2(
 			_elm_lang$html$Html$li,
 			{ctor: '[]'},
@@ -12922,7 +12948,19 @@ var _user$project$View$renderNode = F2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: nodeStyle,
+						_0: _elm_lang$html$Html_Attributes$class(
+							A2(
+								_elm_lang$core$String$join,
+								' ',
+								{
+									ctor: '::',
+									_0: selectionClassname,
+									_1: {
+										ctor: '::',
+										_0: expandedClassname,
+										_1: {ctor: '[]'}
+									}
+								})),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$html$Html_Events$onClick(
@@ -12932,8 +12970,12 @@ var _user$project$View$renderNode = F2(
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(node.name),
-						_1: {ctor: '[]'}
+						_0: _user$project$View$renderNodeToggler(node),
+						_1: {
+							ctor: '::',
+							_0: _user$project$View$renderNodeLabel(node),
+							_1: {ctor: '[]'}
+						}
 					}),
 				_1: {
 					ctor: '::',
@@ -12943,18 +12985,18 @@ var _user$project$View$renderNode = F2(
 			});
 	});
 var _user$project$View$renderChildren = F2(
-	function (model, _p4) {
-		var _p5 = _p4;
-		var _p6 = _p5._0;
+	function (model, _p3) {
+		var _p4 = _p3;
+		var _p5 = _p4._0;
 		return _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(_p6),
+			_elm_lang$core$List$length(_p5),
 			0) ? _elm_lang$html$Html$text('') : A2(
 			_elm_lang$html$Html$ul,
 			{ctor: '[]'},
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$View$renderNode(model),
-				_p6));
+				_p5));
 	});
 var _user$project$View$renderTreeView = function (model) {
 	return A2(
@@ -13181,7 +13223,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String, selector : String, propType : String }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String, selector : String, propType : String }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
