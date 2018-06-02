@@ -7,27 +7,33 @@ body {
   padding-left: 2em;
 }
 
-.selected-node > div {
-  background-color: black;
-  color: white;
+.selected-node>div>.node-label {
+  background-color: #eee;
+  color: #111;
 }
 
 .node-label {
   cursor: pointer;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
 }
 
 .node-label:hover {
   text-decoration: underline;
 }
-/*
-.expanded-node > div::before {
-  content : "-"
+
+.collapsed-node>ul {
+  display: none;
+}
+.has-children > div > .toggle {
+  margin:0px;
 }
 
-.collapsed-node > div::before {
-  content : "+"
+.toggle {
+  width: 1em;
+  display: block;
+  float: left;
+  margin: 0.4px;
+  cursor: pointer;
+  text-align: center;
 }
-*/
- .collapsed-node > ul {
-   display: none;
- }

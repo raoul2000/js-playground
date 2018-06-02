@@ -13,11 +13,11 @@ renderNodeToggler node =
         buttonText =
             if hasChildren node then
                 if node.view.expanded == True then
-                    "[-]"
+                    "-"
                 else
-                    "[+]"
+                    "+"
             else
-                " "
+                ""
     in
         span
             [ class "toggle"

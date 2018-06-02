@@ -12571,7 +12571,8 @@ var _user$project$Model$appendChild = F2(
 							ctor: '::',
 							_0: newNode,
 							_1: {ctor: '[]'}
-						}))
+						})),
+				view: {expanded: true}
 			});
 	});
 var _user$project$Model$appendChildById = F3(
@@ -12604,7 +12605,9 @@ var _user$project$Model$updateNodeView = F3(
 	function (nodeId, nodeView, rootNode) {
 		return _elm_lang$core$Native_Utils.eq(rootNode.id, nodeId) ? _elm_lang$core$Native_Utils.update(
 			rootNode,
-			{view: nodeView}) : _elm_lang$core$Native_Utils.update(
+			{
+				view: {expanded: !rootNode.view.expanded}
+			}) : _elm_lang$core$Native_Utils.update(
 			rootNode,
 			{
 				children: _user$project$Model$Children(
@@ -12939,7 +12942,7 @@ var _user$project$View$renderNodeLabel = function (node) {
 		});
 };
 var _user$project$View$renderNodeToggler = function (node) {
-	var buttonText = _user$project$Model$hasChildren(node) ? (_elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? '[-]' : '[+]') : ' ';
+	var buttonText = _user$project$Model$hasChildren(node) ? (_elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? '-' : '+') : '';
 	return A2(
 		_elm_lang$html$Html$span,
 		{

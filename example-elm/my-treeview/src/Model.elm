@@ -139,6 +139,9 @@ getNodeData nodeId rootNode =
 
 
 -- UPDATE --
+-- Add newNode as the last child to node target
+-- The target node is also expanded so the new child
+-- is visible
 
 
 appendChild : Node -> Node -> Node
@@ -146,6 +149,7 @@ appendChild target newNode =
     { target
         | children =
             Children (List.append (nodeChildList target) [ newNode ])
+        , view = { expanded = True }
     }
 
 
@@ -183,7 +187,7 @@ updateNodeView : NodeId -> NodeView -> Node -> Node
 updateNodeView nodeId nodeView rootNode =
     if rootNode.id == nodeId then
         { rootNode
-            | view = nodeView
+            | view = { expanded = not rootNode.view.expanded }
         }
     else
         { rootNode
