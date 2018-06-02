@@ -7,7 +7,7 @@ body {
   padding-left: 2em;
 }
 
-.selected-node {
+.selected-node > div {
   background-color: black;
   color: white;
 }
@@ -15,22 +15,19 @@ body {
 .node-label {
   cursor: pointer;
 }
+
 .node-label:hover {
   text-decoration: underline;
 }
-
-li.::before {
-    content: "-"; /* Insert content that looks like bullets */
-    padding-right: 8px;
-    color: blue; /* Or a color you prefer */
+/*
+.expanded-node > div::before {
+  content : "-"
 }
 
-li.collapsed::before {
-    content: "+"; /* Insert content that looks like bullets */
-    padding-right: 8px;
-    color: blue; /* Or a color you prefer */
+.collapsed-node > div::before {
+  content : "+"
 }
-
-li.collapsed > ul {
-  display:none;
-}
+*/
+ .collapsed-node > ul {
+   display: none;
+ }

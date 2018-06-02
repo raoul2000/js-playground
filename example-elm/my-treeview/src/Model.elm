@@ -98,6 +98,11 @@ hasNoChildren node =
     List.isEmpty (nodeChildList node)
 
 
+hasChildren : Node -> Bool
+hasChildren node =
+    not (hasNoChildren node)
+
+
 nodeChildList : Node -> List Node
 nodeChildList node =
     case node.children of
@@ -170,6 +175,22 @@ updateNodeData nodeId nodeData rootNode =
                 Children
                     (nodeChildList rootNode
                         |> List.map (updateNodeData nodeId nodeData)
+                    )
+        }
+
+
+updateNodeView : NodeId -> NodeView -> Node -> Node
+updateNodeView nodeId nodeView rootNode =
+    if rootNode.id == nodeId then
+        { rootNode
+            | view = nodeView
+        }
+    else
+        { rootNode
+            | children =
+                Children
+                    (nodeChildList rootNode
+                        |> List.map (updateNodeView nodeId nodeView)
                     )
         }
 

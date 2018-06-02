@@ -14,3 +14,4 @@ type Msg
     | CancelEdit
     | InputPropertyName String
     | InputSelector String
+    | ToggleNodeView Node

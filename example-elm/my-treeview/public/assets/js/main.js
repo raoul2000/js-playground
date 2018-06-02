@@ -12457,6 +12457,9 @@ var _user$project$Model$hasNoChildren = function (node) {
 	return _elm_lang$core$List$isEmpty(
 		_user$project$Model$nodeChildList(node));
 };
+var _user$project$Model$hasChildren = function (node) {
+	return !_user$project$Model$hasNoChildren(node);
+};
 var _user$project$Model$isChildNode = F2(
 	function (nodeId, node) {
 		return !_elm_lang$core$List$isEmpty(
@@ -12597,6 +12600,20 @@ var _user$project$Model$updateNodeData = F3(
 						_user$project$Model$nodeChildList(rootNode)))
 			});
 	});
+var _user$project$Model$updateNodeView = F3(
+	function (nodeId, nodeView, rootNode) {
+		return _elm_lang$core$Native_Utils.eq(rootNode.id, nodeId) ? _elm_lang$core$Native_Utils.update(
+			rootNode,
+			{view: nodeView}) : _elm_lang$core$Native_Utils.update(
+			rootNode,
+			{
+				children: _user$project$Model$Children(
+					A2(
+						_elm_lang$core$List$map,
+						A2(_user$project$Model$updateNodeView, nodeId, nodeView),
+						_user$project$Model$nodeChildList(rootNode)))
+			});
+	});
 var _user$project$Model$deleteNodeById = F2(
 	function (nodeId, parentNode) {
 		return (!A2(_user$project$Model$isChildNode, nodeId, parentNode)) ? _elm_lang$core$Native_Utils.update(
@@ -12620,6 +12637,9 @@ var _user$project$Model$deleteNodeById = F2(
 			});
 	});
 
+var _user$project$Message$ToggleNodeView = function (a) {
+	return {ctor: 'ToggleNodeView', _0: a};
+};
 var _user$project$Message$InputSelector = function (a) {
 	return {ctor: 'InputSelector', _0: a};
 };
@@ -12919,13 +12939,18 @@ var _user$project$View$renderNodeLabel = function (node) {
 		});
 };
 var _user$project$View$renderNodeToggler = function (node) {
-	var buttonText = _elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? '-' : (_user$project$Model$hasNoChildren(node) ? ' XXX ' : '+');
+	var buttonText = _user$project$Model$hasChildren(node) ? (_elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? '[-]' : '[+]') : ' ';
 	return A2(
 		_elm_lang$html$Html$span,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class(''),
-			_1: {ctor: '[]'}
+			_0: _elm_lang$html$Html_Attributes$class('toggle'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(
+					_user$project$Message$ToggleNodeView(node)),
+				_1: {ctor: '[]'}
+			}
 		},
 		{
 			ctor: '::',
@@ -12935,38 +12960,43 @@ var _user$project$View$renderNodeToggler = function (node) {
 };
 var _user$project$View$renderNode = F2(
 	function (model, node) {
-		var expandedClassname = node.view.expanded ? 'expanded-node' : '';
+		var childrenClassname = _user$project$Model$hasChildren(node) ? 'has-children' : '';
+		var expandedClassname = _user$project$Model$hasChildren(node) ? (_elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? 'expanded-node' : 'collapsed-node') : ' ';
 		var selectionClassname = _elm_lang$core$Native_Utils.eq(
 			model.selectedNodeId,
 			_elm_lang$core$Maybe$Just(node.id)) ? 'selected-node' : '';
 		return A2(
 			_elm_lang$html$Html$li,
-			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(
+					A2(
+						_elm_lang$core$String$join,
+						' ',
+						{
+							ctor: '::',
+							_0: selectionClassname,
+							_1: {
+								ctor: '::',
+								_0: expandedClassname,
+								_1: {
+									ctor: '::',
+									_0: childrenClassname,
+									_1: {ctor: '[]'}
+								}
+							}
+						})),
+				_1: {ctor: '[]'}
+			},
 			{
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class(
-							A2(
-								_elm_lang$core$String$join,
-								' ',
-								{
-									ctor: '::',
-									_0: selectionClassname,
-									_1: {
-										ctor: '::',
-										_0: expandedClassname,
-										_1: {ctor: '[]'}
-									}
-								})),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Message$NodeSelection(node)),
-							_1: {ctor: '[]'}
-						}
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$Message$NodeSelection(node)),
+						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
@@ -13194,7 +13224,7 @@ var _user$project$Main$update = F2(
 						{selectedNodeId: _elm_lang$core$Maybe$Nothing}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'DeleteSelectedNode':
 				var _p3 = model.selectedNodeId;
 				if (_p3.ctor === 'Just') {
 					return {
@@ -13210,6 +13240,17 @@ var _user$project$Main$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
+			default:
+				var _p4 = _p0._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tree: A3(_user$project$Model$updateNodeView, _p4.id, _p4.view, model.tree)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Main$init = {
@@ -13223,7 +13264,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String, selector : String, propType : String }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String, selector : String, propType : String }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

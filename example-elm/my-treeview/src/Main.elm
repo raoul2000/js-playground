@@ -137,6 +137,13 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
+        ToggleNodeView node ->
+            ( { model
+                | tree = updateNodeView node.id node.view model.tree
+              }
+            , Cmd.none
+            )
+
 
 
 -- SUBSCRIPTIONS

@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "elm-package install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "watch \"npm run dev:make\" ./src",
+    "dev": "watch \"npm run dev:make\" ./src",
     "dev:server": "http-server -o -c-1",
     "dev:make": "elm-make ./src/Main.elm --output=./public/assets/js/main.js --debug"
   },
