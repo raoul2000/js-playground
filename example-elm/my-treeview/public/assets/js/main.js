@@ -13104,80 +13104,62 @@ var _user$project$View$view = function (model) {
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$h1,
-				{ctor: '[]'},
+				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('my treeview is great :) '),
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'width', _1: '49%'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'border-right', _1: '4px solid #cccccc'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'margin', _1: '2px'},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}),
 					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _user$project$View$renderTreeInfo(model),
+					_1: {
+						ctor: '::',
+						_0: _user$project$View$renderToolbar(model),
+						_1: {
+							ctor: '::',
+							_0: _user$project$View$renderTreeView(model),
+							_1: {ctor: '[]'}
+						}
+					}
 				}),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$hr,
-					{ctor: '[]'},
-					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$style(
-								{
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'width', _1: '49%'},
-									_1: {
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'border-right', _1: '4px solid #cccccc'},
-											_1: {
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'margin', _1: '2px'},
-												_1: {ctor: '[]'}
-											}
-										}
-									}
-								}),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _user$project$View$renderTreeInfo(model),
-							_1: {
-								ctor: '::',
-								_0: _user$project$View$renderToolbar(model),
-								_1: {
-									ctor: '::',
-									_0: _user$project$View$renderTreeView(model),
-									_1: {ctor: '[]'}
-								}
-							}
-						}),
-					_1: {
+					_elm_lang$html$Html$div,
+					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
+						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'margin', _1: '2px'},
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _user$project$View$renderRightPanel(model),
+								_0: {ctor: '_Tuple2', _0: 'margin', _1: '2px'},
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
-					}
-				}
+					},
+					{
+						ctor: '::',
+						_0: _user$project$View$renderRightPanel(model),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
 			}
 		});
 };

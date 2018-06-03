@@ -175,9 +175,7 @@ renderRightPanel model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "my treeview is great :) " ]
-        , hr [] []
-        , div
+        [ div
             [ style
                 [ ( "width", "49%" )
                 , ( "float", "left" )
