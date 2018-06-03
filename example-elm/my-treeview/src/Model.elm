@@ -5,19 +5,27 @@ type alias NodeId =
     String
 
 
-type Children
-    = Children (List Node)
+type PropertyType
+    = RawText
+    | HtmlText
+    | AttributeValue
 
 
 type alias NodeData =
     { propName : String
     , selector : String
-    , propType : String
+    , propType : PropertyType
+    , attributeName : String
+    , isArray : Bool
     }
 
 
 type alias NodeView =
     { expanded : Bool }
+
+
+type Children
+    = Children (List Node)
 
 
 type alias Node =
@@ -74,7 +82,12 @@ createDefaultNodeView =
 
 createDefaultNodeData : NodeData
 createDefaultNodeData =
-    { propName = "property", selector = "selector", propType = "text" }
+    { propName = "property"
+    , selector = "selector"
+    , propType = RawText
+    , attributeName = "attribute name"
+    , isArray = False
+    }
 
 
 createNode : Model -> Node
