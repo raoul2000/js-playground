@@ -144,6 +144,13 @@ update msg model =
             , Cmd.none
             )
 
+        CollapseAllNodes collapse ->
+            ( { model
+                | tree = collapseAllNodes collapse model.tree
+              }
+            , Cmd.none
+            )
+
 
 
 -- SUBSCRIPTIONS

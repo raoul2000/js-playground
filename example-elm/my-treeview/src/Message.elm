@@ -15,3 +15,4 @@ type Msg
     | InputPropertyName String
     | InputSelector String
     | ToggleNodeView Node
+    | CollapseAllNodes Bool

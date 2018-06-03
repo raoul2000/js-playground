@@ -199,6 +199,18 @@ updateNodeView nodeId nodeView rootNode =
         }
 
 
+collapseAllNodes : Bool -> Node -> Node
+collapseAllNodes collapse rootNode =
+    { rootNode
+        | view = { expanded = not collapse }
+        , children =
+            Children
+                (nodeChildList rootNode
+                    |> List.map (collapseAllNodes collapse)
+                )
+    }
+
+
 deleteNodeById : NodeId -> Node -> Node
 deleteNodeById nodeId parentNode =
     if not (isChildNode nodeId parentNode) then

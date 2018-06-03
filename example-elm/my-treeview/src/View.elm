@@ -121,6 +121,16 @@ renderToolbar model =
             , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "Deselect All Nodes" ]
+        , button
+            [ onClick (CollapseAllNodes True)
+            , disabled (not (model.viewMode))
+            ]
+            [ text "Collapse All" ]
+        , button
+            [ onClick (CollapseAllNodes False)
+            , disabled (not (model.viewMode))
+            ]
+            [ text "Expand All" ]
         ]
 
 
