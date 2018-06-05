@@ -139,7 +139,6 @@ renderSelectedNodeView node =
     div []
         [ div [] [ text ("property Name : " ++ node.data.propName) ]
         , div [] [ text ("Selector : " ++ node.data.selector) ]
-        , div [] [ text ("Type : " ++ node.data.propType) ]
         , button [ onClick (EditNode node) ] [ text "Edit" ]
         ]
 

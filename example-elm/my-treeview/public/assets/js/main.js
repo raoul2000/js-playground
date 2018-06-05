@@ -12470,7 +12470,6 @@ var _user$project$Model$isChildNode = F2(
 				},
 				_user$project$Model$nodeChildList(node)));
 	});
-var _user$project$Model$createDefaultNodeData = {propName: 'property', selector: 'selector', propType: 'text', attributeName: 'attribute name', isArray: false};
 var _user$project$Model$createDefaultNodeView = {expanded: true};
 var _user$project$Model$createNodeId = function (model) {
 	return A2(
@@ -12496,6 +12495,7 @@ var _user$project$Model$Model = F5(
 var _user$project$Model$AttributeValue = {ctor: 'AttributeValue'};
 var _user$project$Model$HtmlText = {ctor: 'HtmlText'};
 var _user$project$Model$RawText = {ctor: 'RawText'};
+var _user$project$Model$createDefaultNodeData = {propName: 'property', selector: 'selector', propType: _user$project$Model$RawText, attributeName: 'attribute name', isArray: false};
 var _user$project$Model$Children = function (a) {
 	return {ctor: 'Children', _0: a};
 };
@@ -12792,31 +12792,19 @@ var _user$project$View$renderSelectedNodeView = function (node) {
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
+						_elm_lang$html$Html$button,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A2(_elm_lang$core$Basics_ops['++'], 'Type : ', node.data.propType)),
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Message$EditNode(node)),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Edit'),
 							_1: {ctor: '[]'}
 						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$button,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(
-									_user$project$Message$EditNode(node)),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('Edit'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		});
@@ -13318,7 +13306,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : String , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : Model.PropertyType , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Model.PropertyType":{"tags":{"HtmlText":[],"AttributeValue":[],"RawText":[]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
