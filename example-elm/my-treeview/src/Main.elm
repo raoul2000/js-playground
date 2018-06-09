@@ -85,6 +85,23 @@ update msg model =
                 , Cmd.none
                 )
 
+        ChangePropertyTypeSelection Nothing ->
+            ( model, Cmd.none )
+
+        ChangePropertyTypeSelection (Just newPropertyType) ->
+            let
+                oldNodeData =
+                    model.editedNodeData
+
+                newNodeData =
+                    { oldNodeData | propType = newPropertyType }
+            in
+                ( { model
+                    | editedNodeData = newNodeData
+                  }
+                , Cmd.none
+                )
+
         {--
         Updates the selectedNodeId property
         --}

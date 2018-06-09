@@ -16,3 +16,4 @@ type Msg
     | InputSelector String
     | ToggleNodeView Node
     | CollapseAllNodes Bool
+    | ChangePropertyTypeSelection (Maybe PropertyType)
