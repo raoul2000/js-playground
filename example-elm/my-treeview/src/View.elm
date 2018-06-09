@@ -7,6 +7,15 @@ import Model exposing (..)
 import Message exposing (..)
 
 
+renderPropertyTypeOption : PropertyType -> ( PropertyType, String ) -> Html Msg
+renderPropertyTypeOption currentValue ( optionValue, optionText ) =
+    option
+        [ value (optionValue |> propertyTypeToValue)
+        , selected (currentValue == optionValue)
+        ]
+        [ text optionText ]
+
+
 renderNodeToggler : Node -> Html Msg
 renderNodeToggler node =
     let
@@ -139,7 +148,7 @@ renderSelectedNodeView node =
     div []
         [ div [] [ text ("property Name : " ++ node.data.propName) ]
         , div [] [ text ("Selector : " ++ node.data.selector) ]
-        , div [] [ text ("Type : " ++ node.data.propType) ]
+        , div [] [ text ("Type : " ++ (propertyTypeToText node.data.propType)) ]
         , button [ onClick (EditNode node) ] [ text "Edit" ]
         ]
 
@@ -149,6 +158,11 @@ renderNodeEditForm nodeData =
     div []
         [ input [ type_ "text", value nodeData.propName, placeholder "property Name", onInput InputPropertyName ] []
         , input [ type_ "text", value nodeData.selector, placeholder "selector", onInput InputSelector ] []
+        , select [ onInput (\selection -> ChangePropertyTypeSelection (valueToPropertyType selection)) ]
+            (List.map
+                (renderPropertyTypeOption nodeData.propType)
+                propertyTypeOptions
+            )
         , button [ onClick (SaveEdit) ] [ text "Save" ]
         , button [ onClick (CancelEdit) ] [ text "Cancel" ]
         ]

@@ -1,14 +1,22 @@
 module Model exposing (..)
 
 
-type alias NodeId =
-    String
-
-
 type PropertyType
     = RawText
     | HtmlText
     | AttributeValue
+
+
+propertyTypeOptions : List ( PropertyType, String )
+propertyTypeOptions =
+    [ ( RawText, "text" )
+    , ( HtmlText, "HTML text" )
+    , ( AttributeValue, "Attribute Value" )
+    ]
+
+
+type alias NodeId =
+    String
 
 
 type alias NodeData =
@@ -44,6 +52,46 @@ type alias Model =
     , viewMode : Bool
     , editedNodeData : NodeData
     }
+
+
+
+-- CONVERT ////////////////////// --
+
+
+propertyTypeToValue : PropertyType -> String
+propertyTypeToValue propertyType =
+    case propertyType of
+        RawText ->
+            "text"
+
+        HtmlText ->
+            "htmltext"
+
+        AttributeValue ->
+            "attrval"
+
+
+propertyTypeToText : PropertyType -> String
+propertyTypeToText propertyType =
+    let
+        result =
+            propertyTypeOptions
+                |> List.filter (\n -> (Tuple.first n) == propertyType)
+                |> List.head
+    in
+        case result of
+            Nothing ->
+                "error"
+
+            Just ( _, propText ) ->
+                propText
+
+
+valueToPropertyType : String -> Maybe PropertyType
+valueToPropertyType value =
+    List.filter (\n -> propertyTypeToValue (Tuple.first n) == value) propertyTypeOptions
+        |> List.map (\n -> Tuple.first n)
+        |> List.head
 
 
 

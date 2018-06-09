@@ -12470,13 +12470,23 @@ var _user$project$Model$isChildNode = F2(
 				},
 				_user$project$Model$nodeChildList(node)));
 	});
-var _user$project$Model$createDefaultNodeData = {propName: 'property', selector: 'selector', propType: 'text', attributeName: 'attribute name', isArray: false};
 var _user$project$Model$createDefaultNodeView = {expanded: true};
 var _user$project$Model$createNodeId = function (model) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'node-',
 		_elm_lang$core$Basics$toString(model.maxNodeId));
+};
+var _user$project$Model$propertyTypeToValue = function (propertyType) {
+	var _p2 = propertyType;
+	switch (_p2.ctor) {
+		case 'RawText':
+			return 'text';
+		case 'HtmlText':
+			return 'htmltext';
+		default:
+			return 'attrval';
+	}
 };
 var _user$project$Model$NodeData = F5(
 	function (a, b, c, d, e) {
@@ -12496,6 +12506,54 @@ var _user$project$Model$Model = F5(
 var _user$project$Model$AttributeValue = {ctor: 'AttributeValue'};
 var _user$project$Model$HtmlText = {ctor: 'HtmlText'};
 var _user$project$Model$RawText = {ctor: 'RawText'};
+var _user$project$Model$propertyTypeOptions = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: _user$project$Model$RawText, _1: 'text'},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: _user$project$Model$HtmlText, _1: 'HTML text'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: _user$project$Model$AttributeValue, _1: 'Attribute Value'},
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Model$propertyTypeToText = function (propertyType) {
+	var result = _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filter,
+			function (n) {
+				return _elm_lang$core$Native_Utils.eq(
+					_elm_lang$core$Tuple$first(n),
+					propertyType);
+			},
+			_user$project$Model$propertyTypeOptions));
+	var _p3 = result;
+	if (_p3.ctor === 'Nothing') {
+		return 'error';
+	} else {
+		return _p3._0._1;
+	}
+};
+var _user$project$Model$valueToPropertyType = function (value) {
+	return _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$map,
+			function (n) {
+				return _elm_lang$core$Tuple$first(n);
+			},
+			A2(
+				_elm_lang$core$List$filter,
+				function (n) {
+					return _elm_lang$core$Native_Utils.eq(
+						_user$project$Model$propertyTypeToValue(
+							_elm_lang$core$Tuple$first(n)),
+						value);
+				},
+				_user$project$Model$propertyTypeOptions)));
+};
+var _user$project$Model$createDefaultNodeData = {propName: 'property', selector: 'selector', propType: _user$project$Model$RawText, attributeName: 'attribute name', isArray: false};
 var _user$project$Model$Children = function (a) {
 	return {ctor: 'Children', _0: a};
 };
@@ -12656,6 +12714,9 @@ var _user$project$Model$deleteNodeById = F2(
 			});
 	});
 
+var _user$project$Message$ChangePropertyTypeSelection = function (a) {
+	return {ctor: 'ChangePropertyTypeSelection', _0: a};
+};
 var _user$project$Message$CollapseAllNodes = function (a) {
 	return {ctor: 'CollapseAllNodes', _0: a};
 };
@@ -12681,88 +12742,6 @@ var _user$project$Message$NodeSelection = function (a) {
 };
 var _user$project$Message$NoOp = {ctor: 'NoOp'};
 
-var _user$project$View$renderNodeEditForm = function (nodeData) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$input,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$type_('text'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$value(nodeData.propName),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$placeholder('property Name'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_user$project$Message$InputPropertyName),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				},
-				{ctor: '[]'}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$input,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$type_('text'),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$value(nodeData.selector),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$placeholder('selector'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_user$project$Message$InputSelector),
-									_1: {ctor: '[]'}
-								}
-							}
-						}
-					},
-					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$button,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$SaveEdit),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('Save'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$button,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$CancelEdit),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('Cancel'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		});
-};
 var _user$project$View$renderSelectedNodeView = function (node) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -12797,7 +12776,10 @@ var _user$project$View$renderSelectedNodeView = function (node) {
 						{
 							ctor: '::',
 							_0: _elm_lang$html$Html$text(
-								A2(_elm_lang$core$Basics_ops['++'], 'Type : ', node.data.propType)),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Type : ',
+									_user$project$Model$propertyTypeToText(node.data.propType))),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -12820,33 +12802,6 @@ var _user$project$View$renderSelectedNodeView = function (node) {
 				}
 			}
 		});
-};
-var _user$project$View$renderRightPanel = function (model) {
-	var _p0 = model.selectedNodeId;
-	if (_p0.ctor === 'Just') {
-		var _p1 = A2(_user$project$Model$findNodeById, _p0._0, model.tree);
-		if (_p1.ctor === 'Just') {
-			return model.viewMode ? _user$project$View$renderSelectedNodeView(_p1._0) : _user$project$View$renderNodeEditForm(model.editedNodeData);
-		} else {
-			return A2(
-				_elm_lang$html$Html$div,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('select a node'),
-					_1: {ctor: '[]'}
-				});
-		}
-	} else {
-		return A2(
-			_elm_lang$html$Html$div,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html$text('select a node'),
-				_1: {ctor: '[]'}
-			});
-	}
 };
 var _user$project$View$renderToolbar = function (model) {
 	return A2(
@@ -12964,11 +12919,11 @@ var _user$project$View$renderToolbar = function (model) {
 };
 var _user$project$View$renderTreeInfo = function (model) {
 	var txtSelectedNodeId = function () {
-		var _p2 = model.selectedNodeId;
-		if (_p2.ctor === 'Just') {
+		var _p0 = model.selectedNodeId;
+		if (_p0.ctor === 'Just') {
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
-				_p2._0,
+				_p0._0,
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					' viewMode = ',
@@ -13077,18 +13032,18 @@ var _user$project$View$renderNode = F2(
 			});
 	});
 var _user$project$View$renderChildren = F2(
-	function (model, _p3) {
-		var _p4 = _p3;
-		var _p5 = _p4._0;
+	function (model, _p1) {
+		var _p2 = _p1;
+		var _p3 = _p2._0;
 		return _elm_lang$core$Native_Utils.eq(
-			_elm_lang$core$List$length(_p5),
+			_elm_lang$core$List$length(_p3),
 			0) ? _elm_lang$html$Html$text('') : A2(
 			_elm_lang$html$Html$ul,
 			{ctor: '[]'},
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$View$renderNode(model),
-				_p5));
+				_p3));
 	});
 var _user$project$View$renderTreeView = function (model) {
 	return A2(
@@ -13099,6 +13054,156 @@ var _user$project$View$renderTreeView = function (model) {
 			_0: A2(_user$project$View$renderNode, model, model.tree),
 			_1: {ctor: '[]'}
 		});
+};
+var _user$project$View$renderPropertyTypeOption = F2(
+	function (currentValue, _p4) {
+		var _p5 = _p4;
+		var _p6 = _p5._0;
+		return A2(
+			_elm_lang$html$Html$option,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$value(
+					_user$project$Model$propertyTypeToValue(_p6)),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$selected(
+						_elm_lang$core$Native_Utils.eq(currentValue, _p6)),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(_p5._1),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$View$renderNodeEditForm = function (nodeData) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('text'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$value(nodeData.propName),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$placeholder('property Name'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Message$InputPropertyName),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$type_('text'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$value(nodeData.selector),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$placeholder('selector'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$Message$InputSelector),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$select,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(
+								function (selection) {
+									return _user$project$Message$ChangePropertyTypeSelection(
+										_user$project$Model$valueToPropertyType(selection));
+								}),
+							_1: {ctor: '[]'}
+						},
+						A2(
+							_elm_lang$core$List$map,
+							_user$project$View$renderPropertyTypeOption(nodeData.propType),
+							_user$project$Model$propertyTypeOptions)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$SaveEdit),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Save'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$CancelEdit),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Cancel'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$View$renderRightPanel = function (model) {
+	var _p7 = model.selectedNodeId;
+	if (_p7.ctor === 'Just') {
+		var _p8 = A2(_user$project$Model$findNodeById, _p7._0, model.tree);
+		if (_p8.ctor === 'Just') {
+			return model.viewMode ? _user$project$View$renderSelectedNodeView(_p8._0) : _user$project$View$renderNodeEditForm(model.editedNodeData);
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('select a node'),
+					_1: {ctor: '[]'}
+				});
+		}
+	} else {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('select a node'),
+				_1: {ctor: '[]'}
+			});
+	}
 };
 var _user$project$View$view = function (model) {
 	return A2(
@@ -13232,6 +13337,22 @@ var _user$project$Main$update = F2(
 						{editedNodeData: newNodeData}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'ChangePropertyTypeSelection':
+				if (_p0._0.ctor === 'Nothing') {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var oldNodeData = model.editedNodeData;
+					var newNodeData = _elm_lang$core$Native_Utils.update(
+						oldNodeData,
+						{propType: _p0._0._0});
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{editedNodeData: newNodeData}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			case 'NodeSelection':
 				return model.viewMode ? {
 					ctor: '_Tuple2',
@@ -13318,7 +13439,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : String , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[]},"args":[]}}},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : Model.PropertyType , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Model.PropertyType":{"tags":{"HtmlText":[],"AttributeValue":[],"RawText":[]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[],"ChangePropertyTypeSelection":["Maybe.Maybe Model.PropertyType"]},"args":[]},"Maybe.Maybe":{"tags":{"Nothing":[],"Just":["a"]},"args":["a"]}}},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

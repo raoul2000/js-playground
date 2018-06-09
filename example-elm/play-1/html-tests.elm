@@ -30,7 +30,7 @@ init =
 type Msg
     = Expand
     | Collapse
-    | ChangeSelection String
+    | ChangeSelection (Maybe ColorOption)
 
 
 toOptionValue : ColorOption -> String
@@ -54,8 +54,8 @@ colorOption =
     ]
 
 
-stringToColorOption : String -> Maybe ColorOption
-stringToColorOption string =
+toColorOption : String -> Maybe ColorOption
+toColorOption string =
     List.filter (\n -> toOptionValue (Tuple.first n) == string) colorOption
         |> List.map (\n -> Tuple.first n)
         |> List.head
@@ -65,18 +65,21 @@ stringToColorOption string =
 -- VIEW
 
 
+renderColorOption : ColorOption -> ( ColorOption, String ) -> Html Msg
+renderColorOption currentValue ( optionValue, optionText ) =
+    option
+        [ value (optionValue |> toOptionValue)
+        , selected (currentValue == optionValue)
+        ]
+        [ text optionText ]
+
+
 view : Model -> Html Msg
 view model =
     div []
-        [ select [ onInput (\v -> ChangeSelection v) ]
+        [ select [ onInput (\selection -> ChangeSelection (toColorOption selection)) ]
             (List.map
-                (\n ->
-                    option
-                        [ value (Tuple.first n |> toOptionValue)
-                        , selected ((Tuple.first n) == model)
-                        ]
-                        [ text (Tuple.second n) ]
-                )
+                (renderColorOption model)
                 colorOption
             )
         , text (toOptionValue model)
@@ -99,13 +102,11 @@ update msg model =
         Collapse ->
             ( Red, Cmd.none )
 
-        ChangeSelection value ->
-            case stringToColorOption value of
-                Just colorOption ->
-                    ( colorOption, Cmd.none )
+        ChangeSelection Nothing ->
+            ( model, Cmd.none )
 
-                Nothing ->
-                    ( model, Cmd.none )
+        ChangeSelection (Just colorOption) ->
+            ( colorOption, Cmd.none )
 
 
 
