@@ -115,28 +115,33 @@ renderToolbar model =
     div []
         [ button
             [ onClick AddChildNodeToSelectedNode
+            , class "btn btn-success"
             , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "add child node" ]
         , text " "
         , button
             [ onClick DeleteSelectedNode
+            , class "btn btn-danger"
             , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "Delete Node" ]
         , text " "
         , button
             [ onClick DeselectAllNodes
+            , class "btn btn-light"
             , disabled (not (model.viewMode) || (model.selectedNodeId == Nothing))
             ]
             [ text "Deselect All Nodes" ]
         , button
             [ onClick (CollapseAllNodes True)
+            , class "btn btn-light"
             , disabled (not (model.viewMode))
             ]
             [ text "Collapse All" ]
         , button
             [ onClick (CollapseAllNodes False)
+            , class "btn btn-light"
             , disabled (not (model.viewMode))
             ]
             [ text "Expand All" ]
@@ -155,16 +160,52 @@ renderSelectedNodeView node =
 
 renderNodeEditForm : NodeData -> Html Msg
 renderNodeEditForm nodeData =
-    div []
-        [ input [ type_ "text", value nodeData.propName, placeholder "property Name", onInput InputPropertyName ] []
-        , input [ type_ "text", value nodeData.selector, placeholder "selector", onInput InputSelector ] []
-        , select [ onInput (\selection -> ChangePropertyTypeSelection (valueToPropertyType selection)) ]
-            (List.map
-                (renderPropertyTypeOption nodeData.propType)
-                propertyTypeOptions
-            )
-        , button [ onClick (SaveEdit) ] [ text "Save" ]
-        , button [ onClick (CancelEdit) ] [ text "Cancel" ]
+    Html.div []
+        [ div [ class "form-group" ]
+            [ label [ for "propName" ] [ text "Property Name" ]
+            , input
+                [ class "form-control"
+                , id "propName"
+                , type_ "text"
+                , value nodeData.propName
+                , placeholder "property Name"
+                , onInput InputPropertyName
+                ]
+                []
+            ]
+        , div [ class "form-group" ]
+            [ label [ for "selector" ] [ text "Selector" ]
+            , input
+                [ class "form-control"
+                , id "selector"
+                , type_ "text"
+                , value nodeData.selector
+                , placeholder "Selector (ex : div.post > p )"
+                , onInput InputSelector
+                ]
+                []
+            ]
+        , div [ class "form-group" ]
+            [ label [ for "type" ] [ text "Type" ]
+            , select
+                [ class "form-control"
+                , onInput (\selection -> ChangePropertyTypeSelection (valueToPropertyType selection))
+                ]
+                (List.map
+                    (renderPropertyTypeOption nodeData.propType)
+                    propertyTypeOptions
+                )
+            ]
+        , button
+            [ class "btn btn-primary"
+            , onClick (SaveEdit)
+            ]
+            [ text "Save" ]
+        , button
+            [ class "btn btn-light"
+            , onClick (CancelEdit)
+            ]
+            [ text "Cancel" ]
         ]
 
 
@@ -188,19 +229,13 @@ renderRightPanel model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "row" ]
         [ div
-            [ style
-                [ ( "width", "49%" )
-                , ( "float", "left" )
-                , ( "border-right", "4px solid #cccccc" )
-                , ( "margin", "2px" )
-                ]
-            ]
+            [ class "col-sm" ]
             [ renderTreeInfo model
             , renderToolbar model
             , renderTreeView model
             ]
-        , div [ style [ ( "margin", "2px" ) ] ]
+        , div [ class "col-sm" ]
             [ renderRightPanel model ]
         ]
