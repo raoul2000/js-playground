@@ -20,7 +20,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Red, Cmd.none )
+    ( Green, Cmd.none )
 
 
 
@@ -30,7 +30,7 @@ init =
 type Msg
     = Expand
     | Collapse
-    | ChangeSelection
+    | ChangeSelection String
 
 
 toOptionValue : ColorOption -> String
@@ -46,11 +46,19 @@ toOptionValue opt =
             "vred"
 
 
+colorOption : List ( ColorOption, String )
 colorOption =
     [ ( Blue, "blue" )
     , ( Green, "green" )
     , ( Red, "red" )
     ]
+
+
+stringToColorOption : String -> Maybe ColorOption
+stringToColorOption string =
+    List.filter (\n -> toOptionValue (Tuple.first n) == string) colorOption
+        |> List.map (\n -> Tuple.first n)
+        |> List.head
 
 
 
@@ -60,7 +68,7 @@ colorOption =
 view : Model -> Html Msg
 view model =
     div []
-        [ select [ onInput ChangeSelection ]
+        [ select [ onInput (\v -> ChangeSelection v) ]
             (List.map
                 (\n ->
                     option
@@ -71,6 +79,7 @@ view model =
                 )
                 colorOption
             )
+        , text (toOptionValue model)
         ]
 
 
@@ -89,6 +98,14 @@ update msg model =
 
         Collapse ->
             ( Red, Cmd.none )
+
+        ChangeSelection value ->
+            case stringToColorOption value of
+                Just colorOption ->
+                    ( colorOption, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 
