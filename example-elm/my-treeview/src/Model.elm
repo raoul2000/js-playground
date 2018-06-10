@@ -5,13 +5,15 @@ type PropertyType
     = RawText
     | HtmlText
     | AttributeValue
+    | Object
 
 
 propertyTypeOptions : List ( PropertyType, String )
 propertyTypeOptions =
-    [ ( RawText, "text" )
+    [ ( RawText, "Simple Text" )
     , ( HtmlText, "HTML text" )
     , ( AttributeValue, "Attribute Value" )
+    , ( Object, "Object" )
     ]
 
 
@@ -69,6 +71,9 @@ propertyTypeToValue propertyType =
 
         AttributeValue ->
             "attrval"
+
+        Object ->
+            "object"
 
 
 propertyTypeToText : PropertyType -> String
