@@ -13,6 +13,8 @@ type Msg
     | SaveEdit
     | CancelEdit
     | InputPropertyName String
+    | InputAttributeName String
+    | ToggleIsArray
     | InputSelector String
     | ToggleNodeView Node
     | CollapseAllNodes Bool

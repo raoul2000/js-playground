@@ -71,6 +71,20 @@ update msg model =
                 , Cmd.none
                 )
 
+        InputAttributeName attributeNameValue ->
+            let
+                oldNodeData =
+                    model.editedNodeData
+
+                newNodeData =
+                    { oldNodeData | attributeName = attributeNameValue }
+            in
+                ( { model
+                    | editedNodeData = newNodeData
+                  }
+                , Cmd.none
+                )
+
         InputSelector selectorValue ->
             let
                 oldNodeData =
@@ -84,6 +98,21 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        ToggleIsArray ->
+            let
+                oldNodeData =
+                    model.editedNodeData
+
+                newNodeData =
+                    { oldNodeData | isArray = not oldNodeData.isArray }
+            in
+                ( { model
+                    | editedNodeData = newNodeData
+                  }
+                , Cmd.none
+                )
+
 
         ChangePropertyTypeSelection Nothing ->
             ( model, Cmd.none )

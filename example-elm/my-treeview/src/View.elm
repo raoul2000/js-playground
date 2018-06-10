@@ -158,6 +158,25 @@ renderSelectedNodeView node =
         ]
 
 
+renderOptionalAttributeNameFormGroup : NodeData -> Html Msg
+renderOptionalAttributeNameFormGroup nodeData =
+    if nodeData.propType == AttributeValue then
+        div [ class "form-group" ]
+            [ label [ for "attrName" ] [ text "Attribute Name" ]
+            , input
+                [ class "form-control"
+                , id "attrName"
+                , type_ "text"
+                , value nodeData.attributeName
+                , placeholder "attribute Name"
+                , onInput InputAttributeName
+                ]
+                []
+            ]
+    else
+        div [] []
+
+
 renderNodeEditForm : NodeData -> Html Msg
 renderNodeEditForm nodeData =
     Html.div []
@@ -185,6 +204,21 @@ renderNodeEditForm nodeData =
                 ]
                 []
             ]
+        , div [ class "form-group form-check" ]
+            [ input
+                [ class "form-check-input"
+                , id "isArray"
+                , type_ "checkbox"
+                , checked nodeData.isArray
+                , onClick ToggleIsArray
+                ]
+                []
+            , label
+                [ class "form-check-label"
+                , for "isArray"
+                ]
+                [ text "Selects all values that match the selector" ]
+            ]
         , div [ class "form-group" ]
             [ label [ for "type" ] [ text "Type" ]
             , select
@@ -196,6 +230,7 @@ renderNodeEditForm nodeData =
                     propertyTypeOptions
                 )
             ]
+        , renderOptionalAttributeNameFormGroup nodeData
         , button
             [ class "btn btn-primary"
             , onClick (SaveEdit)
