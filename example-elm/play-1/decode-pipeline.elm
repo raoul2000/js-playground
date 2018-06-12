@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode exposing (..)
+import Json.Decode.Pipeline as JDP exposing (decode, required, optional, requiredAt, optionalAt)
 
 
 -- MODEL
@@ -81,10 +82,10 @@ roleDecoder =
 
 objectDecoder : Decoder Object
 objectDecoder =
-    map3 Object
-        (field "name" string)
-        (field "age" int)
-        (field "role" roleDecoder)
+    decode Object
+        |> JDP.required "name" string
+        |> JDP.required "age" int
+        |> JDP.required "role" roleDecoder
 
 
 
@@ -104,7 +105,7 @@ type Msg
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "Json.Decode"]
+        [ h1 [] [ text "Json.Decode.Pipeline"]
         , button [ onClick (WorkNow (decodeString objectDecoder model.asString)) ] [ text "Decode" ]
         , div [] [ text model.message ]
         , textarea
