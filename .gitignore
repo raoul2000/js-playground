@@ -29,3 +29,4 @@ build/Release
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 example-elm/my-treeview/public/assets/js/main.js
+example-elm/play-1/public/port-example.js

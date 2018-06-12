@@ -16,3 +16,12 @@ elm reactor
 ```
 
 Open your browser to URL http://localhost:8000/
+
+# Elm web app examples
+
+## Port Examples
+
+```
+npm run watch:port
+npm run dev:server
+```

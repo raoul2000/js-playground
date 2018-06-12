@@ -1,0 +1,20 @@
+{
+  "name": "play-1",
+  "version": "0.0.1",
+  "description": "play with elm",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "http-server -o -c-1",
+    "watch:port" : "watch  \"npm run make:port\" ./src/port",
+    "make:port": "elm-make ./src/port/main.elm --output=./public/port-example.js --debug"
+  },
+  "keywords": [
+    "elm",
+    "play"
+  ],
+  "author": "raoul2000",
+  "license": "ISC",
+  "devDependencies": {
+    "watch": "^1.0.2"
+  }
+}
