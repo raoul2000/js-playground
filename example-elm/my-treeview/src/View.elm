@@ -151,11 +151,50 @@ renderToolbar model =
 renderSelectedNodeView : Node -> Html Msg
 renderSelectedNodeView node =
     div []
+        [ h3 []
+            [ text node.data.propName ]
+        , hr [] []
+        , table [ class "table table-borderless table-hover table-sm node-view" ]
+            [ tbody []
+                [ tr []
+                    [ th [ scope "row" ] [ text "Selector :" ]
+                    , td [] [ text node.data.selector ]
+                    ]
+                , tr []
+                    [ th [ scope "row" ] [ text "Multiple Values :" ]
+                    , td [] [ text (toString node.data.isArray) ]
+                    ]
+                , tr []
+                    [ th [ scope "row" ] [ text "Type :" ]
+                    , td [] [ text (propertyTypeToText node.data.propType) ]
+                    ]
+                , if node.data.propType == AttributeValue then
+                    tr []
+                        [ th [ scope "row" ] [ text "Attribute Name :" ]
+                        , td [] [ text node.data.attributeName ]
+                        ]
+                  else 
+                    text ""
+                ]
+            ]
+        , hr [] []
+        , button
+            [ class "btn btn-primary"
+            , onClick (EditNode node)
+            ]
+            [ text "Edit Property" ]
+        ]
+
+
+
+{--
+    div []
         [ div [] [ text ("property Name : " ++ node.data.propName) ]
         , div [] [ text ("Selector : " ++ node.data.selector) ]
         , div [] [ text ("Type : " ++ (propertyTypeToText node.data.propType)) ]
         , button [ onClick (EditNode node) ] [ text "Edit" ]
         ]
+--}
 
 
 renderOptionalAttributeNameFormGroup : NodeData -> Html Msg

@@ -2,6 +2,11 @@ body {
   margin: 0;
 }
 
+table.node-view  th {
+  width:10%;
+  white-space: nowrap;
+  text-align: right;
+}
 .treeview-container ul {
   list-style: none;
   padding-left: 2em;

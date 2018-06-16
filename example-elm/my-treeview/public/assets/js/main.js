@@ -12484,8 +12484,10 @@ var _user$project$Model$propertyTypeToValue = function (propertyType) {
 			return 'text';
 		case 'HtmlText':
 			return 'htmltext';
-		default:
+		case 'AttributeValue':
 			return 'attrval';
+		default:
+			return 'object';
 	}
 };
 var _user$project$Model$NodeData = F5(
@@ -12503,19 +12505,24 @@ var _user$project$Model$Model = F5(
 	function (a, b, c, d, e) {
 		return {tree: a, selectedNodeId: b, maxNodeId: c, viewMode: d, editedNodeData: e};
 	});
+var _user$project$Model$Object = {ctor: 'Object'};
 var _user$project$Model$AttributeValue = {ctor: 'AttributeValue'};
 var _user$project$Model$HtmlText = {ctor: 'HtmlText'};
 var _user$project$Model$RawText = {ctor: 'RawText'};
 var _user$project$Model$propertyTypeOptions = {
 	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: _user$project$Model$RawText, _1: 'text'},
+	_0: {ctor: '_Tuple2', _0: _user$project$Model$RawText, _1: 'Simple Text'},
 	_1: {
 		ctor: '::',
 		_0: {ctor: '_Tuple2', _0: _user$project$Model$HtmlText, _1: 'HTML text'},
 		_1: {
 			ctor: '::',
 			_0: {ctor: '_Tuple2', _0: _user$project$Model$AttributeValue, _1: 'Attribute Value'},
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _user$project$Model$Object, _1: 'Object'},
+				_1: {ctor: '[]'}
+			}
 		}
 	}
 };
@@ -12726,6 +12733,10 @@ var _user$project$Message$ToggleNodeView = function (a) {
 var _user$project$Message$InputSelector = function (a) {
 	return {ctor: 'InputSelector', _0: a};
 };
+var _user$project$Message$ToggleIsArray = {ctor: 'ToggleIsArray'};
+var _user$project$Message$InputAttributeName = function (a) {
+	return {ctor: 'InputAttributeName', _0: a};
+};
 var _user$project$Message$InputPropertyName = function (a) {
 	return {ctor: 'InputPropertyName', _0: a};
 };
@@ -12742,6 +12753,65 @@ var _user$project$Message$NodeSelection = function (a) {
 };
 var _user$project$Message$NoOp = {ctor: 'NoOp'};
 
+var _user$project$View$renderOptionalAttributeNameFormGroup = function (nodeData) {
+	return _elm_lang$core$Native_Utils.eq(nodeData.propType, _user$project$Model$AttributeValue) ? A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('form-group'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$label,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$for('attrName'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Attribute Name'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('form-control'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$id('attrName'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$type_('text'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(nodeData.attributeName),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$placeholder('attribute Name'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onInput(_user$project$Message$InputAttributeName),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		}) : A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{ctor: '[]'});
+};
 var _user$project$View$renderSelectedNodeView = function (node) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -12749,55 +12819,197 @@ var _user$project$View$renderSelectedNodeView = function (node) {
 		{
 			ctor: '::',
 			_0: A2(
-				_elm_lang$html$Html$div,
+				_elm_lang$html$Html$h3,
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						A2(_elm_lang$core$Basics_ops['++'], 'property Name : ', node.data.propName)),
+					_0: _elm_lang$html$Html$text(node.data.propName),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$div,
+					_elm_lang$html$Html$hr,
 					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							A2(_elm_lang$core$Basics_ops['++'], 'Selector : ', node.data.selector)),
-						_1: {ctor: '[]'}
-					}),
+					{ctor: '[]'}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
+						_elm_lang$html$Html$table,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'Type : ',
-									_user$project$Model$propertyTypeToText(node.data.propType))),
+							_0: _elm_lang$html$Html_Attributes$class('table table-borderless table-hover table-sm node-view'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$tbody,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$tr,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$th,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$scope('row'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Selector :'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$td,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text(node.data.selector),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$tr,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$th,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$scope('row'),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Multiple Values :'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$td,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text(
+																_elm_lang$core$Basics$toString(node.data.isArray)),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$tr,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$th,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$scope('row'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Type :'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$td,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text(
+																	_user$project$Model$propertyTypeToText(node.data.propType)),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
+												}),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$core$Native_Utils.eq(node.data.propType, _user$project$Model$AttributeValue) ? A2(
+													_elm_lang$html$Html$tr,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$th,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$scope('row'),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Attribute Name :'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$td,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text(node.data.attributeName),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
+														}
+													}) : _elm_lang$html$Html$text(''),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$button,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(
-									_user$project$Message$EditNode(node)),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('Edit'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
+							_elm_lang$html$Html$hr,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(
+											_user$project$Message$EditNode(node)),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Edit Property'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
@@ -13220,84 +13432,145 @@ var _user$project$View$renderNodeEditForm = function (nodeData) {
 						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('form-group'),
+							_0: _elm_lang$html$Html_Attributes$class('form-group form-check'),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$label,
+								_elm_lang$html$Html$input,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$for('type'),
-									_1: {ctor: '[]'}
+									_0: _elm_lang$html$Html_Attributes$class('form-check-input'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$id('isArray'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$checked(nodeData.isArray),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$ToggleIsArray),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
 								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Type'),
-									_1: {ctor: '[]'}
-								}),
+								{ctor: '[]'}),
 							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$select,
+									_elm_lang$html$Html$label,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('form-control'),
+										_0: _elm_lang$html$Html_Attributes$class('form-check-label'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onInput(
-												function (selection) {
-													return _user$project$Message$ChangePropertyTypeSelection(
-														_user$project$Model$valueToPropertyType(selection));
-												}),
+											_0: _elm_lang$html$Html_Attributes$for('isArray'),
 											_1: {ctor: '[]'}
 										}
 									},
-									A2(
-										_elm_lang$core$List$map,
-										_user$project$View$renderPropertyTypeOption(nodeData.propType),
-										_user$project$Model$propertyTypeOptions)),
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Selects all values that match the selector'),
+										_1: {ctor: '[]'}
+									}),
 								_1: {ctor: '[]'}
 							}
 						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$button,
+							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$SaveEdit),
-									_1: {ctor: '[]'}
-								}
+								_0: _elm_lang$html$Html_Attributes$class('form-group'),
+								_1: {ctor: '[]'}
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text('Save'),
-								_1: {ctor: '[]'}
+								_0: A2(
+									_elm_lang$html$Html$label,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$for('type'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Type'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$select,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('form-control'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(
+													function (selection) {
+														return _user$project$Message$ChangePropertyTypeSelection(
+															_user$project$Model$valueToPropertyType(selection));
+													}),
+												_1: {ctor: '[]'}
+											}
+										},
+										A2(
+											_elm_lang$core$List$map,
+											_user$project$View$renderPropertyTypeOption(nodeData.propType),
+											_user$project$Model$propertyTypeOptions)),
+									_1: {ctor: '[]'}
+								}
 							}),
 						_1: {
 							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$button,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('btn btn-light'),
-									_1: {
+							_0: _user$project$View$renderOptionalAttributeNameFormGroup(nodeData),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$CancelEdit),
+										_0: _elm_lang$html$Html_Attributes$class('btn btn-primary'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$SaveEdit),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Save'),
 										_1: {ctor: '[]'}
-									}
-								},
-								{
+									}),
+								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html$text('Cancel'),
+									_0: A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('btn btn-light'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onClick(_user$project$Message$CancelEdit),
+												_1: {ctor: '[]'}
+											}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Cancel'),
+											_1: {ctor: '[]'}
+										}),
 									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
+								}
+							}
 						}
 					}
 				}
@@ -13433,11 +13706,35 @@ var _user$project$Main$update = F2(
 						{editedNodeData: newNodeData}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'InputAttributeName':
+				var oldNodeData = model.editedNodeData;
+				var newNodeData = _elm_lang$core$Native_Utils.update(
+					oldNodeData,
+					{attributeName: _p0._0});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{editedNodeData: newNodeData}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'InputSelector':
 				var oldNodeData = model.editedNodeData;
 				var newNodeData = _elm_lang$core$Native_Utils.update(
 					oldNodeData,
 					{selector: _p0._0});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{editedNodeData: newNodeData}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ToggleIsArray':
+				var oldNodeData = model.editedNodeData;
+				var newNodeData = _elm_lang$core$Native_Utils.update(
+					oldNodeData,
+					{isArray: !oldNodeData.isArray});
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -13547,7 +13844,7 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : Model.PropertyType , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Model.PropertyType":{"tags":{"HtmlText":[],"AttributeValue":[],"RawText":[]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[],"ChangePropertyTypeSelection":["Maybe.Maybe Model.PropertyType"]},"args":[]},"Maybe.Maybe":{"tags":{"Nothing":[],"Just":["a"]},"args":["a"]}}},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"message":"Message.Msg","aliases":{"Model.Node":{"type":"{ id : Model.NodeId , name : String , data : Model.NodeData , view : Model.NodeView , children : Model.Children }","args":[]},"Model.NodeData":{"type":"{ propName : String , selector : String , propType : Model.PropertyType , attributeName : String , isArray : Bool }","args":[]},"Model.NodeView":{"type":"{ expanded : Bool }","args":[]},"Model.NodeId":{"type":"String","args":[]}},"unions":{"Model.Children":{"tags":{"Children":["List Model.Node"]},"args":[]},"Model.PropertyType":{"tags":{"Object":[],"HtmlText":[],"AttributeValue":[],"RawText":[]},"args":[]},"Message.Msg":{"tags":{"ToggleNodeView":["Model.Node"],"SaveEdit":[],"NodeSelection":["Model.Node"],"DeleteSelectedNode":[],"InputSelector":["String"],"DeselectAllNodes":[],"InputPropertyName":["String"],"NoOp":[],"AddChildNodeToSelectedNode":[],"ToggleIsArray":[],"CollapseAllNodes":["Bool"],"EditNode":["Model.Node"],"CancelEdit":[],"InputAttributeName":["String"],"ChangePropertyTypeSelection":["Maybe.Maybe Model.PropertyType"]},"args":[]},"Maybe.Maybe":{"tags":{"Nothing":[],"Just":["a"]},"args":["a"]}}},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
