@@ -23,7 +23,12 @@ hasPropertyName : Node -> Bool
 hasPropertyName node = 
     isNonEmptyTrimmedString node.data.propName
 
-validationNode : Node -> List (Maybe String)
+validationNode : Node -> List Bool
 validationNode node =
-    List.map (\n -> Nothing) [ hasSelector, hasPropertyName]
+    [ hasSelector, hasPropertyName]
+        |> List.map (\validationRule -> validationRule node) 
+
+validatePropertyName : String -> List String
+validatePropertyName value =
+    
 
