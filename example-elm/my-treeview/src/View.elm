@@ -5,6 +5,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Model exposing (..)
 import Message exposing (..)
+import Validation exposing (..)
+
 
 
 renderPropertyTypeOption : PropertyType -> ( PropertyType, String ) -> Html Msg
@@ -64,12 +66,20 @@ renderNode model node =
                 "has-children"
             else
                 ""
+        
+        hint = 
+            if Validation.objectProperty node then
+                span []
+                    [ text "!"]
+            else
+                text ""
     in
         li [ class (String.join " " [ selectionClassname, expandedClassname, childrenClassname ]) ]
             [ div
                 [ onClick (NodeSelection node) ]
                 [ renderNodeToggler node
                 , renderNodeLabel node
+                , hint
                 ]
             , renderChildren model node.children
             ]

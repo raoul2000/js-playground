@@ -12753,6 +12753,36 @@ var _user$project$Message$NodeSelection = function (a) {
 };
 var _user$project$Message$NoOp = {ctor: 'NoOp'};
 
+var _user$project$Validation$isNonEmptyTrimmedString = function (s) {
+	return !_elm_lang$core$String$isEmpty(
+		_elm_lang$core$String$trim(s));
+};
+var _user$project$Validation$hasSelector = function (node) {
+	return _user$project$Validation$isNonEmptyTrimmedString(node.data.selector);
+};
+var _user$project$Validation$hasPropertyName = function (node) {
+	return _user$project$Validation$isNonEmptyTrimmedString(node.data.propName);
+};
+var _user$project$Validation$validationNode = function (node) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (n) {
+			return _elm_lang$core$Maybe$Nothing;
+		},
+		{
+			ctor: '::',
+			_0: _user$project$Validation$hasSelector,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Validation$hasPropertyName,
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Validation$objectProperty = function (node) {
+	return _elm_lang$core$Native_Utils.eq(node.data.propType, _user$project$Model$Object) && (!_user$project$Model$hasChildren(node));
+};
+
 var _user$project$View$renderOptionalAttributeNameFormGroup = function (nodeData) {
 	return _elm_lang$core$Native_Utils.eq(nodeData.propType, _user$project$Model$AttributeValue) ? A2(
 		_elm_lang$html$Html$div,
@@ -13209,6 +13239,14 @@ var _user$project$View$renderNodeToggler = function (node) {
 };
 var _user$project$View$renderNode = F2(
 	function (model, node) {
+		var hint = _user$project$Validation$objectProperty(node) ? A2(
+			_elm_lang$html$Html$span,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('!'),
+				_1: {ctor: '[]'}
+			}) : _elm_lang$html$Html$text('');
 		var childrenClassname = _user$project$Model$hasChildren(node) ? 'has-children' : '';
 		var expandedClassname = _user$project$Model$hasChildren(node) ? (_elm_lang$core$Native_Utils.eq(node.view.expanded, true) ? 'expanded-node' : 'collapsed-node') : ' ';
 		var selectionClassname = _elm_lang$core$Native_Utils.eq(
@@ -13253,7 +13291,11 @@ var _user$project$View$renderNode = F2(
 						_1: {
 							ctor: '::',
 							_0: _user$project$View$renderNodeLabel(node),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: hint,
+								_1: {ctor: '[]'}
+							}
 						}
 					}),
 				_1: {
