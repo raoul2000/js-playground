@@ -8,7 +8,6 @@ import Message exposing (..)
 import Validation exposing (..)
 
 
-
 renderPropertyTypeOption : PropertyType -> ( PropertyType, String ) -> Html Msg
 renderPropertyTypeOption currentValue ( optionValue, optionText ) =
     option
@@ -66,11 +65,11 @@ renderNode model node =
                 "has-children"
             else
                 ""
-        
-        hint = 
+
+        hint =
             if Validation.objectProperty node then
                 span []
-                    [ text "!"]
+                    [ text "!" ]
             else
                 text ""
     in
@@ -183,7 +182,7 @@ renderSelectedNodeView node =
                         [ th [ scope "row" ] [ text "Attribute Name :" ]
                         , td [] [ text node.data.attributeName ]
                         ]
-                  else 
+                  else
                     text ""
                 ]
             ]
@@ -226,10 +225,23 @@ renderOptionalAttributeNameFormGroup nodeData =
         div [] []
 
 
-renderNodeEditForm : NodeData -> Html Msg
-renderNodeEditForm nodeData =
+renderValidationErrors : List String -> Html Msg
+renderValidationErrors errors =
+    if List.isEmpty errors then
+        div [] []
+    else
+        div [ class "alert alert-danger" ]
+            [ text "something is wrong"
+            , ul []
+                (List.map (\msg -> li [] [ text msg ]) errors)
+            ]
+
+
+renderNodeEditForm : NodeData -> List String -> Html Msg
+renderNodeEditForm nodeData validationErrors =
     Html.div []
-        [ div [ class "form-group" ]
+        [ renderValidationErrors validationErrors
+        , div [ class "form-group" ]
             [ label [ for "propName" ] [ text "Property Name" ]
             , input
                 [ class "form-control"
@@ -302,7 +314,7 @@ renderRightPanel model =
                     if model.viewMode then
                         renderSelectedNodeView selectedNode
                     else
-                        renderNodeEditForm model.editedNodeData
+                        renderNodeEditForm model.editedNodeData model.validationErrors
 
                 Nothing ->
                     div [] [ text "select a node" ]
@@ -314,11 +326,10 @@ renderRightPanel model =
 view : Model -> Html Msg
 view model =
     div [ class "row" ]
-        [ div
-            [ class "col-sm" ]
-            [ renderTreeInfo model
-            , renderToolbar model
+        [ div [ class "col-sm" ]
+            [ renderToolbar model
             , renderTreeView model
+            , renderTreeInfo model
             ]
         , div [ class "col-sm" ]
             [ renderRightPanel model ]

@@ -4,6 +4,7 @@ import Html exposing (..)
 import Model exposing (..)
 import Message exposing (..)
 import View exposing (..)
+import Validation exposing (..)
 
 
 {--
@@ -18,6 +19,7 @@ init =
       , maxNodeId = 5
       , viewMode = True
       , editedNodeData = Model.createDefaultNodeData
+      , validationErrors = []
       }
     , Cmd.none
     )
@@ -40,6 +42,7 @@ update msg model =
         CancelEdit ->
             ( { model
                 | viewMode = True
+                , validationErrors = []
               }
             , Cmd.none
             )
@@ -47,12 +50,27 @@ update msg model =
         SaveEdit ->
             case model.selectedNodeId of
                 Just nodeId ->
-                    ( { model
-                        | tree = updateNodeData nodeId model.editedNodeData model.tree
-                        , viewMode = True
-                      }
-                    , Cmd.none
-                    )
+                    let
+                        validationErrors =
+                            Validation.validateNodeForm model.editedNodeData
+
+                        isValid = (List.isEmpty validationErrors)
+
+                        updatedTree =
+                            if isValid then
+                                updateNodeData nodeId model.editedNodeData model.tree
+                            else
+                                model.tree
+
+                        updatedViewMode = isValid
+                    in
+                        ( { model
+                            | tree = updatedTree
+                            , viewMode = updatedViewMode
+                            , validationErrors = validationErrors
+                          }
+                        , Cmd.none
+                        )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -112,7 +130,6 @@ update msg model =
                   }
                 , Cmd.none
                 )
-
 
         ChangePropertyTypeSelection Nothing ->
             ( model, Cmd.none )

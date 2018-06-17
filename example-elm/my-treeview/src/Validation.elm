@@ -14,21 +14,28 @@ isNonEmptyTrimmedString s =
         String.isEmpty <|
             String.trim s
 
+propertyNameIsNotEmpty : NodeData -> Maybe String
+propertyNameIsNotEmpty data =
+    if isNonEmptyTrimmedString data.propName then
+        Nothing
+    else
+        Just "Missing Property Name"
 
-hasSelector : Node -> Bool
-hasSelector node =
-    isNonEmptyTrimmedString node.data.selector
+selectorIsNotEmpty : NodeData -> Maybe String
+selectorIsNotEmpty data =
+    if isNonEmptyTrimmedString data.selector then
+        Nothing
+    else
+        Just "Missing selector"
 
-hasPropertyName : Node -> Bool
-hasPropertyName node = 
-    isNonEmptyTrimmedString node.data.propName
-
-validationNode : Node -> List Bool
-validationNode node =
-    [ hasSelector, hasPropertyName]
-        |> List.map (\validationRule -> validationRule node) 
-
-validatePropertyName : String -> List String
-validatePropertyName value =
-    
-
+validateNodeForm : NodeData -> List String
+validateNodeForm data =
+    [ propertyNameIsNotEmpty
+    , selectorIsNotEmpty]
+        |> List.map (\validate -> 
+            case (validate data) of
+                Just errorMessage -> errorMessage 
+                Nothing -> ""
+            )
+        |> List.filter (\errorMsg -> not(String.isEmpty errorMsg))
+        

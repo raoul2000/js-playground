@@ -53,6 +53,7 @@ type alias Model =
     , maxNodeId : Int
     , viewMode : Bool
     , editedNodeData : NodeData
+    , validationErrors : List String
     }
 
 
