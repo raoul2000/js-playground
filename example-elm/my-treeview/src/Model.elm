@@ -106,27 +106,27 @@ valueToPropertyType value =
 
 createSampleTree : Node
 createSampleTree =
-    Node "0"
-        "root"
-        createDefaultNodeData
-        createDefaultNodeView
-        (Children
-            [ Node "2" "child2" createDefaultNodeData createDefaultNodeView (Children [])
-            , Node "3" "child3" createDefaultNodeData createDefaultNodeView (Children [])
-            , Node "4"
-                "child4"
-                createDefaultNodeData
-                createDefaultNodeView
-                (Children
-                    [ Node "5" "child5" createDefaultNodeData createDefaultNodeView (Children []) ]
-                )
-            ]
-        )
+    appendChildren createTree <|
+        [ Node "2" "child2" createDefaultNodeData createDefaultNodeView (Children [])
+        , Node "3" "child3" createDefaultNodeData createDefaultNodeView (Children [])
+        , Node "4"
+            "child4"
+            createDefaultNodeData
+            createDefaultNodeView
+            (Children
+                [ Node "5" "child5" createDefaultNodeData createDefaultNodeView (Children []) ]
+            )
+        ]
 
 
 createNodeId : Model -> NodeId
 createNodeId model =
     "node-" ++ toString model.maxNodeId
+
+
+isRoot : Node -> Bool
+isRoot node =
+    node.id == "node-0"
 
 
 createDefaultNodeView : NodeView
@@ -147,6 +147,11 @@ createDefaultNodeData =
 createNode : Model -> Node
 createNode model =
     Node (createNodeId model) (toString model.maxNodeId) createDefaultNodeData createDefaultNodeView (Children [])
+
+
+createTree : Node
+createTree =
+    Node "root" "root node" createDefaultNodeData createDefaultNodeView (Children [])
 
 
 
@@ -213,9 +218,14 @@ getNodeData nodeId rootNode =
 
 appendChild : Node -> Node -> Node
 appendChild target newNode =
+    appendChildren target [ newNode ]
+
+
+appendChildren : Node -> List Node -> Node
+appendChildren target newNodes =
     { target
         | children =
-            Children (List.append (nodeChildList target) [ newNode ])
+            Children (List.append (nodeChildList target) newNodes)
         , view = { expanded = True }
     }
 

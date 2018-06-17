@@ -7,34 +7,36 @@ table.node-view  th {
   white-space: nowrap;
   text-align: right;
 }
-.treeview-container ul {
+
+.treeview  ul {
   list-style: none;
   padding-left: 2em;
 }
 
-.selected-node>div>.node-label {
+.treeview  .selected-node>div>.node-label {
   background-color: #eee;
   color: #111;
 }
 
-.node-label {
+.treeview  .node-label {
   cursor: pointer;
   padding-left: 0.3em;
   padding-right: 0.3em;
 }
 
-.node-label:hover {
+.treeview  .node-label:hover {
   text-decoration: underline;
 }
 
-.collapsed-node>ul {
+.treeview   .collapsed-node>ul {
   display: none;
 }
-.has-children > div > .toggle {
+
+.treeview  .has-children > div > .toggle {
   margin:0px;
 }
 
-.toggle {
+.treeview  .toggle {
   width: 1em;
   display: block;
   float: left;
