@@ -54,7 +54,8 @@ update msg model =
                         validationErrors =
                             Validation.validateNodeForm model.editedNodeData
 
-                        isValid = (List.isEmpty validationErrors)
+                        isValid =
+                            List.isEmpty validationErrors
 
                         updatedTree =
                             if isValid then
@@ -62,7 +63,8 @@ update msg model =
                             else
                                 model.tree
 
-                        updatedViewMode = isValid
+                        updatedViewMode =
+                            isValid
                     in
                         ( { model
                             | tree = updatedTree
@@ -220,7 +222,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 

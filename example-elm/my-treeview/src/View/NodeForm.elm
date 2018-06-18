@@ -106,12 +106,12 @@ renderNodeEditForm nodeData validationErrors =
         , renderOptionalAttributeNameFormGroup nodeData
         , button
             [ class "btn btn-primary"
-            , onClick (SaveEdit)
+            , onClick SaveEdit
             ]
             [ text "Save" ]
         , button
             [ class "btn btn-light"
-            , onClick (CancelEdit)
+            , onClick CancelEdit
             ]
             [ text "Cancel" ]
         ]

@@ -2,7 +2,7 @@ module View.Tree exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick)
 import Model exposing (..)
 import Message exposing (..)
 import Validation exposing (..)
@@ -101,7 +101,7 @@ renderTreeInfo model =
         txtSelectedNodeId =
             case model.selectedNodeId of
                 Just selectedNodeId ->
-                    selectedNodeId ++ " viewMode = " ++ (toString model.viewMode)
+                    selectedNodeId ++ " viewMode = " ++ toString model.viewMode
 
                 Nothing ->
                     "no selection"

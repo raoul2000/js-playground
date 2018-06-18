@@ -160,7 +160,7 @@ createTree =
 
 isChildNode : NodeId -> Node -> Bool
 isChildNode nodeId node =
-    List.filter (\node -> node.id == nodeId) (nodeChildList node)
+    List.filter (\nd -> nd.id == nodeId) (nodeChildList node)
         |> List.isEmpty
         |> not
 
@@ -201,7 +201,7 @@ findNodeById nodeId rootNode =
 
 getNodeData : NodeId -> Node -> Maybe NodeData
 getNodeData nodeId rootNode =
-    case (findNodeById nodeId rootNode) of
+    case findNodeById nodeId rootNode of
         Just node ->
             Just node.data
 

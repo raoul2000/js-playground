@@ -2,7 +2,7 @@ module View.NodeView exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick)
 import Model exposing (..)
 import Message exposing (..)
 import Validation exposing (..)
@@ -10,14 +10,13 @@ import Validation exposing (..)
 
 renderWarningMissingChild : Node -> Html Msg
 renderWarningMissingChild node =
-    case (validateNode node) of
+    case validateNode node of
         Just msg ->
             div [ class "alert alert-warning" ]
                 [ text msg ]
 
         Nothing ->
             div [] []
-
 
 
 renderSelectedNodeView : Node -> Html Msg
@@ -58,5 +57,3 @@ renderSelectedNodeView node =
             ]
             [ text "Edit Property" ]
         ]
-
-
