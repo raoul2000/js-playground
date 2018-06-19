@@ -1,4 +1,4 @@
-module View.NodeView exposing (..)
+module View.NodeView exposing (renderSelectedNodeView)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

@@ -1,4 +1,4 @@
-module View.Tree exposing (..)
+module View.Tree exposing (renderTreeInfo, renderTreeView)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

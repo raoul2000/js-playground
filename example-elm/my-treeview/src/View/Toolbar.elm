@@ -1,4 +1,4 @@
-module View.Toolbar exposing (..)
+module View.Toolbar exposing (renderToolbar)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

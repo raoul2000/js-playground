@@ -1,4 +1,4 @@
-module View.NodeForm exposing (..)
+module View.NodeForm exposing (renderNodeEditForm)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
