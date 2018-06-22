@@ -3,11 +3,13 @@ module View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Model exposing (..)
+import Model.Node as Node
 import Message exposing (..)
 import View.Toolbar as Toolbar exposing (renderToolbar)
 import View.NodeForm as NodeForm exposing (renderNodeEditForm)
 import View.NodeView as NodeView exposing (renderSelectedNodeView)
 import View.Tree as Tree exposing (renderTreeInfo, renderTreeView)
+
 
 
 {-| Render the Node edit Form when the viewMode is FALSE and a node is selected
@@ -18,7 +20,7 @@ renderRightPanel : Model -> Html Msg
 renderRightPanel model =
     case model.selectedNodeId of
         Just nodeId ->
-            case findNodeById nodeId model.tree of
+            case Node.findNodeById nodeId model.tree of
                 Just selectedNode ->
                     if model.viewMode then
                         NodeView.renderSelectedNodeView selectedNode

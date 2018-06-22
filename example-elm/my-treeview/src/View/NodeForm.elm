@@ -3,14 +3,15 @@ module View.NodeForm exposing (renderNodeEditForm)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Model exposing (..)
+import Model.NodeData as NodeData
 import Message exposing (..)
 
 
-renderPropertyTypeOption : PropertyType -> ( PropertyType, String ) -> Html Msg
+
+renderPropertyTypeOption : NodeData.PropertyType -> ( NodeData.PropertyType, String ) -> Html Msg
 renderPropertyTypeOption currentValue ( optionValue, optionText ) =
     option
-        [ value (optionValue |> propertyTypeToValue)
+        [ value (optionValue |> NodeData.propertyTypeToValue)
         , selected (currentValue == optionValue)
         ]
         [ text optionText ]
@@ -18,9 +19,9 @@ renderPropertyTypeOption currentValue ( optionValue, optionText ) =
 
 {-| The attribute nae field is displayed only if user has selected the type "Attribute"
 -}
-renderOptionalAttributeNameFormGroup : NodeData -> Html Msg
+renderOptionalAttributeNameFormGroup : NodeData.NodeData -> Html Msg
 renderOptionalAttributeNameFormGroup nodeData =
-    if nodeData.propType == AttributeValue then
+    if nodeData.propType == NodeData.AttributeValue then
         div [ class "form-group" ]
             [ label [ for "attrName" ] [ text "Attribute Name" ]
             , input
@@ -49,7 +50,7 @@ renderValidationErrors errors =
             ]
 
 
-renderNodeEditForm : NodeData -> List String -> Html Msg
+renderNodeEditForm : NodeData.NodeData -> List String -> Html Msg
 renderNodeEditForm nodeData validationErrors =
     Html.div []
         [ renderValidationErrors validationErrors
@@ -96,11 +97,11 @@ renderNodeEditForm nodeData validationErrors =
             [ label [ for "type" ] [ text "Type" ]
             , select
                 [ class "form-control"
-                , onInput (\selection -> ChangePropertyTypeSelection (valueToPropertyType selection))
+                , onInput (\selection -> ChangePropertyTypeSelection (NodeData.valueToPropertyType selection))
                 ]
                 (List.map
                     (renderPropertyTypeOption nodeData.propType)
-                    propertyTypeOptions
+                    NodeData.propertyTypeOptions
                 )
             ]
         , renderOptionalAttributeNameFormGroup nodeData

@@ -18,6 +18,7 @@ This is an experiment to create a tree view with basic edition feature :
 ## Commands
 
 ### Install
+
 ```
 npm install
 ```
@@ -34,12 +35,10 @@ watch for source file change and run `elm make` on change :
 npm run dev
 ```
 
+### Analyse Source Code
 
-# Run
-
-From the project main folder run :
 ```
-elm reactor
+npm run analyse
 ```
+Then open http://localhost:3000
 
-Then open your favorite browser at http://localhost:8000/my-treeview.elm

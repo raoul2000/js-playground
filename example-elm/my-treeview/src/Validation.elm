@@ -1,11 +1,13 @@
 module Validation exposing (..)
 
-import Model exposing (..)
+
+import Model.Node as Node
+import Model.NodeData as NodeData
 
 
-objectProperty : Node -> Bool
+objectProperty : Node.Node -> Bool
 objectProperty node =
-    node.data.propType == Object && not (hasChildren node)
+    node.data.propType == NodeData.Object && not (Node.hasChildren node)
 
 
 isNonEmptyTrimmedString : String -> Bool
@@ -15,7 +17,7 @@ isNonEmptyTrimmedString s =
             String.trim s
 
 
-propertyNameIsNotEmpty : NodeData -> Maybe String
+propertyNameIsNotEmpty : NodeData.NodeData -> Maybe String
 propertyNameIsNotEmpty data =
     if isNonEmptyTrimmedString data.propName then
         Nothing
@@ -23,7 +25,7 @@ propertyNameIsNotEmpty data =
         Just "Missing Property Name"
 
 
-selectorIsNotEmpty : NodeData -> Maybe String
+selectorIsNotEmpty : NodeData.NodeData -> Maybe String
 selectorIsNotEmpty data =
     if isNonEmptyTrimmedString data.selector then
         Nothing
@@ -31,7 +33,7 @@ selectorIsNotEmpty data =
         Just "Missing selector"
 
 
-validateNodeForm : NodeData -> List String
+validateNodeForm : NodeData.NodeData -> List String
 validateNodeForm data =
     [ propertyNameIsNotEmpty
     , selectorIsNotEmpty
@@ -48,17 +50,18 @@ validateNodeForm data =
         |> List.filter (\errorMsg -> not (String.isEmpty errorMsg))
 
 
-missingObjectDefinition : Node -> Bool
+
+missingObjectDefinition : Node.Node -> Bool
 missingObjectDefinition node =
-    node.data.propType == Object && not (hasChildren node) && node.id /= "0"
+    node.data.propType == NodeData.Object && not (Node.hasChildren node) && node.id /= "0"
 
 
-unexpectedObjectDefinition : Node -> Bool
+unexpectedObjectDefinition : Node.Node -> Bool
 unexpectedObjectDefinition node =
-    node.data.propType /= Object && (hasChildren node)
+    node.data.propType /= NodeData.Object && (Node.hasChildren node)
 
 
-validateNode : Node -> Maybe String
+validateNode : Node.Node -> Maybe String
 validateNode node =
     if (missingObjectDefinition node) then
         Just "The type of this property is Object, but you have not define any property for this object."

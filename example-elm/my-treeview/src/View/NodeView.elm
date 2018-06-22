@@ -3,12 +3,15 @@ module View.NodeView exposing (renderSelectedNodeView)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import Model exposing (..)
+import Model.Node as Node
+import Model.NodeData as NodeData
 import Message exposing (..)
 import Validation exposing (..)
 
 
-renderWarningMissingChild : Node -> Html Msg
+
+
+renderWarningMissingChild : Node.Node -> Html Msg
 renderWarningMissingChild node =
     case validateNode node of
         Just msg ->
@@ -19,7 +22,7 @@ renderWarningMissingChild node =
             div [] []
 
 
-renderSelectedNodeView : Node -> Html Msg
+renderSelectedNodeView : Node.Node -> Html Msg
 renderSelectedNodeView node =
     div []
         [ h3 []
@@ -39,15 +42,15 @@ renderSelectedNodeView node =
                 , tr []
                     [ th [ scope "row" ] [ text "Type :" ]
                     , td []
-                        [ text (propertyTypeToText node.data.propType) ]
+                        [ text (NodeData.propertyTypeToText node.data.propType) ]
                     ]
-                , if node.data.propType == AttributeValue then
+                , if node.data.propType == NodeData.AttributeValue then
                     tr []
                         [ th [ scope "row" ] [ text "Attribute Name :" ]
                         , td [] [ text node.data.attributeName ]
                         ]
                   else
-                    text ""
+                    text "" 
                 ]
             ]
         , hr [] []

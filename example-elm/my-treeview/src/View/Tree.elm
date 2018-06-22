@@ -3,16 +3,17 @@ module View.Tree exposing (renderTreeInfo, renderTreeView)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import Model exposing (..)
+import Model as Model
+import Model.Node as Node
 import Message exposing (..)
 import Validation exposing (..)
 
 
-renderNodeToggler : Node -> Html Msg
+renderNodeToggler : Node.Node -> Html Msg
 renderNodeToggler node =
     let
         buttonText =
-            if hasChildren node then
+            if Node.hasChildren node then
                 if node.view.expanded == True then
                     "-"
                 else
@@ -27,13 +28,13 @@ renderNodeToggler node =
             [ text buttonText ]
 
 
-renderNodeLabel : Node -> Html Msg
+renderNodeLabel : Node.Node -> Html Msg
 renderNodeLabel node =
     span [ class "node-label" ]
         [ text node.data.propName ]
 
 
-renderNode : Model -> Node -> Html Msg
+renderNode : Model.Model -> Node.Node -> Html Msg
 renderNode model node =
     let
         selectionClassname =
@@ -43,7 +44,7 @@ renderNode model node =
                 ""
 
         expandedClassname =
-            if hasChildren node then
+            if Node.hasChildren node then
                 if node.view.expanded == True then
                     "expanded-node"
                 else
@@ -52,7 +53,7 @@ renderNode model node =
                 " "
 
         childrenClassname =
-            if hasChildren node then
+            if Node.hasChildren node then
                 "has-children"
             else
                 ""
@@ -75,8 +76,8 @@ renderNode model node =
             ]
 
 
-renderChildren : Model -> Children -> Html Msg
-renderChildren model (Children nodeList) =
+renderChildren : Model.Model -> Node.Children -> Html Msg
+renderChildren model (Node.Children nodeList) =
     if List.length nodeList == 0 then
         text ""
     else
@@ -87,7 +88,7 @@ renderChildren model (Children nodeList) =
             )
 
 
-renderTreeView : Model -> Html Msg
+renderTreeView : Model.Model -> Html Msg
 renderTreeView model =
     div [ class "treeview" ]
         [ ul []
@@ -95,7 +96,7 @@ renderTreeView model =
         ]
 
 
-renderTreeInfo : Model -> Html Msg
+renderTreeInfo : Model.Model -> Html Msg
 renderTreeInfo model =
     let
         txtSelectedNodeId =
