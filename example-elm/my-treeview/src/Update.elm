@@ -31,9 +31,9 @@ update msg model =
         Msg.SaveEdit ->
             case model.selectedNodeId of
                 Just nodeId ->
-                    ( if model.state == Model.CreateNode then 
+                    ( if model.state == Model.CreateNode then
                         Save.createNodeAndAppend model nodeId
-                    else
+                      else
                         Save.updateExistingNode model nodeId
                     , Cmd.none
                     )
@@ -124,8 +124,8 @@ update msg model =
                 ( model, Cmd.none )
 
         {--
-        add a node as children of the selected node. If no node is selected
-        this function has no effect and returns the model unmodified
+        open the node edit form so the user may enter info for the node to add as child
+        of the current selected node (the future parent)
         --}
         Msg.AddChildNodeToSelectedNode ->
             case model.selectedNodeId of
@@ -133,7 +133,7 @@ update msg model =
                     ( { model
                         | editedNodeData = createDefaultNodeData
                         , state = Model.CreateNode
-                    }
+                      }
                     , Cmd.none
                     )
 
@@ -146,7 +146,7 @@ update msg model =
             )
 
         {--
-        Delete selected node and all its descendants.
+        WARNING : Delete selected node and all its descendants.
         --}
         Msg.DeleteSelectedNode ->
             case model.selectedNodeId of
@@ -160,7 +160,8 @@ update msg model =
 
                 Nothing ->
                     ( model, Cmd.none )
-
+        {-| Expand/collapse a single node in the tree view
+        --}
         Msg.ToggleNodeView node ->
             ( { model
                 | tree = Node.updateNodeView node.id node.view model.tree
