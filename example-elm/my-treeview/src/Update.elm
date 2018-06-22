@@ -2,16 +2,18 @@ module Update exposing (update)
 
 import Model exposing (..)
 import Model.Node as Node
-import Message exposing (..)
+import Message as Msg
 import Validation exposing (..)
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+
+
+update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
 update msg model =
     case msg of
-        NoOp ->
+        Msg.NoOp ->
             ( model, Cmd.none )
 
-        EditNode node ->
+        Msg.EditNode node ->
             ( { model
                 | viewMode = False
                 , editedNodeData = node.data
@@ -19,7 +21,7 @@ update msg model =
             , Cmd.none
             )
 
-        CancelEdit ->
+        Msg.CancelEdit ->
             ( { model
                 | viewMode = True
                 , validationErrors = []
@@ -27,7 +29,7 @@ update msg model =
             , Cmd.none
             )
 
-        SaveEdit ->
+        Msg.SaveEdit ->
             case model.selectedNodeId of
                 Just nodeId ->
                     let
@@ -57,7 +59,7 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
-        InputPropertyName propertyNameValue ->
+        Msg.InputPropertyName propertyNameValue ->
             let
                 oldNodeData =
                     model.editedNodeData
@@ -71,7 +73,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        InputAttributeName attributeNameValue ->
+        Msg.InputAttributeName attributeNameValue ->
             let
                 oldNodeData =
                     model.editedNodeData
@@ -85,7 +87,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        InputSelector selectorValue ->
+        Msg.InputSelector selectorValue ->
             let
                 oldNodeData =
                     model.editedNodeData
@@ -99,7 +101,7 @@ update msg model =
                 , Cmd.none
                 )
 
-        ToggleIsArray ->
+        Msg.ToggleIsArray ->
             let
                 oldNodeData =
                     model.editedNodeData
@@ -113,10 +115,10 @@ update msg model =
                 , Cmd.none
                 )
 
-        ChangePropertyTypeSelection Nothing ->
+        Msg.ChangePropertyTypeSelection Nothing ->
             ( model, Cmd.none )
 
-        ChangePropertyTypeSelection (Just newPropertyType) ->
+        Msg.ChangePropertyTypeSelection (Just newPropertyType) ->
             let
                 oldNodeData =
                     model.editedNodeData
@@ -133,7 +135,7 @@ update msg model =
         {--
         Updates the selectedNodeId property
         --}
-        NodeSelection selectedNode ->
+        Msg.NodeSelection selectedNode ->
             if model.viewMode then
                 ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
             else
@@ -143,7 +145,7 @@ update msg model =
         add a node as children of the selected node. If no node is selected
         this function has no effect and returns the model unmodified
         --}
-        AddChildNodeToSelectedNode ->
+        Msg.AddChildNodeToSelectedNode ->
             case model.selectedNodeId of
                 Just nodeId ->
                     let
@@ -161,7 +163,7 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
-        DeselectAllNodes ->
+        Msg.DeselectAllNodes ->
             ( { model | selectedNodeId = Nothing }
             , Cmd.none
             )
@@ -169,7 +171,7 @@ update msg model =
         {--
         Delete selected node and all its descendants.
         --}
-        DeleteSelectedNode ->
+        Msg.DeleteSelectedNode ->
             case model.selectedNodeId of
                 Just nodeId ->
                     ( { model
@@ -182,17 +184,16 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
-        ToggleNodeView node ->
+        Msg.ToggleNodeView node ->
             ( { model
                 | tree = Node.updateNodeView node.id node.view model.tree
               }
             , Cmd.none
             )
 
-        CollapseAllNodes collapse ->
+        Msg.CollapseAllNodes collapse ->
             ( { model
                 | tree = Node.collapseAllNodes collapse model.tree
               }
             , Cmd.none
             )
-

@@ -1,4 +1,4 @@
-module Message exposing (..)
+module Message exposing (Msg(..))
 
 import Model.Node as Node
 import Model.NodeData as NodeData

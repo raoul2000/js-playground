@@ -8,8 +8,6 @@ type alias NodeView =
     { expanded : Bool }
 
 
-
-
 type alias Model =
     { tree : Node.Node
     , selectedNodeId : Maybe Node.NodeId
