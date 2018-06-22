@@ -98,15 +98,5 @@ renderTreeView model =
 
 renderTreeInfo : Model.Model -> Html Msg
 renderTreeInfo model =
-    let
-        txtSelectedNodeId =
-            case model.selectedNodeId of
-                Just selectedNodeId ->
-                    selectedNodeId ++ " viewMode = " ++ toString model.viewMode
-
-                Nothing ->
-                    "no selection"
-    in
-        div []
-            [ text txtSelectedNodeId
-            ]
+    div []
+        [ text "" ]

@@ -8,19 +8,25 @@ type alias NodeView =
     { expanded : Bool }
 
 
+type State
+    = Read
+    | UpdateNode
+    | CreateNode
+
+
 type alias Model =
     { tree : Node.Node
     , selectedNodeId : Maybe Node.NodeId
     , maxNodeId : Int
-    , viewMode : Bool
+    , state : State
     , editedNodeData : NodeData.NodeData
     , validationErrors : List String
     }
 
 
 
--- CONVERT ////////////////////// --
 -- CREATE //////////////////////  --
+
 
 createSampleTree : Node.Node
 createSampleTree =
@@ -70,4 +76,3 @@ createNode model =
 createTree : Node.Node
 createTree =
     Node.Node "root" "root node" createDefaultNodeData createDefaultNodeView (Node.Children [])
-

@@ -3,8 +3,7 @@ module Update exposing (update)
 import Model exposing (..)
 import Model.Node as Node
 import Message as Msg
-import Validation exposing (..)
-
+import Update.Save as Save
 
 
 update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
@@ -15,16 +14,16 @@ update msg model =
 
         Msg.EditNode node ->
             ( { model
-                | viewMode = False
-                , editedNodeData = node.data
+                | editedNodeData = node.data
+                , state = Model.UpdateNode
               }
             , Cmd.none
             )
 
         Msg.CancelEdit ->
             ( { model
-                | viewMode = True
-                , validationErrors = []
+                | validationErrors = []
+                , state = Model.Read
               }
             , Cmd.none
             )
@@ -32,29 +31,12 @@ update msg model =
         Msg.SaveEdit ->
             case model.selectedNodeId of
                 Just nodeId ->
-                    let
-                        validationErrors =
-                            Validation.validateNodeForm model.editedNodeData
-
-                        isValid =
-                            List.isEmpty validationErrors
-
-                        updatedTree =
-                            if isValid then
-                                Node.updateNodeData nodeId model.editedNodeData model.tree
-                            else
-                                model.tree
-
-                        updatedViewMode =
-                            isValid
-                    in
-                        ( { model
-                            | tree = updatedTree
-                            , viewMode = updatedViewMode
-                            , validationErrors = validationErrors
-                          }
-                        , Cmd.none
-                        )
+                    ( if model.state == Model.CreateNode then 
+                        Save.createNodeAndAppend model nodeId
+                    else
+                        Save.updateExistingNode model nodeId
+                    , Cmd.none
+                    )
 
                 Nothing ->
                     ( model, Cmd.none )
@@ -136,7 +118,7 @@ update msg model =
         Updates the selectedNodeId property
         --}
         Msg.NodeSelection selectedNode ->
-            if model.viewMode then
+            if model.state == Model.Read then
                 ( { model | selectedNodeId = Just selectedNode.id }, Cmd.none )
             else
                 ( model, Cmd.none )
@@ -148,17 +130,12 @@ update msg model =
         Msg.AddChildNodeToSelectedNode ->
             case model.selectedNodeId of
                 Just nodeId ->
-                    let
-                        newNode =
-                            createNode model
-                    in
-                        ( { model
-                            | tree = Node.appendChildById nodeId newNode model.tree
-                            , selectedNodeId = Just newNode.id
-                            , maxNodeId = model.maxNodeId + 1
-                          }
-                        , Cmd.none
-                        )
+                    ( { model
+                        | editedNodeData = createDefaultNodeData
+                        , state = Model.CreateNode
+                    }
+                    , Cmd.none
+                    )
 
                 Nothing ->
                     ( model, Cmd.none )

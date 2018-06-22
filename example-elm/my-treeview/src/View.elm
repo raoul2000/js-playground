@@ -11,10 +11,7 @@ import View.NodeView as NodeView exposing (renderSelectedNodeView)
 import View.Tree as Tree exposing (renderTreeInfo, renderTreeView)
 
 
-
-{-| Render the Node edit Form when the viewMode is FALSE and a node is selected
-Render the node information panel when viewMode is TRUE and a node is selected
-Render nothing otherwise
+{-| Render the Node edit Form depending on the model state and node selection
 -}
 renderRightPanel : Model -> Html Msg
 renderRightPanel model =
@@ -22,7 +19,7 @@ renderRightPanel model =
         Just nodeId ->
             case Node.findNodeById nodeId model.tree of
                 Just selectedNode ->
-                    if model.viewMode then
+                    if model.state == Model.Read then
                         NodeView.renderSelectedNodeView selectedNode
                     else
                         NodeForm.renderNodeEditForm model.editedNodeData model.validationErrors

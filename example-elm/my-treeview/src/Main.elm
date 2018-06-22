@@ -17,7 +17,7 @@ init =
     ( { tree = createSampleTree
       , selectedNodeId = Nothing
       , maxNodeId = 5
-      , viewMode = True
+      , state = Read
       , editedNodeData = Model.createDefaultNodeData
       , validationErrors = []
       }
