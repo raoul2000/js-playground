@@ -160,7 +160,7 @@ update msg model =
 
                 Nothing ->
                     ( model, Cmd.none )
-        {-| Expand/collapse a single node in the tree view
+        {--| Expand/collapse a single node in the tree view
         --}
         Msg.ToggleNodeView node ->
             ( { model

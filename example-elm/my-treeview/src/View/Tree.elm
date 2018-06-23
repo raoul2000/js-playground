@@ -59,11 +59,12 @@ renderNode model node =
                 ""
 
         hint =
-            if Validation.objectProperty node then
+            if Validation.validateNode node == Nothing then
+                text ""
+            else
                 span []
                     [ text "!" ]
-            else
-                text ""
+
     in
         li [ class (String.join " " [ selectionClassname, expandedClassname, childrenClassname ]) ]
             [ div
