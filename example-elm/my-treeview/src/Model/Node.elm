@@ -172,3 +172,7 @@ deleteNodeById nodeId parentNode =
                         |> List.filter (\node -> node.id /= nodeId)
                     )
         }
+
+createDefaultNodeView : NodeView
+createDefaultNodeView =
+    { expanded = True }

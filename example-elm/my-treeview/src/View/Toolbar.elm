@@ -20,7 +20,7 @@ renderToolbar model =
         , button
             [ onClick DeleteSelectedNode
             , class "btn btn-danger"
-            , disabled (model.state /= Model.Read || (model.selectedNodeId == Nothing))
+            , disabled (model.state /= Model.Read || (model.selectedNodeId == Nothing) || (model.selectedNodeId == Just "root"))
             ]
             [ text "Delete Node" ]
         , text " "

@@ -1,4 +1,4 @@
-module Model.NodeData exposing (NodeData, PropertyType(..), propertyTypeOptions, propertyTypeToValue, propertyTypeToText, valueToPropertyType)
+module Model.NodeData exposing (NodeData, PropertyType(..), propertyTypeOptions, propertyTypeToValue, propertyTypeToText, valueToPropertyType, createDefaultNodeData)
 
 
 type PropertyType
@@ -65,3 +65,11 @@ valueToPropertyType value =
         |> List.head
 
 
+createDefaultNodeData : NodeData
+createDefaultNodeData =
+    { propName = "property"
+    , selector = "selector"
+    , propType = RawText
+    , attributeName = "attribute name"
+    , isArray = False
+    }

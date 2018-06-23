@@ -44,3 +44,7 @@ table.node-view  th {
   cursor: pointer;
   text-align: center;
 }
+
+.treeview div.node-group {
+  display: inline;
+}

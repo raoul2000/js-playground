@@ -64,11 +64,12 @@ renderNode model node =
             else
                 span []
                     [ text "!" ]
-
     in
         li [ class (String.join " " [ selectionClassname, expandedClassname, childrenClassname ]) ]
             [ div
-                [ onClick (NodeSelection node) ]
+                [ class "node-group"
+                , onClick (NodeSelection node)
+                ]
                 [ renderNodeToggler node
                 , renderNodeLabel node
                 , hint

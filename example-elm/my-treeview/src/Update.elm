@@ -2,6 +2,7 @@ module Update exposing (update)
 
 import Model exposing (..)
 import Model.Node as Node
+import Model.NodeData as NodeData
 import Message as Msg
 import Update.Save as Save
 
@@ -131,7 +132,7 @@ update msg model =
             case model.selectedNodeId of
                 Just nodeId ->
                     ( { model
-                        | editedNodeData = createDefaultNodeData
+                        | editedNodeData = NodeData.createDefaultNodeData
                         , state = Model.CreateNode
                       }
                     , Cmd.none
@@ -162,6 +163,7 @@ update msg model =
                     ( model, Cmd.none )
         {--| Expand/collapse a single node in the tree view
         --}
+
         Msg.ToggleNodeView node ->
             ( { model
                 | tree = Node.updateNodeView node.id node.view model.tree
