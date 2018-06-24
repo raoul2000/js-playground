@@ -21,3 +21,4 @@ type Msg
     | CollapseAllNodes Bool
     | ChangePropertyTypeSelection (Maybe NodeData.PropertyType)
     | SendData
+    | EncodeModel

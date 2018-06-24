@@ -6,6 +6,7 @@ import Model.NodeData as NodeData
 import Message as Msg
 import Update.Save as Save
 import Port as Port
+import Encode exposing (encodeTree)
 
 
 update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
@@ -13,6 +14,9 @@ update msg model =
     case msg of
         Msg.NoOp ->
             ( model, Cmd.none )
+
+        Msg.EncodeModel -> 
+            ( model, Port.sendData (Encode.encodeTree model.tree))
 
         Msg.SendData ->
             ( model, Port.sendData "hello")

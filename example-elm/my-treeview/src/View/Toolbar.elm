@@ -47,4 +47,9 @@ renderToolbar model =
             , class "btn btn-light"
             ]
             [ text "Send" ]
+        , button
+            [ onClick (EncodeModel)
+            , class "btn btn-light"
+            ]
+            [ text "Encode" ]
         ]
