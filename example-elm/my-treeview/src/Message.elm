@@ -20,3 +20,4 @@ type Msg
     | ToggleNodeView Node.Node
     | CollapseAllNodes Bool
     | ChangePropertyTypeSelection (Maybe NodeData.PropertyType)
+    | SendData

@@ -5,6 +5,7 @@ import Model.Node as Node
 import Model.NodeData as NodeData
 import Message as Msg
 import Update.Save as Save
+import Port as Port
 
 
 update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
@@ -12,6 +13,9 @@ update msg model =
     case msg of
         Msg.NoOp ->
             ( model, Cmd.none )
+
+        Msg.SendData ->
+            ( model, Port.sendData "hello")
 
         Msg.EditNode node ->
             ( { model

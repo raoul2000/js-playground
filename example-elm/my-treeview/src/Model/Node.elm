@@ -142,6 +142,7 @@ updateNodeView nodeId nodeView rootNode =
         }
 
 
+
 collapseAllNodes : Bool -> Node -> Node
 collapseAllNodes collapse rootNode =
     { rootNode

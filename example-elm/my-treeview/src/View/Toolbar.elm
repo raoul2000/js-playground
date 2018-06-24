@@ -42,4 +42,9 @@ renderToolbar model =
             , disabled (model.state /= Model.Read)
             ]
             [ text "Expand All" ]
+        , button
+            [ onClick (SendData)
+            , class "btn btn-light"
+            ]
+            [ text "Send" ]
         ]
