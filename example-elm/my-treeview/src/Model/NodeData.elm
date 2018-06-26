@@ -9,11 +9,11 @@ type PropertyType
 
 
 type alias NodeData =
-    { propName : String
-    , selector : String
-    , propType : PropertyType
-    , attributeName : String
-    , isArray : Bool
+    { propName : String             -- propertyName for regular nodes or URL value for the root node
+    , selector : String             -- JQuery Selector to extract property value
+    , propType : PropertyType       -- property type (rawText, HtmlText,etc... )
+    , attributeName : String        -- only when propertyType is 'AttributeValue'
+    , isArray : Bool                -- Select only first matching or take them all ?
     }
 
 

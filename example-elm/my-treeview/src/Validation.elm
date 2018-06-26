@@ -2,6 +2,7 @@ module Validation exposing (..)
 
 
 import Model.Node as Node
+import Model.Tree as Tree
 import Model.NodeData as NodeData
 
 {--
@@ -68,8 +69,8 @@ unexpectedObjectDefinition node =
     node.data.propType /= NodeData.Object && (Node.hasChildren node) && node.id /= "0"
 
 
-validateNode : Node.Node -> Maybe String
-validateNode node =
+validateRegularNode : Node.Node -> Maybe String
+validateRegularNode node =
     if (missingObjectDefinition node) then
         Just """The type of this property is Object, 
         but you have not define any property for this object, so its not consistent.
@@ -81,3 +82,14 @@ validateNode node =
         """
     else
         Nothing
+
+validateRootNode : Node.Node -> Maybe String
+validateRootNode node =
+        Nothing
+
+validateNode : Node.Node -> Maybe String
+validateNode node =
+    if Tree.isRoot node then
+        validateRootNode node
+    else
+        validateRegularNode node

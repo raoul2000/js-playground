@@ -3,9 +3,11 @@ module View.NodeForm exposing (renderNodeEditForm)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Model.Node as Node
 import Model.NodeData as NodeData
+import Model.Tree as Tree
+import Model as Model exposing (State(..))
 import Message exposing (..)
-
 
 
 renderPropertyTypeOption : NodeData.PropertyType -> ( NodeData.PropertyType, String ) -> Html Msg
@@ -50,8 +52,8 @@ renderValidationErrors errors =
             ]
 
 
-renderNodeEditForm : NodeData.NodeData -> List String -> Html Msg
-renderNodeEditForm nodeData validationErrors =
+renderRegularNodeEditForm : NodeData.NodeData -> List String -> Html Msg
+renderRegularNodeEditForm nodeData validationErrors =
     Html.div []
         [ renderValidationErrors validationErrors
         , div [ class "form-group" ]
@@ -116,3 +118,44 @@ renderNodeEditForm nodeData validationErrors =
             ]
             [ text "Cancel" ]
         ]
+
+
+renderRootNodeEditForm : NodeData.NodeData -> List String -> Html Msg
+renderRootNodeEditForm nodeData validationErrors =
+    Html.div []
+        [ renderValidationErrors validationErrors
+        , div [ class "form-group" ]
+            [ label [ for "propName" ] [ text "URL" ]
+            , input
+                [ class "form-control"
+                , id "propName"
+                , type_ "text"
+                , value nodeData.propName
+                , placeholder "URL"
+                , onInput InputPropertyName
+                ]
+                []
+            ]
+        , button
+            [ class "btn btn-primary"
+            , onClick SaveEdit
+            ]
+            [ text "Save" ]
+        , button
+            [ class "btn btn-light"
+            , onClick CancelEdit
+            ]
+            [ text "Cancel" ]
+        ]
+
+{--
+Depending the intention, display a form or the other. 
+When the ROOT node is selected and we are on an Update operation, display the root node form, otherwise
+display the regular node form
+--}
+renderNodeEditForm : Model.State -> Node.Node -> NodeData.NodeData -> List String -> Html Msg
+renderNodeEditForm state node nodeData validationErrors =
+    if Tree.isRoot node && state == Model.UpdateNode then
+        renderRootNodeEditForm nodeData validationErrors
+    else
+        renderRegularNodeEditForm nodeData validationErrors

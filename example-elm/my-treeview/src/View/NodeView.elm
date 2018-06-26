@@ -5,10 +5,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model.Node as Node
 import Model.NodeData as NodeData
+import Model.Tree as Tree
 import Message exposing (..)
 import Validation exposing (..)
-
-
 
 
 renderWarningMissingChild : Node.Node -> Html Msg
@@ -22,8 +21,8 @@ renderWarningMissingChild node =
             div [] []
 
 
-renderSelectedNodeView : Node.Node -> Html Msg
-renderSelectedNodeView node =
+renderNodeView : Node.Node -> Html Msg
+renderNodeView node =
     div []
         [ h3 []
             [ text node.data.propName ]
@@ -50,7 +49,7 @@ renderSelectedNodeView node =
                         , td [] [ text node.data.attributeName ]
                         ]
                   else
-                    text "" 
+                    text ""
                 ]
             ]
         , hr [] []
@@ -60,3 +59,31 @@ renderSelectedNodeView node =
             ]
             [ text "Edit Property" ]
         ]
+
+
+renderRootNodeView : Node.Node -> Html Msg
+renderRootNodeView node =
+    div []
+        [ table [ class "table table-borderless table-hover table-sm node-view" ]
+            [ tbody []
+                [ tr []
+                    [ th [ scope "row" ] [ text "URL :" ]
+                    , td [] [ text node.data.propName ]
+                    ]
+                ]
+            ]
+        , hr [] []
+        , button
+            [ class "btn btn-primary"
+            , onClick (EditNode node)
+            ]
+            [ text "Edit" ]
+        ]
+
+
+renderSelectedNodeView : Node.Node -> Html Msg
+renderSelectedNodeView node =
+    if Tree.isRoot node then
+        renderRootNodeView node
+    else
+        renderNodeView node

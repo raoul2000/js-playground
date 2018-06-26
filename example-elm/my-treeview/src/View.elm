@@ -20,9 +20,11 @@ renderRightPanel model =
             case Node.findNodeById nodeId model.tree of
                 Just selectedNode ->
                     if model.state == Model.Read then
+                        -- the node view to display depends on the selected node : root or not root ?
                         NodeView.renderSelectedNodeView selectedNode
                     else
-                        NodeForm.renderNodeEditForm model.editedNodeData model.validationErrors
+                        -- the form to display depends on the state and on the selected node (see renderNodeEditForm)
+                        NodeForm.renderNodeEditForm model.state selectedNode model.editedNodeData model.validationErrors
 
                 Nothing ->
                     div [] [ text "select a node" ]
