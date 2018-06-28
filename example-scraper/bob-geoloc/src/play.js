@@ -59,10 +59,10 @@ function downloadImages(urls) {
   let downloadTasks = urls.map(imageURL => {
     return function (cb) {
       //let targetFilepath = path.join(os.tmpdir(),uuidv1());
-      let destinationFolderPath = os.tmpdir();
+      let destinationFilePath = path.join(os.tmpdir(),uuidv1() + ".jpg");
       download.image({
         "url": imageURL,
-        "dest": destinationFolderPath
+        "dest": destinationFilePath
       })
       .then(({ filename, image }) => {
         cb(null, {
@@ -158,3 +158,13 @@ function geolocalize(images) {
       console.log(JSON.stringify(image.exif.gps));
     });
 }
+
+
+
+function extractEXIFFromWebPage(options) {
+   return getImagesUrl(options.url, options.plan)
+    .then( normalizeUrl )
+    .then( downloadImages )
+    .then( extractExif );
+}
+exports.extractEXIFFromWebPage = extractEXIFFromWebPage;
