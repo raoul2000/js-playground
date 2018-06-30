@@ -5,9 +5,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline as JDP exposing (decode, required, optional, requiredAt, optionalAt)
-
 import Json.Encode exposing (encode, Value, string, int, float, bool, list, object)
 
+-- ERror : see https://github.com/elm/compiler/issues/1562
 -- MODEL
 
 
@@ -19,8 +19,12 @@ type Children
     = Children (List Node)
 
 
+type Color
+    = Red
+    | Green
 type alias Node =
     { id : NodeId
+    , color : Color
     , children : Children
     }
 
@@ -40,14 +44,20 @@ createNodeId model =
 
 createSampleTree : Node
 createSampleTree =
+    Node "0" Red (Children [] )
+
+createSampleTree1 : Node
+createSampleTree1 =
     Node "0"
+        Red
         (Children
-            [ Node "2" (Children [])
-            , Node "3" (Children [])
+            [ Node "2" Red (Children [])
+            , Node "3" Green (Children [])
             , Node "4"
+                Red
                 (Children
-                    [ Node "5" (Children [])
-                    , Node "6" (Children [])
+                    [ Node "5" Red (Children [])
+                    , Node "6" Green (Children [])
                     ]
                 )
             ]
@@ -77,15 +87,12 @@ init =
     ( initModel, Cmd.none )
 
 
-nodeidDecoder : Decoder NodeId
-nodeidDecoder =
-    succeed (toString Json.Decode.string)
-
 
 nodeDecoder : Decoder Node
 nodeDecoder =
     decode Node
         |> JDP.required "id" Json.Decode.string
+        |> JDP.required "color" colorDecoder
         |> JDP.required "children" childrenDecoder
 
 
@@ -94,16 +101,68 @@ childrenDecoder =
     Json.Decode.map Children (Json.Decode.list (Json.Decode.lazy (\_ -> nodeDecoder)))
 
 
+
+colorDecoder : Decoder Color
+colorDecoder =
+    Json.Decode.string
+        |> Json.Decode.andThen
+            (\str ->
+                case (stringToColor str) of
+                    Just color ->
+                        Json.Decode.succeed color
+
+                    Nothing ->
+                        Json.Decode.fail <| "Unknown theme: " ++ str
+            )
+
+
+
+
+
 nodeEncoder : Node -> Json.Encode.Value
-nodeEncoder node = 
-    Json.Encode.object 
-    [ ( "id", Json.Encode.string node.id)
-    , ( "children" , Json.Encode.list (List.map (\c -> nodeEncoder c) (childrenNodeList node.children) ))
-    ]
+nodeEncoder node =
+    Json.Encode.object
+        [ ( "id", Json.Encode.string node.id )
+        , ( "color", Json.Encode.string (colorToString node.color) )
+        , ( "children", Json.Encode.list (List.map (\c -> nodeEncoder c) (childrenNodeList node.children)) )
+        ]
+
+nodeidDecoder : Decoder NodeId
+nodeidDecoder =
+    succeed (toString Json.Decode.string)
+
 
 nodeToJson : Node -> String
 nodeToJson node =
     Json.Encode.encode 2 (nodeEncoder node)
+
+
+
+
+colorToString : Color -> String
+colorToString color =
+    case color of
+        Red ->
+            "red"
+
+        Green ->
+            "green"
+
+
+stringToColor : String -> Maybe Color
+stringToColor str =
+    case str of
+        "red" ->
+            Just Red
+
+        "green" ->
+            Just Green
+
+        other ->
+            Nothing
+
+
+
 -- MESSAGES
 
 
@@ -163,7 +222,7 @@ view model =
             [ text model.asString ]
         , ul [] [ renderNode model.tree ]
         , hr [] []
-        , pre [] [ text (nodeToJson model.tree)]
+        , pre [] [ text (nodeToJson model.tree) ]
         ]
 
 
@@ -211,7 +270,7 @@ subscriptions model =
 
 -- MAIN
 
-
+main : Program Never Model Msg
 main =
     program
         { init = init
