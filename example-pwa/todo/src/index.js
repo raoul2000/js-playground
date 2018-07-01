@@ -1,8 +1,7 @@
-import './style.css';
+'use strict';
 
-var Elm;
+require('./style.css');
+require('./index.html');
+var Elm = require('./Main.elm');
 
-console.log("loading index.js");
-document.addEventListener( 'DOMContentLoaded', function () {
-    let app = Elm.Main.embed(document.getElementById("root"));
-}, false );        
+Elm.Main.embed(document.getElementById('main'));
