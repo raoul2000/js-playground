@@ -3,16 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-
-
-type alias Task =
-    { name : String, completed : Bool }
-
-
-type alias TaskList =
-    { list : List Task
-    , newTaskName : String
-    }
+import Model.Task as Task exposing (Task, TaskList)
 
 
 type Msg
@@ -24,7 +15,7 @@ type Msg
     | DeleteCompletedTasks
 
 
-init : ( TaskList, Cmd Msg )
+init : ( Task.TaskList, Cmd Msg )
 init =
     ( { list =
             [ Task "buy milk" True
@@ -36,7 +27,7 @@ init =
     )
 
 
-update : Msg -> TaskList -> ( TaskList, Cmd Msg )
+update : Msg -> Task.TaskList -> ( Task.TaskList, Cmd Msg )
 update msg model =
     case msg of
         None ->
@@ -133,7 +124,7 @@ uncompletedStyle =
         [ ( "color", "inherit" ) ]
 
 
-view : TaskList -> Html Msg
+view : Task.TaskList -> Html Msg
 view taskList =
     div [ appWrapperStyle ]
         [ h1 [] [ text "task list" ]
@@ -151,7 +142,7 @@ view taskList =
         ]
 
 
-validateNewTask : TaskList -> Html Msg
+validateNewTask : Task.TaskList -> Html Msg
 validateNewTask taskList =
     if taskNameAlreadyExist taskList.newTaskName taskList then
         span [] [ text "task name already exists" ]
@@ -159,12 +150,12 @@ validateNewTask taskList =
         span [] []
 
 
-taskNameAlreadyExist : String -> TaskList -> Bool
+taskNameAlreadyExist : String -> Task.TaskList -> Bool
 taskNameAlreadyExist newTaskName taskList =
     not (List.length (List.filter (\task -> task.name == newTaskName) taskList.list) == 0)
 
 
-renderTaskList : TaskList -> Html Msg
+renderTaskList : Task.TaskList -> Html Msg
 renderTaskList taskList =
     ul [ listStyle ]
         (List.map renderSingleTask taskList.list)
@@ -195,11 +186,11 @@ renderSingleTask task =
         ]
 
 
-subscriptions : TaskList -> Sub Msg
+subscriptions : Task.TaskList -> Sub Msg
 subscriptions model =
     Sub.none
 
-
+main : Program Never TaskList Msg
 main =
     Html.program
         { init = init
