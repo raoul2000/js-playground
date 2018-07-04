@@ -1,10 +1,4 @@
-module Model.Task exposing (Task,TaskList)
+module Model.Task exposing (Task)
 
 type alias Task =
     { name : String, completed : Bool }
-
-
-type alias TaskList =
-    { list : List Task
-    , newTaskName : String
-    }

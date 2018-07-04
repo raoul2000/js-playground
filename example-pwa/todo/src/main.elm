@@ -3,7 +3,19 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-import Model.Task as Task exposing (Task, TaskList)
+import Model.Task as Task exposing (Task)
+import Material
+import Material.Scheme
+import Material.Button as Button
+import Material.Options as Options exposing (css)
+import Material.Toggles as Toggles
+
+
+type alias Model =
+    { list : List Task
+    , newTaskName : String
+    , mdl : Material.Model
+    }
 
 
 type Msg
@@ -13,21 +25,25 @@ type Msg
     | ToggleTaskComplete String
     | DeleteTask String
     | DeleteCompletedTasks
+    | Mdl (Material.Msg Msg)
 
+type alias Mdl =
+    Material.Model
 
-init : ( Task.TaskList, Cmd Msg )
+init : ( Model, Cmd Msg )
 init =
     ( { list =
             [ Task "buy milk" True
             , Task "buy bread" False
             ]
       , newTaskName = ""
+      , mdl = Material.model
       }
     , Cmd.none
     )
 
 
-update : Msg -> Task.TaskList -> ( Task.TaskList, Cmd Msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         None ->
@@ -83,6 +99,10 @@ update msg model =
             , Cmd.none
             )
 
+        -- Boilerplate: Mdl action handler.
+        Mdl msg_ ->
+            Material.update Mdl msg_ model            
+
 
 
 -- view
@@ -124,25 +144,33 @@ uncompletedStyle =
         [ ( "color", "inherit" ) ]
 
 
-view : Task.TaskList -> Html Msg
-view taskList =
+view : Model -> Html Msg
+view model =
     div [ appWrapperStyle ]
         [ h1 [] [ text "task list" ]
         , hr [] []
         , button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks" ]
-        , renderTaskList taskList
+        , renderTaskList model
         , input
             [ placeholder "task name"
-            , value taskList.newTaskName
+            , value model.newTaskName
             , onInput UpdateNewTaskName
             ]
             []
         , button [ onClick AddTask ] [ text "new task" ]
-        , div [] [ validateNewTask taskList ]
+        , Button.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Options.onClick AddTask
+            , css "margin" "0 24px"
+            ]
+            [ text "new Task" ]
+        , div [] [ validateNewTask model ]
         ]
+        |> Material.Scheme.top
 
 
-validateNewTask : Task.TaskList -> Html Msg
+validateNewTask : Model -> Html Msg
 validateNewTask taskList =
     if taskNameAlreadyExist taskList.newTaskName taskList then
         span [] [ text "task name already exists" ]
@@ -150,19 +178,19 @@ validateNewTask taskList =
         span [] []
 
 
-taskNameAlreadyExist : String -> Task.TaskList -> Bool
+taskNameAlreadyExist : String -> Model -> Bool
 taskNameAlreadyExist newTaskName taskList =
     not (List.length (List.filter (\task -> task.name == newTaskName) taskList.list) == 0)
 
 
-renderTaskList : Task.TaskList -> Html Msg
-renderTaskList taskList =
+renderTaskList : Model -> Html Msg
+renderTaskList model =
     ul [ listStyle ]
-        (List.map renderSingleTask taskList.list)
+        (List.map (renderSingleTask model) model.list)
 
 
-renderSingleTask : Task -> Html Msg
-renderSingleTask task =
+renderSingleTask : Model -> Task -> Html Msg
+renderSingleTask model task =
     li
         [ listItemStyle
         , classList
@@ -175,6 +203,12 @@ renderSingleTask task =
             , onClick (ToggleTaskComplete task.name)
             ]
             []
+        , Toggles.switch Mdl [0] model.mdl
+            [ Options.onToggle (ToggleTaskComplete task.name)
+            , Toggles.ripple
+            , Toggles.value task.completed
+            ]
+            [ text task.name ]
         , span
             [ if task.completed then
                 completedStyle
@@ -186,11 +220,12 @@ renderSingleTask task =
         ]
 
 
-subscriptions : Task.TaskList -> Sub Msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
-main : Program Never TaskList Msg
+
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
