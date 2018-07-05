@@ -7,8 +7,11 @@ import Model.Task as Task exposing (Task)
 import Material
 import Material.Scheme
 import Material.Button as Button
-import Material.Options as Options exposing (css)
 import Material.Toggles as Toggles
+import Material.Textfield as Textfield
+import Material.List as Lists
+import Material.Typography as Typo
+import Material.Options as Options
 
 
 type alias Model =
@@ -27,8 +30,10 @@ type Msg
     | DeleteCompletedTasks
     | Mdl (Material.Msg Msg)
 
+
 type alias Mdl =
     Material.Model
+
 
 init : ( Model, Cmd Msg )
 init =
@@ -64,7 +69,7 @@ update msg model =
                 model
               else
                 { model
-                    | list = List.append model.list [ Task model.newTaskName False ]
+                    | list = [ Task model.newTaskName False ] ++ model.list
                     , newTaskName = ""
                 }
             , Cmd.none
@@ -101,7 +106,7 @@ update msg model =
 
         -- Boilerplate: Mdl action handler.
         Mdl msg_ ->
-            Material.update Mdl msg_ model            
+            Material.update Mdl msg_ model
 
 
 
@@ -144,28 +149,37 @@ uncompletedStyle =
         [ ( "color", "inherit" ) ]
 
 
+renderNewTaskForm : Model -> Html Msg
+renderNewTaskForm model =
+    div []
+        [ Textfield.render Mdl
+            [ 2 ]
+            model.mdl
+            [ Textfield.label "Enter a New Task"
+            , Textfield.floatingLabel
+            , Textfield.value model.newTaskName
+            , Options.onInput UpdateNewTaskName
+            ]
+            []
+        , Button.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Options.onClick AddTask
+            , Options.css "margin" "0 24px"
+            ]
+            [ text "Add" ]
+        , div [] [ validateNewTask model ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div [ appWrapperStyle ]
         [ h1 [] [ text "task list" ]
         , hr [] []
         , button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks" ]
+        , renderNewTaskForm model
         , renderTaskList model
-        , input
-            [ placeholder "task name"
-            , value model.newTaskName
-            , onInput UpdateNewTaskName
-            ]
-            []
-        , button [ onClick AddTask ] [ text "new task" ]
-        , Button.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Options.onClick AddTask
-            , css "margin" "0 24px"
-            ]
-            [ text "new Task" ]
-        , div [] [ validateNewTask model ]
         ]
         |> Material.Scheme.top
 
@@ -185,38 +199,37 @@ taskNameAlreadyExist newTaskName taskList =
 
 renderTaskList : Model -> Html Msg
 renderTaskList model =
-    ul [ listStyle ]
-        (List.map (renderSingleTask model) model.list)
+    Lists.ul []
+        (List.indexedMap (\index item -> renderSingleTask index model item) model.list)
 
 
-renderSingleTask : Model -> Task -> Html Msg
-renderSingleTask model task =
-    li
-        [ listItemStyle
-        , classList
-            [ ( "completed", task.completed )
+renderSingleTask : Int -> Model -> Task -> Html Msg
+renderSingleTask index model task =
+    Lists.li
+        []
+        [ Lists.content []
+            [ Lists.avatarIcon "turned_in" []
+            , span
+                [ if task.completed then
+                    completedStyle
+                  else
+                    uncompletedStyle
+                ]
+                [ Options.styled p
+                    [ Typo.headline ]
+                    [ text task.name ]
+                ]
             ]
-        ]
-        [ input
-            [ type_ "checkbox"
-            , checked task.completed
-            , onClick (ToggleTaskComplete task.name)
+        , Lists.content2 []
+            [ Toggles.switch Mdl
+                [ index ]
+                model.mdl
+                [ Options.onToggle (ToggleTaskComplete task.name)
+                , Toggles.ripple
+                , Toggles.value task.completed
+                ]
+                []
             ]
-            []
-        , Toggles.switch Mdl [0] model.mdl
-            [ Options.onToggle (ToggleTaskComplete task.name)
-            , Toggles.ripple
-            , Toggles.value task.completed
-            ]
-            [ text task.name ]
-        , span
-            [ if task.completed then
-                completedStyle
-              else
-                uncompletedStyle
-            ]
-            [ text (task.name ++ " ") ]
-        , button [ onClick (DeleteTask task.name) ] [ text "delete" ]
         ]
 
 
