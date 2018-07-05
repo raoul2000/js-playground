@@ -4,9 +4,8 @@
   "description": "my first PWA",
   "private": true,
   "scripts": {
-    "build": "webpack --mode production",
-    "build:elm": "elm-make ./src/main.elm --output=./dist/elm.js --debug",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "start": "webpack-dev-server --open"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +16,8 @@
     "file-loader": "^1.1.11",
     "style-loader": "^0.21.0",
     "webpack": "^4.14.0",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.3"
   }
 }

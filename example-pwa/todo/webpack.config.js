@@ -1,6 +1,18 @@
 const path = require('path');
+const merge = require('webpack-merge');
 
-module.exports = {
+
+
+let filename = "main.js";
+let MODE = "development";
+
+let common = {
+  mode: MODE,
+  entry: "./src/index.js",
+  output: {
+    path: path.join(__dirname, "dist"),
+    filename: filename
+  },
   module: {
     rules: [
       {
@@ -14,7 +26,7 @@ module.exports = {
           'style-loader',
           'css-loader'
         ]
-      },      
+      },
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
@@ -27,4 +39,15 @@ module.exports = {
         }
       }]
   }
-};
+}
+
+if( MODE == "development") {
+  console.log("Building for dev...");
+  module.exports = merge(common , {
+    devServer: {
+      contentBase: './dist'
+    }
+  });
+} else if (MODE == "production") {
+  console.log("Building for prod...");
+}
