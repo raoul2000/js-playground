@@ -12,6 +12,7 @@ import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Typography as Typo
 import Material.Options as Options
+import Material.Layout as Layout
 
 
 type alias Model =
@@ -174,8 +175,28 @@ renderNewTaskForm model =
 
 view : Model -> Html Msg
 view model =
+    Layout.render Mdl
+        model.mdl
+        [ Layout.fixedHeader
+        ]
+        { header = [ h4 [] [ text "Stuff To Do !" ]  ]
+        , drawer = []
+        , tabs = ( [], [] )
+        , main =
+            [ div [ appWrapperStyle ]
+                [ button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks" ]
+                , renderNewTaskForm model
+                , renderTaskList model
+                ]
+            ]
+        }
+        |> Material.Scheme.top
+
+
+view1 : Model -> Html Msg
+view1 model =
     div [ appWrapperStyle ]
-        [ h1 [] [ text "task list" ]
+        [ h1 [] [ text "Stuff To Do !" ]
         , hr [] []
         , button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks" ]
         , renderNewTaskForm model
@@ -226,7 +247,7 @@ renderSingleTask index model task =
                 model.mdl
                 [ Options.onToggle (ToggleTaskComplete task.name)
                 , Toggles.ripple
-                , Toggles.value task.completed
+                , Toggles.value (not task.completed)
                 ]
                 []
             ]
