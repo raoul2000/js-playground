@@ -5,6 +5,7 @@ const merge = require('webpack-merge');
 
 let filename = "main.js";
 let MODE = "development";
+//let MODE = "production";
 
 let common = {
   mode: MODE,
@@ -50,4 +51,5 @@ if( MODE == "development") {
   });
 } else if (MODE == "production") {
   console.log("Building for prod...");
+  module.exports = common;
 }
