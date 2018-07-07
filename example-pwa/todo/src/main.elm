@@ -9,6 +9,9 @@ import Material
 import Material.Scheme
 import Material.List as Lists
 import Material.Layout as Layout
+import Material.Grid exposing (..)
+import Material.Button as Button
+import Material.Options as Options
 
 
 type alias Mdl =
@@ -93,22 +96,44 @@ update msg model =
 -- view
 
 
+mainGrid : Model -> Html Msg
+mainGrid model =
+    grid []
+        [ cell [ size All 12 ]
+            [ renderNewTaskForm model ]
+        , cell [ size All 12 ]
+            [ Button.render Mdl
+                [ 0 ]
+                model.mdl
+                [ Options.onClick DeleteCompletedTasks
+                , Options.css "margin" "0 24px"
+                ]
+                [ text "delete completed tasks" ]
+            ]
+        , cell [ size All 12 ]
+            [ renderTaskList model
+            ]
+        ]
+
+
+headerGrid : Model -> Html Msg
+headerGrid model =
+    grid []
+        [ cell [ size All 12 ]
+            [ h4 [] [ text "Stuff To Do !" ] ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     Layout.render Mdl
         model.mdl
         [ Layout.fixedHeader
         ]
-        { header = [ h4 [] [ text "Stuff To Do !" ] ]
+        { header = [ headerGrid model ]
         , drawer = []
         , tabs = ( [], [] )
-        , main =
-            [ div []
-                [ button [ onClick DeleteCompletedTasks ] [ text "delete completed tasks" ]
-                , renderNewTaskForm model
-                , renderTaskList model
-                ]
-            ]
+        , main = [ mainGrid model ]
         }
         |> Material.Scheme.top
 
