@@ -13,6 +13,7 @@ import Material.List as Lists
 import Material.Typography as Typo
 import Material.Options as Options
 import Material.Layout as Layout
+import Material.Grid exposing (..)
 
 
 type alias Model =
