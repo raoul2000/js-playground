@@ -1,7 +1,4 @@
 'use strict';
-/*
-eslint space-before-function-paren:"off"
-*/
 
 const cacheName = 'myApp-v3';
 const dataCacheName = 'myAppData-v3';
@@ -11,7 +8,7 @@ let filesToCache = [
     '/',
     '/index.html',
     '/app.js',
-    '/avatar.png',
+    '/images/avatar.png',
     '/style.css',
 ];
 
