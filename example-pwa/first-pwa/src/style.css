@@ -1,0 +1,9 @@
+img.avatar {
+    float: left;
+    width: 50px;
+}
+
+.users {
+    padding: 4px;
+    margin: 4px;
+}

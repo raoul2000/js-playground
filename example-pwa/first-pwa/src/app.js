@@ -1,6 +1,6 @@
 'use strict';
 
-/*
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('./service-worker.js')
@@ -8,16 +8,16 @@ if ('serviceWorker' in navigator) {
       console.log('Service Worker Registered');
     });
 }
-*/
+
 
 /**
  * render HTML for a single post
- * @param {object} postData data describing a post
+ * @param {object} userData data describing a post
  * @return {string} the HTML
  */
-function renderPost(postData) {
-  return `<div class="post">
-    <h2>${postData.title}</h2>
+function renderSingleUser(userData) {
+  return `<div class="user">
+    <span>${userData.name.title} ${userData.name.first} ${userData.name.last}</span>
   </div>`;
 }
 
@@ -26,24 +26,43 @@ function renderPost(postData) {
  * @param {array} postList list of posts
  * @param {HTMLElement} parent the parent element
  */
-function renderPostList(postList, parent) {
-  parent.innerHtml = postList.map( (postData) => renderPost).join(' ');
+function renderUserList(postList, parent) {
+  parent.innerHTML = postList.map(renderSingleUser).join(' ');
 }
 
 /**
- * Loads the list of posts
+ * Loads the list of users
  */
 function loadPost() {
-  console.log('loading posts...');
-  fetch('https://jsonplaceholder.typicode.com/posts')
-  .then((response) => {
-    console.log(response);
-    return response.json();
-  })
-  .then( (data) => {
-    console.log(data);
-    renderPostList(data, document.getElementById('post-list'));
-  });
+  console.log('loading users...');
+
+  let userListUrl = 'https://randomuser.me/api/?results=5';
+
+  if ('caches' in window) {
+    /*
+    * Check if the service worker has already cached this city's weather
+    * data. If the service worker has the data, then display the cached
+    * data while the app fetches the latest data.
+    */
+    caches.match(userListUrl).then(function(response) {
+      if (response) {
+        response.json().then(function updateFromCache(json) {
+          renderUserList(json.results, document.getElementById('user-list'));
+        });
+      }
+    });
+  }
+
+  fetch(userListUrl)
+    .then((response) => {
+      console.log(response);
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      renderUserList(data.results, document.getElementById('user-list'));
+    });
 }
+
 console.log('starting');
 loadPost();
