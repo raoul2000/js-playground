@@ -51,14 +51,6 @@
 `;
   }
 
-  function renderSingleUser_v1(userData) {
-    return `<div class="user">
-    <span>${userData.name.title} 
-      ${userData.name.first} 
-      ${userData.name.last}</span>
-  </div>`;
-  }
-
   /**
    * renders the list of posts
    * @param {array} postList list of posts
@@ -77,12 +69,7 @@
     let userListUrl = 'https://randomuser.me/api/?results=5';
 
     if ('caches' in window) {
-      /*
-      * Check if the service worker has already cached this city's weather
-      * data. If the service worker has the data, then display the cached
-      * data while the app fetches the latest data.
-      */
-      console.log('trying to load userlist rom CACHE ..');
+      console.log('trying to load userlist from CACHE ..');
       caches.match(userListUrl).then(function (response) {
         if (response) {
           console.log('userlist available in CACHE : rendering now ...');
@@ -93,7 +80,7 @@
       });
     }
 
-    console.log('trying to get userList from NETWORK');
+    console.log('trying to get Fresh userList from NETWORK');
     fetch(userListUrl)
       .then((response) => {
         return response.json();
