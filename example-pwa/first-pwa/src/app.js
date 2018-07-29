@@ -29,6 +29,29 @@
    * @return {string} the HTML
    */
   function renderSingleUser(userData) {
+    return `
+<li class="user-item">
+    <div class="avatar">
+        <img src="${userData.picture.large}" alt="avatar">
+    </div>
+    <div class="user-info">
+        <div class="title"> ${userData.name.title} ${userData.name.first} ${userData.name.last} </div>
+        <ul>
+            <li class="email">
+                <span class="field-name">email</span>
+                <span class="field-value">${userData.email} </span>
+            </li>
+            <li class="age">
+                <span class="field-name">age</span>
+                <span class="field-value">${userData.dob.age} </span>
+            </li>
+        </ul>
+    </div>
+</li>
+`;
+  }
+
+  function renderSingleUser_v1(userData) {
     return `<div class="user">
     <span>${userData.name.title} 
       ${userData.name.first} 
