@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  'use strict';
 
   let app = {
     'ui': {
@@ -73,7 +72,7 @@
       caches.match(userListUrl).then(function (response) {
         if (response) {
           console.log('userlist available in CACHE : rendering now ...');
-          response.json().then(function updateFromCache(json) {
+          response.json().then( (json) => {
             renderUserList(json.results, app.ui.userListContainer);
           });
         }
