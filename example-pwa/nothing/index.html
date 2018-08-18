@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images//favicon-16x16.png">
+    <link rel="mask-icon" href="/images//safari-pinned-tab.svg" color="#729eaa">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="manifest" href="/manifest.json">
+    <title>Nothing</title>
+</head>
+
+<body>
+    <p>Simply nothing ..</p>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            console.log("DOMContentLoaded");
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                    .register('./sw.js')
+                    .then(function () {
+                    console.log('Service Worker Registered');
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
