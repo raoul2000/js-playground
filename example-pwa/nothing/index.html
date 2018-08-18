@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Does nothing, but does it well.">
 
+    <link rel="canonical" href="https://pwa-nothing.ass-team.fr/" />
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images//favicon-16x16.png">
@@ -15,10 +17,19 @@
 
     <link rel="manifest" href="/manifest.json">
     <title>Nothing</title>
+    <style>
+        #install {
+            float:right;
+        }
+        #install:disabled {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
-    <p>Simply nothing ..</p>
+    <button id="install" disabled="disabled">Install</button>
+    <p>Simply nothing ..!</p>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             console.log("DOMContentLoaded");
@@ -26,9 +37,32 @@
                 navigator.serviceWorker
                     .register('./sw.js')
                     .then(function () {
-                    console.log('Service Worker Registered');
+                    console.log('Service Worker Registered For Nothing');
                 });
             }
+
+            var installPromptEvent;
+            var btnInstall = document.querySelector('#install');
+
+            window.addEventListener('beforeinstallprompt', function (event) {
+                event.preventDefault();
+                installPromptEvent = event;
+                btnInstall.removeAttribute('disabled');
+            });
+
+            btnInstall.addEventListener('click', function () {
+                btnInstall.setAttribute('disabled', '');
+                installPromptEvent.prompt();
+                installPromptEvent.userChoice.then((choice) => {
+                    if (choice.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                    installPromptEvent = null;
+                });
+            });
+
         });
     </script>
 </body>
