@@ -1,5 +1,3 @@
-console.log('loading app.js');
-
 var app = {
     installPromptEvent : null,
     btnInstall : null,
@@ -14,6 +12,19 @@ var app = {
         this.registerCustomInstaller();
         this.installRandomImage();
     },
+    /**
+     * based on https://developers.google.com/web/fundamentals/app-install-banners/#detect-mode
+     */
+    isRunningStandalone : function(){
+        if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+            return true;
+        } else if (window.navigator.standalone === true) {
+            // safari
+            return true;
+        } else {
+            return false;
+        }
+    },
     log : function(msg) {
         console.log(msg);
         var newEntry = document.createElement('div');
@@ -26,12 +37,25 @@ var app = {
             this.logger.appendChild(newEntry);
         }
     },
+    /**
+     * Install Event handler so to display random image when user click
+     * on the refresh button
+     */
     installRandomImage : function() {
+        var img = document.querySelector('#random-image > img');
+        var that = this;
+        img.addEventListener('error',function() {
+            that.log('failed to load image');
+        });
         document.querySelector("#random-image > button").addEventListener('click', function(ev) {
-            var img = document.querySelector('#random-image > img');
-            img.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
+            
+            img.setAttribute('src',"https://xxxxpicsum.photos/500/500/?random?_="+Math.random());
         });
     },
+    /**
+     * Register Service Worker.
+     * This is required for PWA
+     */
     registerServiceWorker : function() {
         var that = this;
         this.log('trying to register ServiceWorker');
@@ -45,7 +69,11 @@ var app = {
         }    
     },
     registerCustomInstaller : function() {
-        this.log('installing custom install handler');
+        if( this.isRunningStandalone() === true) {
+            this.log("running in standalone mode : I'm not going to setup a custom A2HS handler");
+            return;
+        }
+        this.log('installing custom A2HS handler');
         var that = this;
 
         window.addEventListener('appinstalled', function()  {
