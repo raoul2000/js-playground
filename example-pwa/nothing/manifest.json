@@ -1,8 +1,9 @@
 {
     "name": "The Nothing App",
     "short_name": "Nothing",
-    "theme_color": "#2196f3",
-    "background_color": "#2196f3",
+    "description" : "This App does nothing, but it does it well.",
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
     "display": "standalone",
     "Scope": "/",
     "start_url": "/",
