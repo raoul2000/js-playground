@@ -14,56 +14,20 @@
     <link rel="mask-icon" href="/images//safari-pinned-tab.svg" color="#729eaa">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-
+    
+    <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
+    
     <title>Nothing</title>
-    <style>
-        #install {
-            float:right;
-        }
-        #install:disabled {
-            display: none;
-        }
-    </style>
 </head>
 
 <body>
     <button id="install" disabled="disabled">Install</button>
-    <p>Simply nothing ..!</p>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            console.log("DOMContentLoaded");
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker
-                    .register('./sw.js')
-                    .then(function () {
-                    console.log('Service Worker Registered For Nothing');
-                });
-            }
-
-            var installPromptEvent;
-            var btnInstall = document.querySelector('#install');
-
-            window.addEventListener('beforeinstallprompt', function (event) {
-                event.preventDefault();
-                installPromptEvent = event;
-                btnInstall.removeAttribute('disabled');
-            });
-
-            btnInstall.addEventListener('click', function () {
-                btnInstall.setAttribute('disabled', '');
-                installPromptEvent.prompt();
-                installPromptEvent.userChoice.then((choice) => {
-                    if (choice.outcome === 'accepted') {
-                        console.log('User accepted the A2HS prompt');
-                    } else {
-                        console.log('User dismissed the A2HS prompt');
-                    }
-                    installPromptEvent = null;
-                });
-            });
-
-        });
+    <p id="nothing" title="version 0.0.4">Simply nothing ..!!</p>
+    
+    <script src="/app.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', app.run.bind(app));
     </script>
 </body>
 

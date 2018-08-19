@@ -1,4 +1,4 @@
-const version = "0.0.04";
+const version = "0.0.5";
 const cacheName = `nothing-${version}`;
 
 
@@ -7,7 +7,9 @@ self.addEventListener('install', e => {
         caches.open(cacheName).then(cache => {
             return cache.addAll([
                 `/`,
-                `/index.html`
+                `/index.html`,
+                `/style.css`,
+                `/app.js`
             ]).then(() => self.skipWaiting());
         })
     );
