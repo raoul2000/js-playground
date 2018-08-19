@@ -12,6 +12,7 @@ var app = {
         this.btnInstall = document.querySelector('#install');
         this.registerServiceWorker();
         this.registerCustomInstaller();
+        this.installRandomImage();
     },
     log : function(msg) {
         console.log(msg);
@@ -24,6 +25,12 @@ var app = {
         } else {
             this.logger.appendChild(newEntry);
         }
+    },
+    installRandomImage : function() {
+        document.querySelector("#random-image > button").addEventListener('click', function(ev) {
+            var img = document.querySelector('#random-image > img');
+            img.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
+        });
     },
     registerServiceWorker : function() {
         var that = this;
@@ -40,6 +47,11 @@ var app = {
     registerCustomInstaller : function() {
         this.log('installing custom install handler');
         var that = this;
+
+        window.addEventListener('appinstalled', function()  {
+            that.log('Great !! Nothing has been successfully added to the home screen');
+          });
+          
         window.addEventListener('beforeinstallprompt', function (event) {
             event.preventDefault();
             that.installPromptEvent = event;
