@@ -2,6 +2,10 @@ var app = {
     installPromptEvent : null,
     btnInstall : null,
     logger:null,
+    /**
+     * Start the app.
+     * This is the app entry point in charge of installing handlers
+     */
     run : function() {
         console.log('running App');
         this.logger = document.querySelector('#logger');
@@ -25,6 +29,9 @@ var app = {
             return false;
         }
     },
+    /**
+     * Add a new log message into the page
+     */
     log : function(msg) {
         console.log(msg);
         var newEntry = document.createElement('div');
@@ -46,10 +53,10 @@ var app = {
         var that = this;
         img.addEventListener('error',function() {
             that.log('failed to load image');
+            img.setAttribute('src',"/images/404.png");
         });
         document.querySelector("#random-image > button").addEventListener('click', function(ev) {
-            
-            img.setAttribute('src',"https://xxxxpicsum.photos/500/500/?random?_="+Math.random());
+            img.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
         });
     },
     /**
@@ -68,6 +75,9 @@ var app = {
             });
         }    
     },
+    /**
+     * Register behavior for the A2HS (Add 2 HomeScreen) feature
+     */
     registerCustomInstaller : function() {
         if( this.isRunningStandalone() === true) {
             this.log("running in standalone mode : I'm not going to setup a custom A2HS handler");

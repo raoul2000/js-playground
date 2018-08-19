@@ -9,7 +9,8 @@ self.addEventListener('install', e => {
                 `/`,
                 `/index.html`,
                 `/style.css`,
-                `/app.js`
+                `/app.js`,
+                '/images/404.png'
             ]).then(() => self.skipWaiting());
         })
     );
