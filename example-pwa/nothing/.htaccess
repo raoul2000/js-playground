@@ -1,0 +1,4 @@
+
+RewriteEngine On 
+RewriteCond %{SERVER_PORT} 80 
+RewriteRule ^(.*)$ https://pwa-nothing.ass-team.fr/$1 [R,L]

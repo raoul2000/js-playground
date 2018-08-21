@@ -13,10 +13,10 @@ let filesToCache = [
     '/style.css',
 ];
 
-self.addEventListener('install', function (e) {
+self.addEventListener('install', (e) => {
     console.log('[ServiceWorker] Install');
     e.waitUntil(
-        caches.open(cacheName).then(function (cache) {
+        caches.open(cacheName).then( (cache) => {
             console.log('[ServiceWorker] Caching app shell');
             return cache.addAll(filesToCache);
         })
@@ -26,7 +26,7 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
     console.log(`[ServiceWorker] Activate - cacheName = ${cacheName}`);
     e.waitUntil(
-        caches.keys().then(function (keyList) {
+        caches.keys().then( (keyList) => {
             return Promise.all(keyList.map(function (key) {
                 console.log(`key : ${key}`);
                 if (key !== cacheName && key !== dataCacheName) {
@@ -43,52 +43,48 @@ self.addEventListener('fetch', function (e) {
     console.log('[ServiceWorker] Fetch', e.request.url);
 
     if (e.request.url.startsWith(avatarUrl)) {
-        console.log('[ServiceWorker] avatar files');
+        console.log(`[ServiceWorker] avatar req ${e.request.url}`);
         e.respondWith(
-            caches.open('avatar').then((avatarCache) => {
-                avatarCache.match(e.request)
-                    .then((response) => {
-                        if (!response) {
-                            return fetch(e.request)
-                                .then((response) => {
-                                    avatarCache.put(e.request, response.clone());
-                                    return response;
-                                });
-                        } else {
+            caches.open(dataCacheName).then( (cache) => {
+                return cache.match(e.request.url).then( (response) => {
+                    if (response) {
+                        return response;
+                    } else {
+                        return fetch(e.request).then(function (response) {
+                            cache.put(e.request.url, response.clone());
                             return response;
-                        }
-                    });
+                        });
+                    }
+                });
             })
         );
-        /*
-                e.respondWith(
-                    caches
-                        .match(e.request)
-                        .then( (response) => {
-                            return response;
-                        })
-                        .catch( () => {
-                            return fetch(e.request).then(function (response) {
-                                cache.put(e.request.url, response.clone());
-                                return response;
-                            });
-                        })
-                    );
-                       */
     } else if (e.request.url.startsWith(dataUrl)) {
         /*
          * When the request URL contains dataUrl, the app is asking for fresh
-         * weather data. In this case, the service worker always goes to the
+         * data. In this case, the service worker always goes to the
          * network and then caches the response. This is called the "Cache then
          * network" strategy:
          * https://jakearchibald.com/2014/offline-cookbook/#cache-then-network
          */
         console.log('[ServiceWorker] data request : network first');
         e.respondWith(
-            caches.open(dataCacheName).then(function (cache) {
-                return fetch(e.request).then(function (response) {
-                    cache.put(e.request.url, response.clone());
-                    return response;
+            caches.open(dataCacheName).then( (cache) => {
+                return fetch(e.request).then( (response) => {
+
+                    cache.keys().then(function(keys) {
+                        console.log(`SW : deleting cache ${dataCacheName} - ${keys.length} keys`);
+                        return Promise.all(
+                            keys.map( (requestKey) => {
+                                console.log(`SW : deleting cache Keu ${requestKey.url}`);
+                                return cache.delete(requestKey);
+                            })
+                        );
+                    })
+                    .then( () => {
+                        console.log(`SW : adding current response to cache`);
+                        cache.put(e.request.url, response.clone());
+                        return response;
+                    });
                 });
             })
         );

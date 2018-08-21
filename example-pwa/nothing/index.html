@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Does nothing, but does it well.">
+
+    <link rel="canonical" href="https://pwa-nothing.ass-team.fr/" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images//favicon-16x16.png">
+    <link rel="mask-icon" href="/images//safari-pinned-tab.svg" color="#729eaa">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="manifest" href="/manifest.json">
+    
+    <title>Nothing</title>
+</head>
+
+<body>
+    <button id="install" disabled="disabled">Install</button>
+    <p id="nothing" title="version 0.0.4">Simply nothing ..!!</p>
+    <div id="random-image">
+        <img  src="https://picsum.photos/500/500/?random" alt="">
+        <button>show me a new image !</button>
+    </div>
+    <div id="logger">
+    </div>
+    
+    <script src="/app.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', app.run.bind(app));
+    </script>
+</body>
+
+</html>
