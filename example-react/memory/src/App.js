@@ -9,7 +9,7 @@ import HallOfFame from './HallOfFame'
 import HighScoreInput from './HighScoreInput'
 
 
-const SIDE = 6
+const SIDE = 2
 const SYMBOLS = '😀🎉💖🎩🐶🐱🦄🐬🌍🌛🌞💫🍎🍌🍓🍐🍟🍿'
 const VISUAL_PAUSE_MSECS = 750
 
@@ -57,7 +57,7 @@ class App extends Component {
 
   getFeedbackForCard(index) {
     const { currentPair, matchedCardIndices } = this.state
-    const indexMatched = matchedCardIndices.includes(index)
+    const indexMatched = false // matchedCardIndices.includes(index)
 
     if (currentPair.length < 2) {
       return indexMatched || index === currentPair[0] ? 'visible' : 'hidden'
@@ -84,6 +84,7 @@ class App extends Component {
   }
 
   render() {
+    //eslint-disable-next-line
     const { cards, guesses, matchedCardIndices, hallOfFame } = this.state
     //const won = matchedCardIndices.length === cards.length
     // TEMPORAIRE
