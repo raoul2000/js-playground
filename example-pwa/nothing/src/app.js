@@ -1,4 +1,6 @@
-var app = {
+import './style.css';
+
+window.app = {
     installPromptEvent : null,
     btnInstall : null,
     logger:null,
