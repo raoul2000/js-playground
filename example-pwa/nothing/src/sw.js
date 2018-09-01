@@ -1,4 +1,4 @@
-const version = "0.0.7";
+const version = "0.0.8";
 const cacheName = `nothing-${version}`;
 
 
@@ -8,7 +8,6 @@ self.addEventListener('install', e => {
             return cache.addAll([
                 `/`,
                 `/index.html`,
-                `/style.css`,
                 `/app.js`,
                 '/images/404.png'
             ]).then(() => self.skipWaiting());
