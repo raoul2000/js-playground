@@ -14,22 +14,35 @@
     <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#729eaa">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    
+
     <link rel="manifest" href="/manifest.json">
-    
+
     <title>Nothing</title>
 </head>
 
 <body>
-    <button id="install" disabled="disabled">Install</button>
-    <p id="nothing" title="version 0.0.4">Simply nothing ..!!!</p>
-    <div id="random-image">
-        <img  src="https://picsum.photos/500/500/?random" alt="">
-        <button>show me a new image !</button>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#" title="version 0.0.4">The Nothing App</a>
+        <form class="form-inline">
+            <button id="install" disabled="disabled" class="btn btn-outline-success my-2 my-sm-0">Install</button>
+        </form>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div id="random-image">
+                    <img src="https://picsum.photos/500/500/?random" class="rounded" alt="beautiful image">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" title="show another beautiful image">Show me more </button>                
+                </div>
+            </div>
+        </div>
     </div>
+
     <div id="logger">
     </div>
-    
+
     <script src="/app.js"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', app.run.bind(app));

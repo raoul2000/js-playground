@@ -20,16 +20,9 @@
     overflow: overlay
 }
 
-#random-image {
-    margin: 1em;
-    padding: 1em;
-}
-
 #random-image > img {
     width: 100%;
     height: auto;
-}
-#random-image > button {
-    width: 100%;
-    height: 3em;
+    margin-bottom: 1em;
+    margin-top:1em;
 }
