@@ -4,6 +4,8 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 window.app = {
     installPromptEvent : null,
     btnInstall : null,
+    btnNewImage : null,
+    spinner : null,
     logger:null,
     /**
      * Start the app.
@@ -15,6 +17,8 @@ window.app = {
         this.log("initializing the Nothing App");
 
         this.btnInstall = document.querySelector('#install');
+        this.btnNewImage = document.querySelector("#random-image > button");
+        this.spinner = document.querySelector('#spinner');
         this.registerServiceWorker();
         this.registerCustomInstaller();
         this.installRandomImage();
@@ -56,9 +60,19 @@ window.app = {
         var that = this;
         img.addEventListener('error',function() {
             that.log('failed to load image');
-            img.setAttribute('src',"/images/404.png");
+            var imgErrorSrc = '/images/404.png';
+            if( img.getAttribute('src') !== imgErrorSrc) {
+                img.setAttribute('src',imgErrorSrc);
+            }
         });
-        document.querySelector("#random-image > button").addEventListener('click', function(ev) {
+        img.addEventListener('load', function(){
+            console.log('img loaded ok');
+            that.spinner.classList.toggle('d-none');
+            that.btnNewImage.textContent = "Show me more";
+        });
+        this.btnNewImage.addEventListener('click', function(ev) {
+            that.spinner.classList.toggle('d-none');
+            that.btnNewImage.textContent = "loading ...";
             img.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
         });
     },

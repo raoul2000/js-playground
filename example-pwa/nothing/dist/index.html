@@ -34,14 +34,21 @@
             <div class="col-12">
                 <div id="random-image">
                     <img src="https://picsum.photos/500/500/?random" class="rounded" alt="beautiful image">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" title="show another beautiful image">Show me more </button>                
+                    <button type="button" class="btn btn-primary btn-lg btn-block" title="show another beautiful image">
+                        <div id="spinner" class="lds-ring">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        Show me more
+                    </button>
                 </div>
+                <div id="logger" />
             </div>
         </div>
     </div>
 
-    <div id="logger">
-    </div>
 
     <script src="/app.js"></script>
     <script type="text/javascript">
