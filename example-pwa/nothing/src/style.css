@@ -27,6 +27,17 @@
     margin-top:1em;
 }
 
+img#failure-image {
+  display: none;
+}
+.load-image-fails > img#main-image {
+  display: none;
+}
+.load-image-fails > img#failure-image {
+  display: block;
+}
+
+
 /* 
  * spinner from https://loading.io/css/ 
  */

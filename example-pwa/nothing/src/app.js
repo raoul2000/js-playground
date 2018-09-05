@@ -3,6 +3,8 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 window.app = {
     installPromptEvent : null,
+    randomImage : null,
+    mainImage : null,
     btnInstall : null,
     btnNewImage : null,
     spinner : null,
@@ -16,6 +18,8 @@ window.app = {
         this.logger = document.querySelector('#logger');
         this.log("initializing the Nothing App");
 
+        this.randomImage = document.getElementById('random-image');
+        this.mainImage = document.getElementById('main-image')
         this.btnInstall = document.querySelector('#install');
         this.btnNewImage = document.querySelector("#random-image > button");
         this.spinner = document.querySelector('#spinner');
@@ -56,25 +60,34 @@ window.app = {
      * on the refresh button
      */
     installRandomImage : function() {
-        var img = document.querySelector('#random-image > img');
         var that = this;
-        img.addEventListener('error',function() {
-            that.log('failed to load image');
-            var imgErrorSrc = '/images/404.png';
-            if( img.getAttribute('src') !== imgErrorSrc) {
-                img.setAttribute('src',imgErrorSrc);
-            }
-        });
-        img.addEventListener('load', function(){
-            console.log('img loaded ok');
+
+        let buttonProgressEnd = function() {
             that.spinner.classList.toggle('d-none');
-            that.btnNewImage.textContent = "Show me more";
+            that.btnNewImage.querySelector('span').textContent = "Show me more";
+            that.btnNewImage.removeAttribute('disabled');
+        };
+        let buttonProgressStart = function() {
+            that.btnNewImage.setAttribute('disabled',true);
+            that.spinner.classList.toggle('d-none');
+            that.btnNewImage.querySelector('span').textContent = "loading ...";
+        };
+
+        this.mainImage.addEventListener('error',function() {
+            that.log('failed to load image');
+            that.randomImage.classList.add('load-image-fails');
+            buttonProgressEnd();
+        });
+        this.mainImage.addEventListener('load', function(){
+            console.log('img loaded ok');
+            that.randomImage.classList.remove('load-image-fails');
+            buttonProgressEnd();
         });
         this.btnNewImage.addEventListener('click', function(ev) {
-            that.spinner.classList.toggle('d-none');
-            that.btnNewImage.textContent = "loading ...";
-            img.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
+            buttonProgressStart();
+            that.mainImage.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
         });
+        this.btnNewImage.dispatchEvent(new Event('click'));
     },
     /**
      * Register Service Worker.
