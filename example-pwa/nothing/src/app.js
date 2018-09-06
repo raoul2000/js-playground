@@ -5,8 +5,10 @@ window.app = {
     installPromptEvent : null,
     randomImage : null,
     mainImage : null,
+    notifNewVersion : null,
     btnInstall : null,
     btnNewImage : null,
+    btnInstallUpdate : null,
     spinner : null,
     logger:null,
     /**
@@ -18,6 +20,8 @@ window.app = {
         this.logger = document.querySelector('#logger');
         this.log("initializing the Nothing App");
 
+        this.notifNewVersion = document.getElementById('notif-new-version');
+        this.btnInstallUpdate = document.getElementById('install-update');
         this.randomImage = document.getElementById('random-image');
         this.mainImage = document.getElementById('main-image')
         this.btnInstall = document.querySelector('#install');
@@ -63,13 +67,13 @@ window.app = {
         var that = this;
 
         let buttonProgressEnd = function() {
-            that.spinner.classList.toggle('d-none');
+            that.spinner.classList.add('d-none');
             that.btnNewImage.querySelector('span').textContent = "Show me more";
             that.btnNewImage.removeAttribute('disabled');
         };
         let buttonProgressStart = function() {
             that.btnNewImage.setAttribute('disabled',true);
-            that.spinner.classList.toggle('d-none');
+            that.spinner.classList.remove('d-none');
             that.btnNewImage.querySelector('span').textContent = "loading ...";
         };
 
@@ -83,6 +87,7 @@ window.app = {
             that.randomImage.classList.remove('load-image-fails');
             buttonProgressEnd();
         });
+        // user clicks on the "show another image" button
         this.btnNewImage.addEventListener('click', function(ev) {
             buttonProgressStart();
             that.mainImage.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
@@ -100,9 +105,19 @@ window.app = {
             this.log('ServiceWorker is supported : registering my own');
             navigator.serviceWorker
                 .register('./sw.js')
-                .then(function () {
-                    that.log('Service Worker Registered For Nothing');
-            });
+                .then(function (registration) {
+                    that.log('Service Worker downloaded');
+                    registration.addEventListener('updatefound',function(){
+                        const newServiceWorker = registration.installing;
+                        newServiceWorker.addEventListener('statechange',function() {
+                            that.log("Service Worker State changed to "+newServiceWorker.state);
+                        })
+                    })
+                })
+                .catch(function(error) {
+                    that.log("ERROR : Service Worker registration caused an exception");
+                    console.error(error);
+                })
         }    
     },
     /**
@@ -110,7 +125,7 @@ window.app = {
      */
     registerCustomInstaller : function() {
         if( this.isRunningStandalone() === true) {
-            this.log("running in standalone mode : I'm not going to setup a custom A2HS handler");
+            this.log("running in standalone mode : I'm not going to setup a custom A2HS handler (no way)");
             return;
         }
         this.log('installing custom A2HS handler');
@@ -123,7 +138,7 @@ window.app = {
         window.addEventListener('beforeinstallprompt', function (event) {
             event.preventDefault();
             that.installPromptEvent = event;
-            that.btnInstall.removeAttribute('disabled');
+            that.btnInstall.removeAttribute('disabled'); // this also displays the "install" button
         });
     
         this.btnInstall.addEventListener('click', function () {

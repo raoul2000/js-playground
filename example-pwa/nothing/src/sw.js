@@ -1,7 +1,7 @@
-const version = "0.0.8";
+const version = "0.0.9c";
 const cacheName = `nothing-${version}`;
 
-
+// download and activate imediately the service worker
 self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(cacheName).then(cache => {

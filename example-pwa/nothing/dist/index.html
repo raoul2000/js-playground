@@ -22,19 +22,26 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary top-navbar">
         <a class="navbar-brand" href="#" title="version 0.0.4">The Nothing App</a>
         <form class="form-inline">
-            <button id="install" disabled="disabled" class="btn btn-outline-success my-2 my-sm-0">Install</button>
+            <button id="install" disabled="disabled" class="btn btn-success my-2 my-sm-0">Install</button>
         </form>
     </nav>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
+                <div id="notif-new-version" class="alert alert-warning" role="alert">
+                    <p>
+                        Hey, great news !! A new version of this App is available
+                    </p>
+                    <button id="install-update" type="button" class="btn btn-success btn-block">Install now</button>
+                </div>
+
                 <div id="random-image">
                     <img id="failure-image" src="images/404.png" alt="failed to load image">
-                    <img id="main-image" src="https://picsum.photos/500/500/?random" class="rounded" alt="beautiful image">
+                    <img id="main-image" src="" class="rounded" alt="beautiful image">
                     <button type="button" class="btn btn-primary btn-lg btn-block" title="show another beautiful image">
                         <div id="spinner" class="lds-ring">
                             <div></div>
@@ -43,7 +50,7 @@
                             <div></div>
                         </div>
                         <span>Show me more</span>
-                        
+
                     </button>
                 </div>
                 <div id="logger" />
