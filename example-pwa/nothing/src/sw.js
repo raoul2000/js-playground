@@ -1,4 +1,4 @@
-const version = "0.0.9c";
+const version = "0.0.9m";
 const cacheName = `nothing-${version}`;
 
 // download and activate imediately the service worker
@@ -10,13 +10,19 @@ self.addEventListener('install', e => {
                 `/index.html`,
                 `/app.js`,
                 '/images/404.png'
-            ]).then(() => self.skipWaiting());
+            ]);
         })
     );
 });
 
 self.addEventListener('activate', event => {
     event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener("message", event => {
+    if (event.data === "skipWaiting") {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener('fetch', event => {

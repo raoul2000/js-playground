@@ -102,6 +102,23 @@ window.app = {
         var that = this;
         this.log('trying to register ServiceWorker');
         if ('serviceWorker' in navigator) {
+            // when a new service worker is available, user is asked to
+            // activate it.
+            this.btnInstallUpdate.addEventListener('click',function(){
+                that.log("user confirmed sW update (activation)");
+                navigator.serviceWorker
+                .getRegistration()
+                .then(registration => {
+                  registration.waiting
+                    .postMessage("skipWaiting");
+                });
+            });
+
+            navigator.serviceWorker.addEventListener("controllerchange", function(){
+                that.log('Service Worker controller change : reloading page');
+                window.location.reload();
+            });
+
             this.log('ServiceWorker is supported : registering my own');
             navigator.serviceWorker
                 .register('./sw.js')
@@ -111,6 +128,10 @@ window.app = {
                         const newServiceWorker = registration.installing;
                         newServiceWorker.addEventListener('statechange',function() {
                             that.log("Service Worker State changed to "+newServiceWorker.state);
+                            if( newServiceWorker.state === 'installed') {
+                                that.log('displaying update notification to user');
+                                that.notifNewVersion.classList.remove('d-none');
+                            }
                         })
                     })
                 })
