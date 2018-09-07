@@ -1,7 +1,8 @@
-const version = "0.0.9m";
+const version = "0.0.9n";
 const cacheName = `nothing-${version}`;
 
-// download and activate imediately the service worker
+// download service worker but does not activate it immediately 
+// The user is prompted when new SW is available
 self.addEventListener('install', e => {
     e.waitUntil(
         caches.open(cacheName).then(cache => {
@@ -19,11 +20,6 @@ self.addEventListener('activate', event => {
     event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener("message", event => {
-    if (event.data === "skipWaiting") {
-        self.skipWaiting();
-    }
-});
 
 self.addEventListener('fetch', event => {
     event.respondWith(
@@ -33,4 +29,18 @@ self.addEventListener('fetch', event => {
                 return response || fetch(event.request);
             })
     );
+});
+
+self.addEventListener('message', function(event){
+    console.log("SW Received Message: " + event.data);
+    switch(event.data) {
+        case "READ-SW-VERSION":
+            event.ports[0].postMessage(version);
+        break;
+        case "SKIP-WAITING":
+            self.skipWaiting();
+        break;
+        default:
+            event.ports[0].postMessage(event.data);
+    }
 });

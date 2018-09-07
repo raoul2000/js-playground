@@ -2,6 +2,15 @@
   margin-bottom: 1em;
 }
 
+.footer {
+  margin-top: 1em;  
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
 #install {
     float:right;
 }

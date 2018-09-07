@@ -2,20 +2,20 @@ import './style.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 window.app = {
-    installPromptEvent : null,
-    randomImage : null,
-    mainImage : null,
-    notifNewVersion : null,
-    btnInstall : null,
-    btnNewImage : null,
-    btnInstallUpdate : null,
-    spinner : null,
-    logger:null,
+    installPromptEvent: null,
+    randomImage: null,
+    mainImage: null,
+    notifNewVersion: null,
+    btnInstall: null,
+    btnNewImage: null,
+    btnInstallUpdate: null,
+    spinner: null,
+    logger: null,
     /**
      * Start the app.
      * This is the app entry point in charge of installing handlers
      */
-    run : function() {
+    run: function () {
         console.log('running App');
         this.logger = document.querySelector('#logger');
         this.log("initializing the Nothing App");
@@ -34,7 +34,7 @@ window.app = {
     /**
      * based on https://developers.google.com/web/fundamentals/app-install-banners/#detect-mode
      */
-    isRunningStandalone : function(){
+    isRunningStandalone: function () {
         if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
             return true;
         } else if (window.navigator.standalone === true) {
@@ -47,14 +47,14 @@ window.app = {
     /**
      * Add a new log message into the page
      */
-    log : function(msg) {
+    log: function (msg) {
         console.log(msg);
         var newEntry = document.createElement('div');
         newEntry.textContent = '> ' + msg;
 
         var firstEntry = this.logger.querySelector('.entry');
-        if(firstEntry) {
-            this.logger.insertBefore(newEntry,firstEntry);
+        if (firstEntry) {
+            this.logger.insertBefore(newEntry, firstEntry);
         } else {
             this.logger.appendChild(newEntry);
         }
@@ -63,34 +63,34 @@ window.app = {
      * Install Event handler so to display random image when user click
      * on the refresh button
      */
-    installRandomImage : function() {
+    installRandomImage: function () {
         var that = this;
 
-        let buttonProgressEnd = function() {
+        let buttonProgressEnd = function () {
             that.spinner.classList.add('d-none');
             that.btnNewImage.querySelector('span').textContent = "Show me more";
             that.btnNewImage.removeAttribute('disabled');
         };
-        let buttonProgressStart = function() {
-            that.btnNewImage.setAttribute('disabled',true);
+        let buttonProgressStart = function () {
+            that.btnNewImage.setAttribute('disabled', true);
             that.spinner.classList.remove('d-none');
             that.btnNewImage.querySelector('span').textContent = "loading ...";
         };
 
-        this.mainImage.addEventListener('error',function() {
+        this.mainImage.addEventListener('error', function () {
             that.log('failed to load image');
             that.randomImage.classList.add('load-image-fails');
             buttonProgressEnd();
         });
-        this.mainImage.addEventListener('load', function(){
+        this.mainImage.addEventListener('load', function () {
             console.log('img loaded ok');
             that.randomImage.classList.remove('load-image-fails');
             buttonProgressEnd();
         });
         // user clicks on the "show another image" button
-        this.btnNewImage.addEventListener('click', function(ev) {
+        this.btnNewImage.addEventListener('click', function (ev) {
             buttonProgressStart();
-            that.mainImage.setAttribute('src',"https://picsum.photos/500/500/?random?_="+Math.random());
+            that.mainImage.setAttribute('src', "https://picsum.photos/500/500/?random?_=" + Math.random());
         });
         this.btnNewImage.dispatchEvent(new Event('click'));
     },
@@ -98,23 +98,23 @@ window.app = {
      * Register Service Worker.
      * This is required for PWA
      */
-    registerServiceWorker : function() {
+    registerServiceWorker: function () {
         var that = this;
         this.log('trying to register ServiceWorker');
         if ('serviceWorker' in navigator) {
             // when a new service worker is available, user is asked to
             // activate it.
-            this.btnInstallUpdate.addEventListener('click',function(){
+            this.btnInstallUpdate.addEventListener('click', function () {
                 that.log("user confirmed sW update (activation)");
                 navigator.serviceWorker
-                .getRegistration()
-                .then(registration => {
-                  registration.waiting
-                    .postMessage("skipWaiting");
-                });
+                    .getRegistration()
+                    .then(registration => {
+                        registration.waiting
+                            .postMessage("SKIP-WAITING");
+                    });
             });
 
-            navigator.serviceWorker.addEventListener("controllerchange", function(){
+            navigator.serviceWorker.addEventListener("controllerchange", function () {
                 that.log('Service Worker controller change : reloading page');
                 window.location.reload();
             });
@@ -123,45 +123,69 @@ window.app = {
             navigator.serviceWorker
                 .register('./sw.js')
                 .then(function (registration) {
-                    that.log('Service Worker downloaded');
-                    registration.addEventListener('updatefound',function(){
+                    that.log('Service Worker downloaded !');
+
+                    that.log('sending message to SW');
+
+                    that.sendMessageToSw('READ-SW-VERSION')
+                    .then(console.log)
+                    .catch(console.error);
+
+                    registration.addEventListener('updatefound', function () {
                         const newServiceWorker = registration.installing;
-                        newServiceWorker.addEventListener('statechange',function() {
-                            that.log("Service Worker State changed to "+newServiceWorker.state);
-                            if( newServiceWorker.state === 'installed') {
+                        newServiceWorker.addEventListener('statechange', function () {
+                            that.log("Service Worker State changed to " + newServiceWorker.state);
+                            if (newServiceWorker.state === 'installed') {
                                 that.log('displaying update notification to user');
                                 that.notifNewVersion.classList.remove('d-none');
                             }
                         })
                     })
                 })
-                .catch(function(error) {
+                .catch(function (error) {
                     that.log("ERROR : Service Worker registration caused an exception");
                     console.error(error);
                 })
-        }    
+        }
+    },
+    sendMessageToSw: function (msg) {
+        return new Promise(function (resolve, reject) {
+            // Create a Message Channel
+            var msg_chan = new MessageChannel();
+
+            // Handler for recieving message reply from service worker
+            msg_chan.port1.onmessage = function (event) {
+                if (event.data.error) {
+                    reject(event.data.error);
+                } else {
+                    resolve(event.data);
+                }
+            };
+            // Send message to service worker along with port for reply
+            navigator.serviceWorker.controller.postMessage(msg, [msg_chan.port2]);
+        });
     },
     /**
      * Register behavior for the A2HS (Add 2 HomeScreen) feature
      */
-    registerCustomInstaller : function() {
-        if( this.isRunningStandalone() === true) {
+    registerCustomInstaller: function () {
+        if (this.isRunningStandalone() === true) {
             this.log("running in standalone mode : I'm not going to setup a custom A2HS handler (no way)");
             return;
         }
         this.log('installing custom A2HS handler');
         var that = this;
 
-        window.addEventListener('appinstalled', function()  {
+        window.addEventListener('appinstalled', function () {
             that.log('Great !! Nothing has been successfully added to the home screen');
-          });
-          
+        });
+
         window.addEventListener('beforeinstallprompt', function (event) {
             event.preventDefault();
             that.installPromptEvent = event;
             that.btnInstall.removeAttribute('disabled'); // this also displays the "install" button
         });
-    
+
         this.btnInstall.addEventListener('click', function () {
             that.btnInstall.setAttribute('disabled', '');
             that.installPromptEvent.prompt();
@@ -173,6 +197,6 @@ window.app = {
                 }
                 that.installPromptEvent = null;
             });
-        });    
+        });
     }
 }
