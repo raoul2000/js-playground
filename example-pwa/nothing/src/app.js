@@ -10,6 +10,7 @@ window.app = {
     btnNewImage: null,
     btnInstallUpdate: null,
     spinner: null,
+    swVersion : null,
     logger: null,
     /**
      * Start the app.
@@ -27,6 +28,7 @@ window.app = {
         this.btnInstall = document.querySelector('#install');
         this.btnNewImage = document.querySelector("#random-image > button");
         this.spinner = document.querySelector('#spinner');
+        this.swVersion = document.getElementById('sw-version');
         this.registerServiceWorker();
         this.registerCustomInstaller();
         this.installRandomImage();
@@ -128,8 +130,11 @@ window.app = {
                     that.log('sending message to SW');
 
                     that.sendMessageToSw('READ-SW-VERSION')
-                    .then(console.log)
-                    .catch(console.error);
+                        .then(version => {
+                            console.log('swVersion : '+version);
+                            that.swVersion.textContent = version;
+                        })
+                        .catch(console.error);
 
                     registration.addEventListener('updatefound', function () {
                         const newServiceWorker = registration.installing;
