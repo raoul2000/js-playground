@@ -1,5 +1,31 @@
-const version = "0.0.9n";
+const version = "0.0.9p";
 const cacheName = `nothing-${version}`;
+
+function sendMessageToClient(client, msg){
+    return new Promise(function(resolve, reject){
+        var msg_chan = new MessageChannel();
+
+        msg_chan.port1.onmessage = function(event){
+            if(event.data.error){
+                reject(event.data.error);
+            }else{
+                resolve(event.data);
+            }
+        };
+
+        client.postMessage("SW Says: '"+msg+"'", [msg_chan.port2]);
+    });
+}
+
+function sendMessageToAllClient(msg){
+    clients.matchAll().then(clients => {
+        clients.forEach(client => {
+            sendMessageToClient(client, msg).then(m => console.log("SW Received Message: "+m));
+        })
+    })
+}
+console.log('saying hello to all clients');
+sendMessageToAllClient("HELLO");
 
 // download service worker but does not activate it immediately 
 // The user is prompted when new SW is available

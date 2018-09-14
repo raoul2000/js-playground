@@ -104,6 +104,14 @@ window.app = {
         var that = this;
         this.log('trying to register ServiceWorker');
         if ('serviceWorker' in navigator) {
+
+            // Handler for messages coming from the service worker
+            navigator.serviceWorker.addEventListener('message', function(event){
+                console.log("Client Received Message: " + event.data);
+                that.receiveMessageFromSw(event.data, event.ports);
+                event.ports[0].postMessage("Client 1 Says 'Hello back!'");
+            });
+
             // when a new service worker is available, user is asked to
             // activate it.
             this.btnInstallUpdate.addEventListener('click', function () {
@@ -151,6 +159,15 @@ window.app = {
                     that.log("ERROR : Service Worker registration caused an exception");
                     console.error(error);
                 })
+        }
+    },
+    receiveMessageFromSw: function(msg, replyChannel) {
+        switch(msg) {
+            case 'HELLO':
+            console.log("hello");
+            break;
+            default:
+            console.log(msg);
         }
     },
     sendMessageToSw: function (msg) {
