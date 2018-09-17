@@ -1,4 +1,4 @@
-const version = "0.0.9p";
+const version = "0.0.9q";
 const cacheName = `nothing-${version}`;
 
 function sendMessageToClient(client, msg){
@@ -24,8 +24,6 @@ function sendMessageToAllClient(msg){
         })
     })
 }
-console.log('saying hello to all clients');
-sendMessageToAllClient("HELLO");
 
 // download service worker but does not activate it immediately 
 // The user is prompted when new SW is available
@@ -48,6 +46,8 @@ self.addEventListener('activate', event => {
 
 
 self.addEventListener('fetch', event => {
+    console.log('SW : fetching');
+    sendMessageToAllClient("fetch");
     event.respondWith(
         caches.open(cacheName)
             .then(cache => cache.match(event.request, { ignoreSearch: true }))
