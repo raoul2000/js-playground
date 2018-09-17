@@ -106,12 +106,7 @@ window.app = {
         if ('serviceWorker' in navigator) {
 
             // Handler for messages coming from the service worker
-            navigator.serviceWorker.addEventListener('message', function(event){
-                console.log("Client Received Message: " + event.data);
-                that.receiveMessageFromSw(event.data, event.ports);
-                // reply
-                //event.ports[0].postMessage("Client 1 Says 'Hello back!'");
-            });
+            navigator.serviceWorker.addEventListener('message', that.receiveMessageFromSw.bind(that));
 
             // when a new service worker is available, user is asked to
             // activate it.
@@ -162,11 +157,16 @@ window.app = {
                 })
         }
     },
-    receiveMessageFromSw: function(msg, replyChannel) {
-        console.log("CLI: received message from SW : "+msg);
+    receiveMessageFromSw: function(event) {
+        let msg = event.data;
+        let replyChannel = event.ports;
+        this.log("CLI: received message from SW : "+msg);
         switch(msg) {
             case 'HELLO':
             console.log("hello");
+            break;
+            case 'fetch':
+            replyChannel[0].postMessage("good boy");
             break;
             default:
             console.log(msg);
