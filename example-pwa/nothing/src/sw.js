@@ -1,4 +1,4 @@
-const version = "0.0.10e";
+const version = "0.0.10f";
 const cacheName = `nothing-${version}`;
 
 function sendMessageToClient(client, msg){
