@@ -1,4 +1,4 @@
-const version = "0.0.9q";
+const version = "0.0.10";
 const cacheName = `nothing-${version}`;
 
 function sendMessageToClient(client, msg){
@@ -12,8 +12,6 @@ function sendMessageToClient(client, msg){
                 resolve(event.data);
             }
         };
-
-        client.postMessage("SW Says: '"+msg+"'", [msg_chan.port2]);
     });
 }
 

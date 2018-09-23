@@ -33,7 +33,7 @@
     font-family: sans-serif;
     font-size: 0.8em;    
     height: 100px;
-    overflow: overlay
+    overflow: auto
 }
 
 #random-image > img {

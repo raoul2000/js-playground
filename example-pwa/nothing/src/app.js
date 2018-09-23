@@ -3,15 +3,15 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 window.app = {
     installPromptEvent: null,
-    randomImage: null,
-    mainImage: null,
-    notifNewVersion: null,
-    btnInstall: null,
-    btnNewImage: null,
-    btnInstallUpdate: null,
-    spinner: null,
-    swVersion : null,
-    logger: null,
+    randomImage: document.getElementById('random-image'),
+    mainImage: document.getElementById('main-image'),
+    notifNewVersion: document.getElementById('notif-new-version'),
+    btnInstall: document.querySelector('#install'),
+    btnNewImage: document.querySelector("#random-image > button"),
+    btnInstallUpdate: document.getElementById('install-update'),
+    spinner: document.querySelector('#spinner'),
+    swVersion : document.getElementById('sw-version'),
+    logger: document.querySelector('#logger'),
     /**
      * Start the app.
      * This is the app entry point in charge of installing handlers
@@ -21,14 +21,6 @@ window.app = {
         this.logger = document.querySelector('#logger');
         this.log("initializing the Nothing App");
 
-        this.notifNewVersion = document.getElementById('notif-new-version');
-        this.btnInstallUpdate = document.getElementById('install-update');
-        this.randomImage = document.getElementById('random-image');
-        this.mainImage = document.getElementById('main-image')
-        this.btnInstall = document.querySelector('#install');
-        this.btnNewImage = document.querySelector("#random-image > button");
-        this.spinner = document.querySelector('#spinner');
-        this.swVersion = document.getElementById('sw-version');
         this.registerServiceWorker();
         this.registerCustomInstaller();
         this.installRandomImage();
@@ -157,6 +149,10 @@ window.app = {
                 })
         }
     },
+    /**
+     * This event handler is attached to the service worker in order to process events sent by
+     * the serice worked. These events are considered as messages 
+     */
     receiveMessageFromSw: function(event) {
         let msg = event.data;
         let replyChannel = event.ports;
