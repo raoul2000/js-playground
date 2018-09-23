@@ -10,20 +10,33 @@ window.app = {
     btnNewImage: document.querySelector("#random-image > button"),
     btnInstallUpdate: document.getElementById('install-update'),
     spinner: document.querySelector('#spinner'),
-    swVersion : document.getElementById('sw-version'),
+    swVersion: document.getElementById('sw-version'),
     logger: document.querySelector('#logger'),
+    chkAllowPushNotification : document.getElementById('chkAllowPushNotification'),
+    showPushNotification : true,
     /**
      * Start the app.
      * This is the app entry point in charge of installing handlers
      */
     run: function () {
         console.log('running App');
+        var that = this;
         this.logger = document.querySelector('#logger');
         this.log("initializing the Nothing App");
 
         this.registerServiceWorker();
         this.registerCustomInstaller();
+
         this.installRandomImage();
+        if( this.isPushNotificationSupported) {
+            this.askPermission();
+            this.chkAllowPushNotification.parentNode.style.display = 'block';
+            // user allow/dismiss push notification display
+            this.chkAllowPushNotification.addEventListener('change',function(event){
+                console.log(event.target.checked);
+                that.showPushNotification = event.target.checked;
+            });
+        }
     },
     /**
      * based on https://developers.google.com/web/fundamentals/app-install-banners/#detect-mode
@@ -127,7 +140,7 @@ window.app = {
 
                     that.sendMessageToSw('READ-SW-VERSION')
                         .then(version => {
-                            console.log('swVersion : '+version);
+                            console.log('swVersion : ' + version);
                             that.swVersion.textContent = version;
                         })
                         .catch(console.error);
@@ -141,7 +154,8 @@ window.app = {
                                 that.notifNewVersion.classList.remove('d-none');
                             }
                         })
-                    })
+                    });
+                    //that.askPermission();
                 })
                 .catch(function (error) {
                     that.log("ERROR : Service Worker registration caused an exception");
@@ -149,23 +163,50 @@ window.app = {
                 })
         }
     },
+    isPushNotificationSupported : function() {
+        return ('serviceWorker' in navigator) && ('PushManager' in window);
+    },
+    /**
+     * Ask the user if he/she accepts to receive Push Notifications
+     */
+    askPermission: function () {
+        if( this.isPushNotificationSupported === false) {
+            return Promise.reject('push notification not supported');
+        }
+
+        return new Promise(function (resolve, reject) {
+            const permissionResult = Notification.requestPermission(function (result) {
+                resolve(result);
+            });
+
+            if (permissionResult) {
+                permissionResult.then(resolve, reject);
+            }
+        })
+        .then(function (permissionResult) {
+            if (permissionResult !== 'granted') {
+                throw new Error('We weren\'t granted permission.');
+            }
+        });
+    },
+
     /**
      * This event handler is attached to the service worker in order to process events sent by
      * the serice worked. These events are considered as messages 
      */
-    receiveMessageFromSw: function(event) {
+    receiveMessageFromSw: function (event) {
         let msg = event.data;
         let replyChannel = event.ports;
-        this.log("CLI: received message from SW : "+msg);
-        switch(msg) {
+        this.log("CLI: received message from SW : " + msg);
+        switch (msg) {
             case 'HELLO':
-            console.log("hello");
-            break;
+                console.log("hello");
+                break;
             case 'fetch':
-            replyChannel[0].postMessage("good boy");
-            break;
+                replyChannel[0].postMessage("good boy");
+                break;
             default:
-            console.log(msg);
+                console.log(msg);
         }
     },
     sendMessageToSw: function (msg) {

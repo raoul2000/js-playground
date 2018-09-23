@@ -1,4 +1,4 @@
-const version = "0.0.10";
+const version = "0.0.10e";
 const cacheName = `nothing-${version}`;
 
 function sendMessageToClient(client, msg){
@@ -68,3 +68,17 @@ self.addEventListener('message', function(event){
             event.ports[0].postMessage(event.data);
     }
 });
+
+// Push Notification Handler
+
+self.addEventListener('push', function(event) {
+    if (event.data) {
+      console.log('This push event has data: ', event.data.text());
+    } else {
+      console.log('This push event has no data.');
+    }
+    sendMessageToAllClient('[SW] received a push notification');
+    const promiseChain = self.registration.showNotification('Hello, World.');
+    event.waitUntil(promiseChain);
+  });
+  
