@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 
 function listFolderRecursive(folderPath:string, options?:any): any {
-    
+
+    let fileList = [];
     fs.readdir(folderPath, options, (err, files) => {
         if(err) {
             console.error(err);
@@ -25,6 +26,8 @@ function listFolderRecursive(folderPath:string, options?:any): any {
         });
     });
 }
+
+
 
 listFolderRecursive("./");
 
