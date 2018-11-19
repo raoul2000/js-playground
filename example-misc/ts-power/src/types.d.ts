@@ -1,7 +1,7 @@
 declare namespace TMD {
     interface Tag {
         name:string;
-        index:number;
+        level:number;
     }
     
     interface Document {
