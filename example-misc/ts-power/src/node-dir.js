@@ -15,7 +15,9 @@ function fileFilter(file) {
  * @returns {string} the normalized file path
  */
 function normalizeFile(filePath, basePath) {
-    return path.relative(basePath, filePath).replace(/\\/g, '/');
+    return path.
+        relative(basePath, filePath).
+        replace(/\\/g, '/');
 }
 
 /**
@@ -31,6 +33,7 @@ function extractTagsFromPath(filePath) {
         'level' : index
     }));
 
+    // remove last item which is the filename
     tags.pop();
     return tags;
 }
@@ -43,7 +46,7 @@ function extractTagsFromPath(filePath) {
  */
 function createDocument(filePath) {
     return {
-        "file" : filePath,
+        "filePath" : filePath,
         "tags" : extractTagsFromPath(filePath)
     };
 }
@@ -64,17 +67,36 @@ function readDocuments( basePath) {
     );    
 }
 
+/**
+ * Extract the tag index from a list of Documents.
+ * The Tag Index is an object where each property is a tag name with a value being an object : 
+ * ```json
+{
+    "tagName1" : {
+        "index" : 1,
+        "docCount" : 12
+    },
+    "tagName2" : {
+        "index" : 0,
+        "docCount" : 50
+    },
+    // etc ...
+}
+ * ```
+ * @param {Array<TMD.Document>} documents set of documents to process
+ * @returns {any} 
+ */
 function buildTagIndex(documents) {
     let index = {};
     documents.forEach( (document) => {
         document.tags.forEach( (tag) => {
             if( !index.hasOwnProperty(tag.name)) {
                 index[tag.name] = {
-                    "index"    : tag.index,
+                    "index"    : tag.level,
                     "docCount" : 1
                 };
             } else {
-                index[tag.name].index += tag.index;
+                index[tag.name].index += tag.level;
                 index[tag.name].docCount += 1;
             }
         });
@@ -82,29 +104,14 @@ function buildTagIndex(documents) {
     return index;
 }
 
-
+console.log(chalk.blue('building document list ...'));
 readDocuments('./test')
-.then( (documents) => {
-    console.log(JSON.stringify(documents));
-    const tagIndex = buildTagIndex(documents);
-    console.log(JSON.stringify(tagIndex));
-});
-
-/*
-
-const basePath = './test/data';
-
-
-console.log(chalk.blue(`${basePath}`));
-console.log(path.resolve(basePath));
-
-const resPath = path.resolve(basePath);
-
-console.log(path.relative(basePath,"./test/data/base/c"));
-
-dir.promiseFiles('./test/data/base')
-    .then( (files) => {
-        //files.map( (file) => )
-        console.log(files);
+    .then( (documents) => {
+        console.log(JSON.stringify(documents));
+        const tagIndex = buildTagIndex(documents);
+        console.log(JSON.stringify(tagIndex));
     })
-*/
+    .catch( (error) => {
+        console.error(error);
+    });
+
