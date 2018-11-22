@@ -1,7 +1,7 @@
 const dir = require("node-dir");
 const path = require('path');
 const chalk = require('chalk');
-
+const statistics = require('simple-statistics');
 
 function fileFilter(file) {
     return true;
@@ -66,7 +66,7 @@ function readDocuments( basePath) {
             .map( (filePath) => createDocument(filePath))
     );    
 }
-
+const average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
 /**
  * Extract the tag index from a list of Documents.
  * The Tag Index is an object where each property is a tag name with a value being an object : 
@@ -92,24 +92,27 @@ function buildTagIndex(documents) {
         document.tags.forEach( (tag) => {
             if( !index.hasOwnProperty(tag.name)) {
                 index[tag.name] = {
-                    "index"    : tag.level,
+                    "levelValues" : [tag.level],
                     "docCount" : 1
                 };
             } else {
-                index[tag.name].index += tag.level;
+                index[tag.name].levelValues.push(tag.level);
                 index[tag.name].docCount += 1;
             }
         });
     });
+    Object.keys(index).forEach( (tagName) => {
+        index[tagName].levelAvg = statistics.mean(index[tagName].levelValues);
+    })
     return index;
 }
 
 console.log(chalk.blue('building document list ...'));
 readDocuments('./test')
     .then( (documents) => {
-        console.log(JSON.stringify(documents));
+        console.log("documents : \n", JSON.stringify(documents));
         const tagIndex = buildTagIndex(documents);
-        console.log(JSON.stringify(tagIndex));
+        console.log("tag index : \n", JSON.stringify(tagIndex));
     })
     .catch( (error) => {
         console.error(error);
