@@ -8,4 +8,9 @@ declare namespace TMD {
         file:string;
         tags:Array<Tag>;
     }
+
+    interface Store {
+        tag:any;
+        document:any;
+    }
 }

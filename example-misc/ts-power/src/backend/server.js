@@ -14,11 +14,18 @@ cli
 const port = cli.port || DEFAULT_PORT;
 const dataPath = path.resolve(cli.dataPath || DEFAULT_DATA_PATH);
 
+// INIT app ////////////////////////////////////////////////////////////
+
+const store = require('./store/store.js').init();
+
+// INIT Server ////////////////////////////////////////////////////////////
+
 const app = express()
 
 app.use(express.static(dataPath));
 
-app.get('/api', function (req, res) {
+app.get('/api/tag/suggestion', function (req, res, next) {
+    require('./endpoint/tag-suggestion.js').run(req, res, next, store);
     res.send('serving api!')
 })
 
@@ -30,4 +37,5 @@ app.listen(port, function () {
     console.log(`   http://localhost:${port}`);
     console.log("(Ctrl + C to stop)");
 })
+
 
