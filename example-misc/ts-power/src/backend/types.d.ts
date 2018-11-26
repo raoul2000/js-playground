@@ -9,14 +9,16 @@ declare namespace TMD {
         name:string;
         level:number;
     }
-    
+    class TagStore {
+        getAll():Array<Tag>;
+    }
     interface Document {
         file:string;
         tags:Array<Tag>;
     }
 
     interface Store {
-        tag:any;
+        tag: TagStore;
         document:any;
     }
 }
