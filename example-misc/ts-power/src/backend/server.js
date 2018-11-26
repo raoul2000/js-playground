@@ -20,7 +20,7 @@ const store = require('./store/store.js').init();
 
 // INIT Server ////////////////////////////////////////////////////////////
 
-const app = express()
+const app = express();
 
 app.use(express.static(dataPath));
 

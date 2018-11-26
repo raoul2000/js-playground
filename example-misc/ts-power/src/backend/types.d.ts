@@ -1,4 +1,10 @@
 declare namespace TMD {
+    interface TagSuggestion {
+        /**
+         * The string used to generate suggestions
+         */
+        input:string;
+    }
     interface Tag {
         name:string;
         level:number;

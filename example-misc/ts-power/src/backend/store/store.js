@@ -1,7 +1,7 @@
 const Datastore = require('nedb');
 
 /**
- * @returns {TMD.Store}
+ * @returns {TMD.Store} the main store
  */
 module.exports.init = () => {
     const tagStore = new Datastore();
@@ -11,4 +11,4 @@ module.exports.init = () => {
         "tag": tagStore,
         "document": documentStore
     };
-}
+};
