@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 
-const { assert, expect } = require('chai');
+const {assert, expect} = require('chai');
 const NedbStore = require('nedb');
 const tagSuggestion = require('../src/backend/lib/tag-suggestion.js');
 const TagStore = require("../src/backend/store/tag-store");
 
-debugger;
 
 /**
  * @type {TMD.Store} a test data store
@@ -23,17 +22,17 @@ describe('Tag suggestion engine', function () {
             "level": 0
         }),
         store.tag.addTag({
-            "name": "tag2",
+            "name": "tag2 tag",
             "level": 0
         }),
         store.tag.addTag({
             "name": "tag3",
             "level": 0
-        }),
+        })
     ]));
 
 
-    it('it throws and exception if no tag store is provided', function () {
+    it('throws an exception if no tag store is provided', function () {
         return tagSuggestion.suggestTag('any').
             then(
                 () => expect.fail("should have thrown an exception"),
@@ -42,7 +41,7 @@ describe('Tag suggestion engine', function () {
     });
 
 
-    it('it suggest a tag', function () {
+    it('suggests a tag', function () {
         return tagSuggestion.suggestTag('tag2',store).
             then(
                 (result) => {
