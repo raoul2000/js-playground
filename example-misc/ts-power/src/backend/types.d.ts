@@ -11,6 +11,7 @@ declare namespace TMD {
     }
     class TagStore {
         getAll():Array<Tag>;
+        addTag(tag:Tag): Promise<any>;
     }
     interface Document {
         file:string;
