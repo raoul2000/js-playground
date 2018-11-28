@@ -9,7 +9,7 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-console" :"warn",
+        "no-console" :"off",
         "accessor-pairs": "error",
         "array-bracket-newline": "error",
         "array-bracket-spacing": "error",

@@ -44,9 +44,7 @@ describe('Tag suggestion engine', function () {
     it('suggests a tag', function () {
         return tagSuggestion.suggestTag('tag2',store).
             then(
-                (result) => {
-                    console.log(result);
-                },
+                console.log,
                 (err) => expect.fail(err)
             );
     });

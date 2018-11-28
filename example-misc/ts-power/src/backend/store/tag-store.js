@@ -1,7 +1,8 @@
 
 
 /**
- * Create a new TagStor instance
+ * TagStore is an abstraction around persistent tag storage.
+ * (in this case nedb)
  * 
  * @param {Nedb.Nedb} nedbStore the NeDB instance used to handle data persistente
  * @returns {void}
