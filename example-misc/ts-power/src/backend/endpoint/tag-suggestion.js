@@ -20,4 +20,4 @@ const runImpl = (req, res, next, store) => {
 
 module.exports = {
     "run" : runImpl
-}
+};
