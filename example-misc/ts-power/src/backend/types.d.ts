@@ -1,25 +1,41 @@
 declare namespace TMD {
+
+    // Tag ////////////////////////////////////////////////////////
+    
+    interface Tag {
+        name:string;
+        level:number;
+    }
+    interface TagStore {
+        getAll() : Promise<Array<Tag>>;
+        addTag(tag:Tag): Promise<any>;
+        getStoreImplementation(): any;
+    }
+
+    // Document ////////////////////////////////////////////////////////
+
+    interface Document {
+        file:string;
+        readonly tags:Array<Tag>;
+    }
+
+    interface DocumentStore {
+        getAll() : Promise<Array<Document>>;
+        addDocument(document:Document): Promise<Document>;
+        getStoreImplementation(): any;
+    }
+
+    // ////////////////////////////////////////////////////////
+
     interface TagSuggestion {
         /**
          * The string used to generate suggestions
          */
         input:string;
     }
-    interface Tag {
-        name:string;
-        level:number;
-    }
-    class TagStore {
-        getAll():Array<Tag>;
-        addTag(tag:Tag): Promise<any>;
-    }
-    interface Document {
-        file:string;
-        tags:Array<Tag>;
-    }
-
+    
     interface Store {
-        tag: TagStore;
-        document:any;
+        tag:  TagStore;
+        document: DocumentStore;
     }
 }

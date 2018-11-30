@@ -33,7 +33,7 @@ describe('Tag suggestion engine', function () {
 
 
     it('throws an exception if no tag store is provided', function () {
-        return tagSuggestion.suggestTag('any').
+        return tagSuggestion.suggestTag('any',null).
             then(
                 () => expect.fail("should have thrown an exception"),
                 (err) => assert.instanceOf(err, Error)
