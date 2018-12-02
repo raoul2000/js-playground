@@ -1,11 +1,19 @@
 declare namespace TMD {
 
-    // Tag ////////////////////////////////////////////////////////
-    
-    interface Tag {
-        name:string;
-        level:number;
+    // Tag ///////////////////////////////////////////////////////////
+
+    interface TagProperties {
+        name?:string;
+        level?:number;
     }
+
+    interface Tag {
+        getName():string;
+        getLevel():number;
+        properties():any;
+        clone(o?:any): Tag;
+    }
+
     interface TagStore {
         getAll() : Promise<Array<Tag>>;
         addTag(tag:Tag): Promise<any>;

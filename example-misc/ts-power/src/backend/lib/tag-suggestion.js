@@ -13,7 +13,10 @@ module.exports.suggestTag = (inputText, store) => new Promise((resolve, reject) 
     } else {
         store.tag.getAll().
             then((tags) => {
-                const fuse = new Fuse(tags, {
+                const tagProps = tags.map( (tag) => ({ 
+                    "name" : tag.getName()
+                }));
+                const fuse = new Fuse(tagProps, {
                     "shouldSort": true,
                     "includeScore": true,
                     "tokenize": true,                     

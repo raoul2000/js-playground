@@ -3,6 +3,7 @@
 const {assert} = require('chai');
 const NedbStore = require('nedb');
 const TagStore = require("../src/backend/store/tag-store");
+const Tag = require("../src/backend/lib/tag");
 
 /**
  * @type {TMD.TagStore}
@@ -15,10 +16,10 @@ describe('Tag store', function () {
     });
 
     it('adds a tag to the store', function () {
-        return store.addTag({
+        return store.addTag(Tag.create({
             "name" : "sport",
             "level" : 0
-        }).
+        })).
             then( 
                 (doc) => {
                     assert.isNotNull(doc);
