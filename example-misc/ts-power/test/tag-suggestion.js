@@ -1,34 +1,30 @@
 /* eslint-disable no-undef */
 
 const {assert, expect} = require('chai');
-const NedbStore = require('nedb');
 const tagSuggestion = require('../src/backend/lib/tag-suggestion.js');
-const TagStore = require("../src/backend/store/tag-store");
-
+const Tag = require('../src/backend/lib/tag');
+const Store = require('../src/backend/store/store');
 
 /**
  * @type {TMD.Store} a test data store
  */
-let store = {
-    "tag": new TagStore(new NedbStore()),
-    "document": null
-};
+let store = new Store();
 
 describe('Tag suggestion engine', function () {
 
     before(() => Promise.all([
-        store.tag.addTag({
+        store.addTag(Tag.create({
             "name": "tag1",
             "level": 0
-        }),
-        store.tag.addTag({
+        })),
+        store.addTag(Tag.create({
             "name": "tag2 tag",
             "level": 0
-        }),
-        store.tag.addTag({
+        })),
+        store.addTag(Tag.create({
             "name": "tag3",
             "level": 0
-        })
+        }))
     ]));
 
 

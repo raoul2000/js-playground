@@ -26,7 +26,7 @@ const Tag = function(name, level) {
  * with this tag's properties to produce initialization values for the returned tag
  * object instance.
  * 
- * @param {TMD.TagProperties|null} o hash object holding initialization properties
+ * @param {TMD.TagProperties} [o] hash object holding initialization properties
  * @returns {TMD.Tag} the cloned tag object instance
  */
 Tag.prototype.clone = function(o) {

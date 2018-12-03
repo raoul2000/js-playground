@@ -47,7 +47,7 @@ TagStore.prototype.addTag = function(tagData) {
 /**
  * Returns a list of tags currently in the store.
  * 
- * @return {Promise<Array<TMD.Tag>>} list of all tags in the store
+ * @return {Promise<Array<TMD.TagProperties>>} list of all tags in the store
  */
 TagStore.prototype.getAll = function () {
 

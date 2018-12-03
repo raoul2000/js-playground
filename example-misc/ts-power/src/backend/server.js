@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 
 const serviceTagSuggestion = require('./endpoint/tag-suggestion.js');
+const Store = require('./store/store');
 const DEFAULT_PORT = 3000;
 const DEFAULT_DATA_PATH = process.cwd();
 
@@ -17,7 +18,7 @@ const dataPath = path.resolve(cli.dataPath || DEFAULT_DATA_PATH);
 
 // INIT app ////////////////////////////////////////////////////////////
 
-const store = require('./store/store.js').init();
+const store = new Store();
 
 // INIT Server ////////////////////////////////////////////////////////////
 

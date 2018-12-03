@@ -1,5 +1,16 @@
 declare namespace TMD {
 
+    // Store /////////////////////////////////////////////////////////
+
+    interface Store {
+        getTagStore() : TagStore;
+        getDocumentStore() : DocumentStore;
+        getAllTags() : Promise<Array<TagProperties>>;
+        addTag(tag:Tag): Promise<any>;
+        getAllDocuments() : Promise<Array<Document>>;
+        addDocument(document:Document): Promise<Document>;
+    }
+
     // Tag ///////////////////////////////////////////////////////////
 
     interface TagProperties {
@@ -15,7 +26,7 @@ declare namespace TMD {
     }
 
     interface TagStore {
-        getAll() : Promise<Array<Tag>>;
+        getAll() : Promise<Array<TagProperties>>;
         addTag(tag:Tag): Promise<any>;
         getStoreImplementation(): any;
     }
@@ -40,10 +51,5 @@ declare namespace TMD {
          * The string used to generate suggestions
          */
         input:string;
-    }
-    
-    interface Store {
-        tag:  TagStore;
-        document: DocumentStore;
-    }
+    }    
 }
