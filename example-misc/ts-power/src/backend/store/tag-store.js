@@ -62,4 +62,17 @@ TagStore.prototype.getAll = function () {
     });
 };
 
+TagStore.prototype.getTagByName = function (tagName) {
+
+    return new Promise( (resolve, reject) => {
+        this.getStoreImplementation().find({ "name" : tagName}, (err, docs) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        });
+    });
+};
+
 module.exports = TagStore;

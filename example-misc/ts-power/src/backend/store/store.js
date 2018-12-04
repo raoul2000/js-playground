@@ -58,4 +58,6 @@ const Store = function() {
     this.getAllDocuments = () => docStore.getAll();
 };
 
+Store.prototype.getTagByName = (tagName) => this.getTagStore.getTagByName(tagName);
+
 module.exports = Store;

@@ -4,9 +4,11 @@ declare namespace TMD {
 
     interface Store {
         getTagStore() : TagStore;
-        getDocumentStore() : DocumentStore;
         getAllTags() : Promise<Array<TagProperties>>;
         addTag(tag:Tag): Promise<any>;
+        getTagByName(tagName:string): Tag;
+        
+        getDocumentStore() : DocumentStore;
         getAllDocuments() : Promise<Array<Document>>;
         addDocument(document:Document): Promise<Document>;
     }
@@ -23,6 +25,7 @@ declare namespace TMD {
         getLevel():number;
         properties():any;
         clone(o?:any): Tag;
+        getTagByName(tagName:string): Tag;
     }
 
     interface TagStore {
