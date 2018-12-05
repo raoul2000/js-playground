@@ -62,10 +62,10 @@ TagStore.prototype.getAll = function () {
     });
 };
 
-TagStore.prototype.getTagByName = function (tagName) {
+TagStore.prototype.getTagById = function (tagId) {
 
     return new Promise( (resolve, reject) => {
-        this.getStoreImplementation().find({ "name" : tagName}, (err, docs) => {
+        this.getStoreImplementation().find({ "name" : tagId}, (err, docs) => {
             if(err) {
                 reject(err);
             } else {

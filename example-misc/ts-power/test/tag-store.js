@@ -36,7 +36,7 @@ describe('Tag store', function () {
     });
 
     it('finds a tag by Name', function () {
-        return store.getTagByName('holidays').
+        return store.getTagById('holidays').
             then( 
                 (tag) => {
                     assert.isNotNull(tag);

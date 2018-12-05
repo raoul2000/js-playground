@@ -6,7 +6,7 @@ declare namespace TMD {
         getTagStore() : TagStore;
         getAllTags() : Promise<Array<TagProperties>>;
         addTag(tag:Tag): Promise<any>;
-        getTagByName(tagName:string): Tag;
+        getTagById(tagId:string): Tag;
         
         getDocumentStore() : DocumentStore;
         getAllDocuments() : Promise<Array<Document>>;
@@ -25,7 +25,7 @@ declare namespace TMD {
         getLevel():number;
         properties():any;
         clone(o?:any): Tag;
-        getTagByName(tagName:string): Tag;
+        getTagById(tagId:string): Tag;
     }
 
     interface TagStore {
