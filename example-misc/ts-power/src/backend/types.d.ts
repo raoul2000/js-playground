@@ -25,7 +25,6 @@ declare namespace TMD {
         getLevel():number;
         properties():any;
         clone(o?:any): Tag;
-        getTagById(tagId:string): Tag;
     }
 
     interface TagStore {

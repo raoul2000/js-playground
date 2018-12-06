@@ -62,10 +62,16 @@ TagStore.prototype.getAll = function () {
     });
 };
 
+/**
+ * Returns a tag selected by its Identifier.
+ * 
+ * @param {any} tagId a Tag identifier
+ * @returns {Promise<TMD.Tag>} promise of a tag
+ */
 TagStore.prototype.getTagById = function (tagId) {
 
     return new Promise( (resolve, reject) => {
-        this.getStoreImplementation().find({ "name" : tagId}, (err, docs) => {
+        this.getStoreImplementation().find({"name" : tagId}, (err, docs) => {
             if(err) {
                 reject(err);
             } else {
