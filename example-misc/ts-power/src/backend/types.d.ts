@@ -35,9 +35,16 @@ declare namespace TMD {
 
     // Document ////////////////////////////////////////////////////////
 
-    interface Document {
+    interface DocumentProperties {
         file:string;
         readonly tags:Array<Tag>;
+    }
+
+    interface Document {
+        getName():string;
+        getLevel():number;
+        properties():any;
+        clone(o?:any): Document;
     }
 
     interface DocumentStore {
