@@ -1,5 +1,3 @@
-
-
 /**
  * DocumentStore is an abstraction around persistent document storage.
  * (in this case nedb)
@@ -27,7 +25,11 @@ const DocumentStore = function (nedbStore) {
      * @returns {Promise<TMD.Document>}  Promise resolved by the document added to the store
      */
     this.addDocument = (documentData) => new Promise((resolve, reject) => {
-        dataStore.insert(documentData, (err, doc) => {
+        const record = Object.assign(documentData.properties(), {
+            "tags" : documentData.getTags().map( (tag) => tag.properties())
+        });
+
+        dataStore.insert(record, (err, doc) => {
             if (err) {
                 reject(err);
             } else {

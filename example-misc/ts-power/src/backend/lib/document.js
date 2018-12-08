@@ -10,14 +10,17 @@ const Document = function(name) {
     }
     // private properties
     let property = {
-        "name" : name
+        "name" : name,
+        "tags" : []
     };
     // getters
     this.getName = () => property.name;
+    this.getTags = () => property.tags;
 };
 
 /**
- * Creates a Document object inistance from a hash object.
+ * Creates a Document object instance from a hash object.
+ * This function does not add tags to the document.
  * 
  * @param {TMD.DocumentProperties} o object
  * @return {TMD.Document} the created Document object instance
@@ -36,7 +39,8 @@ Document.create = function(o) {
  */
 Document.prototype.properties = function() {
     return {
-        "name" : this.getName()
+        "name" : this.getName(),
+        "tags" : this.getTags()
     };
 };
 

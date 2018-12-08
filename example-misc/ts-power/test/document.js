@@ -3,13 +3,19 @@
 const mocha = require('mocha');
 const {assert} = require('chai');
 const Document = require("../src/backend/lib/document");
-
+const Tag = require("../src/backend/lib/tag");
 
 mocha.describe('Document class', function () {
 
     mocha.it('can be instanciated with "new"', function () {
         const doc = new Document("letter");
         assert.equal(doc.getName(), "letter");
+    });
+
+    mocha.it('has no tags after creation', function () {
+        const doc = new Document("invoice");
+        assert.isArray(doc.getTags());
+        assert.equal(doc.getTags().length, 0);
     });
 
     mocha.it('can be instanciated with "Document.create"', function () {
@@ -19,12 +25,26 @@ mocha.describe('Document class', function () {
         assert.equal(doc.getName(), "invoice");
     });
 
+    mocha.it('does has tags when created with "Document.create"', function () {
+        const doc = Document.create({ 
+            "name" : "invoice",
+            "tags" : [ 
+                new Tag("A",0), 
+                new Tag("A",0)
+            ]
+        });
+        assert.equal(doc.getName(), "invoice");
+        assert.isArray(doc.getTags());
+        assert.equal(doc.getTags().length, 0);
+    });
+
     mocha.it('can provide a hash object of its properties', function () {
         const doc = new Document("invoice");
         const properties = doc.properties();
 
         assert.deepEqual(properties, {
-            "name" : "invoice"
+            "name" : "invoice",
+            "tags" : []
         });
     });
 
@@ -37,11 +57,13 @@ mocha.describe('Document class', function () {
         }));
 
         assert.deepEqual(doc1.properties(), {
-            "name" : "invoice"
+            "name" : "invoice",
+            "tags" : []
         });
 
         assert.deepEqual(doc2.properties(), {
-            "name" : "sport"
+            "name" : "sport",
+            "tags" : []
         });
     });
 
