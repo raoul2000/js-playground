@@ -1,7 +1,7 @@
-const tagSuggestion = require('../lib/tag-suggestion.js');
+const findDocument = require('../lib/find-document.js');
 
 /**
- * Handle Tag suggestion end point
+ * comments ...
  * 
  * @param {import('express').Request} req client request
  * @param {import('express').Response} res  server response
@@ -12,9 +12,13 @@ const tagSuggestion = require('../lib/tag-suggestion.js');
 // eslint-disable-next-line max-params
 const runImpl = (req, res, next, store) => {
 
-    const input = req.query.input || null;
 
-    res.json(tagSuggestion.suggestTag(input, store));
+    const tags = (req.query.tags || []).
+        split(',').
+        map( (tag) => tag.trim() ).
+        filter( (tag) => tag.length  );
+
+    res.json(findDocument.find(tags, store));
 };
 
 module.exports = {
