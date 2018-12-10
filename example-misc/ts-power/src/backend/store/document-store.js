@@ -59,6 +59,20 @@ DocumentStore.prototype.getAll = function () {
     });
 };
 /**
+ * 
+ */
+DocumentStore.prototype.findByTags = function (tags) {
+    return new Promise( (resolve, reject) => {
+        this.getStoreImplementation().find({}, (err, docs) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        });
+    });
+};
+/**
  * @type {TMD.DocumentStore}
  */
 module.exports = DocumentStore;
