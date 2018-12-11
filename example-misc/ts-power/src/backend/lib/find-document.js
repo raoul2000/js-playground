@@ -9,5 +9,8 @@ module.exports.find = (tags, store) => new Promise((resolve, reject) => {
     if ( !store ) {
         reject(new Error('missing store parameter'));
     }
-    //TODO: implement me !!
+
+    // find tags and get tag Ids
+    // find documents having tag Ids
+
 });
