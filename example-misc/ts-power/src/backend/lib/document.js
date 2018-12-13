@@ -1,19 +1,22 @@
 /**
  * Document Object.
  * 
+ * @param {string} id the document identifier
  * @param {string} name the name of the document 
  * @returns {void} 
  */
-const Document = function(name) {
+const Document = function(id, name) {
     if( !name) {
         throw new Error('missing argument : "name" property is required');
     }
     // private properties
     let property = {
+        "id" : id,
         "name" : name,
         "tags" : []
     };
     // getters
+    this.getId = () => property.id;
     this.getName = () => property.name;
     this.getTags = () => property.tags;
 };
@@ -29,9 +32,9 @@ Document.create = function(o) {
     if( !o ) {
         throw new Error("object argument required to create Document instance");
     }
-    let {name} = o;
+    let {id, name} = o;
 
-    return new Document(name);
+    return new Document(id, name);
 };
 
 /**
@@ -39,6 +42,7 @@ Document.create = function(o) {
  */
 Document.prototype.properties = function() {
     return {
+        "id" : this.getId(),
         "name" : this.getName(),
         "tags" : this.getTags()
     };

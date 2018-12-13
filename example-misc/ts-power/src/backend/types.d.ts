@@ -36,11 +36,13 @@ declare namespace TMD {
     // Document ////////////////////////////////////////////////////////
 
     interface DocumentProperties {
+        id:string;
         name?:string;
         tags?:Array<Tag>;
     }
 
     interface Document {
+        getId():string;
         getName():string;
         properties():any;
         getTags():Array<Tag>

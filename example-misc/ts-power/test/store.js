@@ -31,7 +31,7 @@ describe('General Store', function () {
     });
 
     it('adds a document to the store', function () {
-        const doc1 = new Document('invoice');
+        const doc1 = new Document("id1",'invoice');
         doc1.getTags().push(
             new Tag("T1",0),
             new Tag("T2",0),
