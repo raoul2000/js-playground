@@ -33,8 +33,8 @@ mocha.describe('Document class', function () {
             "id" : "id1", 
             "name" : "invoice",
             "tags" : [ 
-                new Tag("A",0), 
-                new Tag("A",0)
+                new Tag("id1","A",0), 
+                new Tag("id1","A",0)
             ]
         });
         assert.equal(doc.getId(), "id1");

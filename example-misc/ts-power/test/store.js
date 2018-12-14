@@ -18,6 +18,7 @@ describe('General Store', function () {
 
     it('adds a tag to the store', function () {
         return store.addTag(Tag.create({
+            "id" : "id1",
             "name" : "sport",
             "level" : 0
         })).
@@ -33,9 +34,9 @@ describe('General Store', function () {
     it('adds a document to the store', function () {
         const doc1 = new Document("id1",'invoice');
         doc1.getTags().push(
-            new Tag("T1",0),
-            new Tag("T2",0),
-            new Tag("T3",0)
+            new Tag("id1","T1",0),
+            new Tag("id1","T2",0),
+            new Tag("id1","T3",0)
         );
 
         return store.addDocument(doc1).

@@ -16,11 +16,13 @@ declare namespace TMD {
     // Tag ///////////////////////////////////////////////////////////
 
     interface TagProperties {
+        id:string;
         name?:string;
         level?:number;
     }
 
     interface Tag {
+        getId():string;
         getName():string;
         getLevel():number;
         properties():any;
