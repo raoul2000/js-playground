@@ -15,6 +15,7 @@ describe('Tag store', function () {
         store = new TagStore(new NedbStore());
         Promise.all([
             Tag.create({
+                "id" : null,
                 "name" : "holidays",
                 "level" : 1
             })
@@ -23,6 +24,7 @@ describe('Tag store', function () {
 
     it('adds a tag to the store', function () {
         return store.addTag(Tag.create({
+            "id" : null,
             "name" : "sport",
             "level" : 0
         })).
@@ -30,6 +32,7 @@ describe('Tag store', function () {
                 (doc) => {
                     assert.isNotNull(doc);
                     assert.isTrue(doc.hasOwnProperty('_id'));
+                    store.getAll().then( (tag) => console.log)
                 },
                 (err) => assert.instanceOf(err, Error)
             );
@@ -41,7 +44,7 @@ describe('Tag store', function () {
                 (tag) => {
                     assert.isNotNull(tag);
                     console.log(tag);
-                    //assert.isTrue(doc.hasOwnProperty('_id'));
+                    //  assert.isTrue(doc.hasOwnProperty('_id'));
                 },
                 (err) => assert.instanceOf(err, Error)
             );

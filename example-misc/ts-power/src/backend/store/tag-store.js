@@ -24,17 +24,22 @@ const TagStore = function (nedbStore) {
 /**
  * Add a single tag to the store.
  * 
- * @param {TMD.Tag} tagData the tag to add
+ * @param {TMD.Tag} tag the tag to add
  * @returns {Promise<any>}  Promise resolved by the document added to the store
  */
-TagStore.prototype.addTag = function(tagData) {
+TagStore.prototype.addTag = function(tag) {
 
     return new Promise((resolve, reject) => {
         /**
          * @type {Nedb}
          */
-        const store = this.getStoreImplementation();        
-        store.insert(tagData, (err, doc) => {
+        const store = this.getStoreImplementation();      
+        
+        const tagProperties = Object.assign({
+            "_id" : tag.getName()
+        }, tag.properties());
+
+        store.insert(tagProperties, (err, doc) => {
             if (err) {
                 reject(err);
             } else {
@@ -71,13 +76,18 @@ TagStore.prototype.getAll = function () {
 TagStore.prototype.getTagById = function (tagId) {
 
     return new Promise( (resolve, reject) => {
-        this.getStoreImplementation().find({"name" : tagId}, (err, docs) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(docs);
-            }
-        });
+        if(  tagId  ) {
+
+            this.getStoreImplementation().findOne({"_id" : tagId}, (err, docs) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(docs);
+                }
+            });
+        } else {
+            reject(new Error("missing tag ID"));
+        }
     });
 };
 
