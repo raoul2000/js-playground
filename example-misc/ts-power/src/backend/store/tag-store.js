@@ -1,3 +1,5 @@
+/* eslint-disable prefer-reflect */
+/* eslint-disable no-underscore-dangle */
 
 
 /**
@@ -60,7 +62,12 @@ TagStore.prototype.getAll = function () {
             if(err) {
                 reject(err);
             } else {
-                resolve(docs);
+                resolve(docs.map( (doc) => {
+                    doc.id = doc._id;
+                    delete doc._id;
+
+                    return doc;
+                }));
             }
         });
     });

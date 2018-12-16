@@ -2,9 +2,14 @@
 const cli = require('commander');
 const path = require('path');
 const express = require('express');
+const cors = require('cors');
+const Fixture = require('./store/fixture.js');
 
 const serviceTagSuggestion = require('./endpoint/tag-suggestion.js');
+const tags = require('./endpoint/tags.js');
+
 const Store = require('./store/store');
+
 const DEFAULT_PORT = 3000;
 const DEFAULT_DATA_PATH = process.cwd();
 
@@ -25,18 +30,26 @@ const store = new Store();
 const app = express();
 
 app.use(express.static(dataPath));
+app.use(cors());
 
 app.get('/api/tag/suggestion', function (req, res, next) {
     serviceTagSuggestion.run(req, res, next, store);
 });
 
-app.listen(port, function () {
-    console.log("\n\n:::: Server Ready");
-    console.log(`listening on port ${port}`);
-    console.log(`serving responses from ${dataPath}`);
-    console.log(`   http://127.0.0.1:${port}`);
-    console.log(`   http://localhost:${port}`);
-    console.log("(Ctrl + C to stop)");
+app.get('/api/tags', function (req, res, next) {
+    tags.run(req, res, next, store);
 });
+
+Fixture.tags(store).
+    then( () => {
+        app.listen(port, function () {
+            console.log("\n\n:::: Server Ready");
+            console.log(`listening on port ${port}`);
+            console.log(`serving files from ${dataPath}`);
+            console.log(`   http://127.0.0.1:${port}`);
+            console.log(`   http://localhost:${port}`);
+            console.log("(Ctrl + C to stop)");
+        });
+    });
 
 
