@@ -30,16 +30,15 @@ const TagStore = function (nedbStore) {
 TagStore.prototype.addTag = function(tag) {
 
     return new Promise((resolve, reject) => {
-        /**
-         * @type {Nedb}
-         */
-        const store = this.getStoreImplementation();      
-        
+    
         const tagProperties = Object.assign({
             "_id" : tag.getName()
         }, tag.properties());
 
-        store.insert(tagProperties, (err, doc) => {
+        // eslint-disable-next-line prefer-reflect
+        delete tagProperties.id;
+
+        this.getStoreImplementation().insert(tagProperties, (err, doc) => {
             if (err) {
                 reject(err);
             } else {
@@ -77,17 +76,36 @@ TagStore.prototype.getTagById = function (tagId) {
 
     return new Promise( (resolve, reject) => {
         if(  tagId  ) {
-
-            this.getStoreImplementation().findOne({"_id" : tagId}, (err, docs) => {
+            this.getStoreImplementation().findOne({"_id" : tagId}, (err, numRemoved) => {
                 if(err) {
                     reject(err);
                 } else {
-                    resolve(docs);
+                    resolve(numRemoved);
                 }
             });
         } else {
             reject(new Error("missing tag ID"));
         }
+    });
+};
+
+/**
+ * Remove a tag from the store by tag Id.
+ * 
+ * @param {any} tagId a Tag identifier
+ * @returns {Promise<number>} promise resolved with the number of delete tags which
+ * is always 1
+ */
+TagStore.prototype.delete = function (tagId) {
+
+    return new Promise( (resolve, reject) => {
+        this.getStoreImplementation().remove({"_id" : tagId}, {}, (err, docs) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        });
     });
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 /* eslint-disable no-undef */
 
 const {assert} = require('chai');
@@ -11,14 +12,15 @@ const Tag = require("../src/backend/lib/tag");
 let store = null;
 
 describe('Tag store', function () {
+
     this.beforeEach( (done) => {
         store = new TagStore(new NedbStore());
         Promise.all([
-            Tag.create({
+            store.addTag(Tag.create({
                 "id" : null,
                 "name" : "holidays",
                 "level" : 1
-            })
+            }))
         ]).then( () => done());
     });
 
@@ -32,21 +34,49 @@ describe('Tag store', function () {
                 (doc) => {
                     assert.isNotNull(doc);
                     assert.isTrue(doc.hasOwnProperty('_id'));
-                    store.getAll().then( (tag) => console.log)
                 },
-                (err) => assert.instanceOf(err, Error)
+                () => assert.fail()
             );
     });
 
-    it('finds a tag by Name', function () {
+    it('removes a tag from the store', function () {
+        return store.delete("holidays").
+            then( 
+                (number) => {
+                    assert.equal(number, 1);
+                    store.getTagById("holidays").
+                        then(
+                            (result) => assert.isNull(result),
+                            (err) => assert.fail(err)
+                        );
+                },
+                () => assert.fail()
+            );
+    });
+
+    it('fails to add a tag with existing id', function () {
+        return store.addTag(Tag.create({
+            "name" : "holidays",
+            "level" : 0
+        })).
+            then( 
+                () =>  assert.fail(),
+                (err) =>  assert.equal(err.errorType,'uniqueViolated')
+            );
+    });
+
+    it('finds a tag by ID', function () {
         return store.getTagById('holidays').
             then( 
                 (tag) => {
-                    assert.isNotNull(tag);
-                    console.log(tag);
-                    //  assert.isTrue(doc.hasOwnProperty('_id'));
+                    assert.deepEqual(tag, {
+                        // @ts-ignore
+                        "_id": 'holidays', 
+                        "name": 'holidays', 
+                        "level": 1
+                    });
                 },
-                (err) => assert.instanceOf(err, Error)
+                () => assert.fail()
             );
     });
 });

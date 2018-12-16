@@ -16,7 +16,7 @@ declare namespace TMD {
     // Tag ///////////////////////////////////////////////////////////
 
     interface TagProperties {
-        id:string;
+        id?:string;
         name?:string;
         level?:number;
     }
@@ -33,6 +33,7 @@ declare namespace TMD {
         getAll() : Promise<Array<TagProperties>>;
         addTag(tag:Tag): Promise<any>;
         getTagById(tagId:string): Promise<Tag>;
+        delete(tagId:string): Promise<number>;
         getStoreImplementation(): any;
     }
 

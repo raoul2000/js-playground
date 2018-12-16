@@ -42,7 +42,6 @@ describe('General Store', function () {
         return store.addDocument(doc1).
             then( 
                 (doc) => {
-                    console.log(JSON.stringify(doc));
                     assert.isNotNull(doc);
                     assert.isTrue(doc.hasOwnProperty('_id'));
                 },
