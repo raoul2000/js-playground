@@ -1,6 +1,7 @@
 
 /**
  * Tag Object.
+ * Create a new tag instance
  * 
  * @param {string} id the tag identifier
  * @param {string} name the name of the tag 
