@@ -1,5 +1,11 @@
 const HttpStatus = require('http-status-codes');
 
+const defaultErrorHandler = (err, res) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).
+    send({ 
+        "error": err, 
+        "message": 'Something failed!' 
+    });
+
 /**
  * Returns the list of all tags
  * 
@@ -10,18 +16,23 @@ const HttpStatus = require('http-status-codes');
  * @return {void} 
  */
 // eslint-disable-next-line max-params
-const runImpl = (req, res, next, store) => {
+const getAllTags = (req, res, next, store) => {
     store.getAllTags().
         then(
             (tags) => res.json(tags),
-            (err) =>  res.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                send({ 
-                    "error": err, 
-                    "message": 'Something failed!' 
-                })
+            (err) => defaultErrorHandler(err,res)
+        );
+};
+
+const getById = (tagId, res, store) => {
+    store.getTagById(tagId).
+        then(
+            (tag) => res.json(tag),
+            (err) => defaultErrorHandler(err,res) 
         );
 };
 
 module.exports = {
-    "run" : runImpl
+    "getAllTags" : getAllTags,
+    "getById" : getById
 };

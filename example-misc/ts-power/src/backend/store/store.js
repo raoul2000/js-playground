@@ -56,9 +56,9 @@ const Store = function() {
      * @return {Promise<Array<TMD.Document>>} list of all documents in the store
      */
     this.getAllDocuments = () => docStore.getAll();
-};
 
-Store.prototype.getTagById = (tagId) => this.getTagStore().getTagById(tagId);
-Store.prototype.findByTags = (tags) => this.getDocumentStore().findByTags(tags);
+    this.getTagById = (tagId) => this.getTagStore().getTagById(tagId);
+    this.findByTags = (tags) => this.getDocumentStore().findByTags(tags);
+};
 
 module.exports = Store;
