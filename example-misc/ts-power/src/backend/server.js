@@ -3,10 +3,11 @@ const cli = require('commander');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const Fixture = require('./store/fixture.js');
 
-const serviceTagSuggestion = require('./endpoint/tag-suggestion.js');
-const tags = require('./endpoint/tags.js');
+const serviceTagSuggestion = require('./resource/tag-suggestion.js');
+const tags = require('./resource/tags.js');
 
 const Store = require('./store/store');
 
@@ -30,8 +31,11 @@ const store = new Store();
 
 const app = express();
 
+app.use(bodyParser.urlencoded({"extended": true}));
+app.use(bodyParser.json());
 app.use(express.static(dataPath));
 app.use(cors());
+
 /**
  * Ressource URI
  * GET /documents : get all documents
@@ -47,6 +51,7 @@ app.use(cors());
  * 
  * [OK] : GET /tags : get all tags
  * |OK] : GET /tags/{tagId} : get tag with given id
+ * |  ] : POST /tags/{tagId} : create new tag
  * PUT /tags/{tagId} : update tag with given id
  * DELETE /tags/{tagId} : delete tag with given id
  * 
@@ -67,6 +72,10 @@ app.get(`${API_BASE_PATH}/tags`, function (req, res, next) {
 app.get(`${API_BASE_PATH}/tags/:id`, function (req, res) {
     let {id} = req.params;
     tags.getById(id, res, store);
+});
+
+app.post(`${API_BASE_PATH}/tags`, function (req, res) {
+    tags.create(res, store);
 });
 
 

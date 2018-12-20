@@ -32,7 +32,12 @@ const getById = (tagId, res, store) => {
         );
 };
 
+const create = (res, store) => {
+    res.json({ "message" : "not implemented"});
+};
+
 module.exports = {
     "getAllTags" : getAllTags,
-    "getById" : getById
+    "getById" : getById,
+    "create" : create
 };
