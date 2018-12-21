@@ -59,6 +59,8 @@ const Store = function() {
 
     this.getTagById = (tagId) => this.getTagStore().getTagById(tagId);
     this.findByTags = (tags) => this.getDocumentStore().findByTags(tags);
+    this.deleteTag = (tagId) => this.getTagStore().delete(tagId);
+    this.updateTag = ( tagId, tagProperties) => this.getTagStore().update(tagId, tagProperties);
 };
 
 module.exports = Store;

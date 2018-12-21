@@ -4,6 +4,8 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const HttpStatus = require('http-status-codes');
+
 const Fixture = require('./store/fixture.js');
 
 const serviceTagSuggestion = require('./resource/tag-suggestion.js');
@@ -36,6 +38,13 @@ app.use(bodyParser.json());
 app.use(express.static(dataPath));
 app.use(cors());
 
+
+const defaultErrorHandler = (err, res) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).
+    send({ 
+        "error" : err,
+        "errorMessage": err.message || 'Something went wrong ... but I`m not sure to know what' 
+    });
+
 /**
  * Ressource URI
  * GET /documents : get all documents
@@ -64,20 +73,94 @@ app.get(`${API_BASE_PATH}/tag/suggestion`, function (req, res, next) {
  * GET /tags : get all tags
  */
 app.get(`${API_BASE_PATH}/tags`, function (req, res, next) {
-    tags.getAllTags(req, res, next, store);
+    try {
+        tags.getAllTags(store).
+            then(
+                (responseBody) => res.json(responseBody),
+                (error) => defaultErrorHandler(error,res)
+            );
+    } catch (error) {
+        console.error(error);
+        defaultErrorHandler(error,res);        
+    }
 });
 /**
  * GET /tags/{tagId} : get tag with given id
  */
 app.get(`${API_BASE_PATH}/tags/:id`, function (req, res) {
-    let {id} = req.params;
-    tags.getById(id, res, store);
+    try {
+        let {id} = req.params;
+        tags.getById(id, store).
+            then(
+                (responseBody) => res.json(responseBody),
+                (error) => defaultErrorHandler(error,res)
+            );
+    } catch (error) {
+        console.error(error);
+        defaultErrorHandler(error,res);        
+    }
 });
 
+/**
+ * DELETE /tags/{tagId} : delete tag with given id
+ */
+app.delete(`${API_BASE_PATH}/tags/:id`, function (req, res) {
+    try {
+        let {id} = req.params;
+        tags.delete(id, store).
+            then(
+                (responseBody) => res.json(responseBody),
+                (error) => defaultErrorHandler(error,res)
+            );
+    } catch (error) {
+        console.error(error);
+        defaultErrorHandler(error,res);        
+    }
+});
+
+/**
+ * POST /tags : create a new tag
+ */
 app.post(`${API_BASE_PATH}/tags`, function (req, res) {
-    tags.create(res, store);
+
+    try {
+        let tagProperties = {
+            "name" : req.body.name
+        };
+    
+        tags.create(tagProperties, store).
+            then(
+                (responseBody) => res.json(responseBody),
+                (error) => defaultErrorHandler(error,res)
+            );
+    } catch (error) {
+        console.error(error);
+        defaultErrorHandler(error,res);        
+    }
 });
 
+/**
+ * PUT /tags : create a new tag
+ */
+app.put(`${API_BASE_PATH}/tags/:id`, function (req, res) {
+
+    try {
+        let {id} = req.params;
+
+        let tagProperties = {
+            "name" : req.body.name
+        };
+    
+        tags.update(id, tagProperties, store).
+            then(
+                (responseBody) => res.json(responseBody),
+                (error) => defaultErrorHandler(error,res)
+            );
+    } catch (error) {
+        console.error(error);
+        defaultErrorHandler(error,res);        
+    }
+});
 
 
 

@@ -1,43 +1,28 @@
-const HttpStatus = require('http-status-codes');
+const Tag = require("../lib/tag");
 
-const defaultErrorHandler = (err, res) => res.status(HttpStatus.INTERNAL_SERVER_ERROR).
-    send({ 
-        "error": err, 
-        "message": 'Something failed!' 
-    });
 
-/**
- * Returns the list of all tags
- * 
- * @param {import('express').Request} req client request
- * @param {import('express').Response} res  server response
- * @param {import('express').NextFunction} next the express next function
- * @param {TMD.Store} store the main data store
- * @return {void} 
- */
 // eslint-disable-next-line max-params
-const getAllTags = (req, res, next, store) => {
-    store.getAllTags().
-        then(
-            (tags) => res.json(tags),
-            (err) => defaultErrorHandler(err,res)
-        );
+const getAllTags = (store) => store.getAllTags();
+
+const getById = (tagId,  store) => store.getTagById(tagId);
+
+const create = (tagProperties, store) => {
+    let tag = Tag.create(tagProperties);
+
+    return store.addTag(tag);
 };
 
-const getById = (tagId, res, store) => {
-    store.getTagById(tagId).
-        then(
-            (tag) => res.json(tag),
-            (err) => defaultErrorHandler(err,res) 
-        );
-};
+const deleteTag = (tagId, store) => store.deleteTag(tagId).
+    then( (affectedRowsCount) => ({"affectedRows" : affectedRowsCount}));
 
-const create = (res, store) => {
-    res.json({ "message" : "not implemented"});
+const update =  (tagId, tagProperties, store) => {
+    return store.updateTag(tagId, tagProperties);
 };
 
 module.exports = {
     "getAllTags" : getAllTags,
     "getById" : getById,
-    "create" : create
+    "create" : create,
+    "delete" : deleteTag,
+    "update" : update
 };

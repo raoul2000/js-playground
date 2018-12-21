@@ -7,6 +7,7 @@ declare namespace TMD {
         getAllTags() : Promise<Array<TagProperties>>;
         addTag(tag:Tag): Promise<any>;
         getTagById(tagId:string): Promise<Tag>;
+        deleteTag(tagId:string): Promise<any>;
         
         getDocumentStore() : DocumentStore;
         getAllDocuments() : Promise<Array<Document>>;
