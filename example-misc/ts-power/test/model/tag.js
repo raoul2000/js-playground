@@ -2,7 +2,7 @@
 
 const mocha = require('mocha');
 const {assert} = require('chai');
-const Tag = require("../src/backend/lib/tag");
+const Tag = require("../../src/backend/lib/tag");
 
 
 mocha.describe('Tag class', function () {

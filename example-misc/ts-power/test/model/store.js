@@ -2,9 +2,9 @@
 /* eslint-disable no-undef */
 
 const {assert} = require('chai');
-const Store = require("../src/backend/store/store");
-const Tag = require("../src/backend/lib/tag");
-const Document = require("../src/backend/lib/document");
+const Store = require("../../src/backend/store/store");
+const Tag = require("../../src/backend/lib/tag");
+const Document = require("../../src/backend/lib/document");
 
 /**
  * @type {TMD.Store}

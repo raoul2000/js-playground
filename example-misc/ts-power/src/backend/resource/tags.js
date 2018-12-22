@@ -12,6 +12,13 @@ const create = (tagProperties, store) => {
     return store.addTag(tag);
 };
 
+/**
+ * Delete a Tag given its id.
+ * 
+ * @param {string} tagId tag Identifier
+ * @param {TMD.Store} store the Gneral store 
+ * @returns {Promise<TMD.DeleteTagResponse>} operation result
+ */
 const deleteTag = (tagId, store) => store.deleteTag(tagId).
     then( (affectedRowsCount) => ({"affectedRows" : affectedRowsCount}));
 

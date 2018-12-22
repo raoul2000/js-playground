@@ -67,4 +67,8 @@ declare namespace TMD {
          */
         input:string;
     }    
+
+    interface DeleteTagResponse {
+        affectedRows:number;
+    }
 }
