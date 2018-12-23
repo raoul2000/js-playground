@@ -162,16 +162,30 @@ app.put(`${API_BASE_PATH}/tags/:id`, function (req, res) {
     }
 });
 
+// ///////////////////////////////////////////////////////////////////////
 
+const startServer = (showConsole) => new Promise( (resolve) => {
+    let server = app.listen(port, function () {
+        if( showConsole ) {
+            console.log(`
+    
+::: Server Ready
+listening on port ${port}
+serving files from ${dataPath}
+    http://127.0.0.1:${port}
+    http://localhost:${port}
+(Ctrl + C to stop)`);
 
-Fixture.tags(store).
-    then( () => {
-        app.listen(port, function () {
-            console.log("\n\n:::: Server Ready");
-            console.log(`listening on port ${port}`);
-            console.log(`serving files from ${dataPath}`);
-            console.log(`   http://127.0.0.1:${port}`);
-            console.log(`   http://localhost:${port}`);
-            console.log("(Ctrl + C to stop)");
-        });
+        }
+        resolve(server);
     });
+});
+
+const startServerTest = () => Fixture.tags(store).
+    then( () => startServer() );
+
+
+module.exports = {
+    "startServer" : startServer,
+    "startServerTest" : startServerTest
+};

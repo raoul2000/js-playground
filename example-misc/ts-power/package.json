@@ -19,7 +19,8 @@
     "@types/node": "^10.12.10",
     "@types/node-dir": "0.0.32",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
   },
   "dependencies": {
     "@yaireo/tagify": "^2.8.6",

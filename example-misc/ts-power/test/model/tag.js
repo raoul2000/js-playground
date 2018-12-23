@@ -1,20 +1,20 @@
 /* eslint-disable no-magic-numbers */
+/* eslint-disable no-undef */
 
-const mocha = require('mocha');
 const {assert} = require('chai');
 const Tag = require("../../src/backend/lib/tag");
 
 
-mocha.describe('Tag class', function () {
+describe('Tag class', function () {
 
-    mocha.it('can be instanciated with "new"', function () {
+    it('can be instanciated with "new"', function () {
         const tag = new Tag("id1","invoice", 1);
         assert.equal(tag.getId(), "id1");
         assert.equal(tag.getName(), "invoice");
         assert.equal(tag.getLevel(), 1);
     });
 
-    mocha.it('can be instanciated with "Tag.create"', function () {
+    it('can be instanciated with "Tag.create"', function () {
         const tag = Tag.create({ 
             "id" : "id1",
             "name" : "invoice", 
@@ -25,7 +25,7 @@ mocha.describe('Tag class', function () {
         assert.equal(tag.getLevel(), 1);
     });
 
-    mocha.it('can be cloned', function () {
+    it('can be cloned', function () {
         const tag = new Tag("id1","invoice", 1);
         const clone = tag.clone();
 
@@ -33,7 +33,7 @@ mocha.describe('Tag class', function () {
         assert.equal(clone.getLevel(), 1);
     });
 
-    mocha.it('can be cloned with properties modifications', function () {
+    it('can be cloned with properties modifications', function () {
         const tag = new Tag("id1", "invoice", 1);
         const clone = tag.clone({
             "id" : null,
@@ -48,7 +48,7 @@ mocha.describe('Tag class', function () {
         assert.equal(clone.getLevel(), 23);
     });
 
-    mocha.it('can provide a hash object of its properties', function () {
+    it('can provide a hash object of its properties', function () {
         const tag = new Tag("id1", "invoice", 1);
         const properties = tag.properties();
 
@@ -59,7 +59,7 @@ mocha.describe('Tag class', function () {
         });
     });
 
-    mocha.it('is immutable', function () {
+    it('is immutable', function () {
         const tag1 = new Tag("id1", "invoice", 1);
         const prop1 = tag1.properties();
 

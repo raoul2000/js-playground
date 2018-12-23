@@ -1,25 +1,25 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-magic-numbers */
 
-const mocha = require('mocha');
 const {assert} = require('chai');
 const Document = require("../../src/backend/lib/document");
 const Tag = require("../../src/backend/lib/tag");
 
-mocha.describe('Document class', function () {
+describe('Document class', function () {
 
-    mocha.it('can be instanciated with "new"', function () {
+    it('can be instanciated with "new"', function () {
         const doc = new Document("id1", "letter");
         assert.equal(doc.getId(), "id1");
         assert.equal(doc.getName(), "letter");
     });
 
-    mocha.it('has no tags after creation', function () {
+    it('has no tags after creation', function () {
         const doc = new Document("id1", "invoice");
         assert.isArray(doc.getTags());
         assert.equal(doc.getTags().length, 0);
     });
 
-    mocha.it('can be instanciated with "Document.create"', function () {
+    it('can be instanciated with "Document.create"', function () {
         const doc = Document.create({ 
             "id" : "id1",
             "name" : "invoice"
@@ -28,7 +28,7 @@ mocha.describe('Document class', function () {
         assert.equal(doc.getName(), "invoice");
     });
 
-    mocha.it('does has tags when created with "Document.create"', function () {
+    it('does has tags when created with "Document.create"', function () {
         const doc = Document.create({
             "id" : "id1", 
             "name" : "invoice",
@@ -43,7 +43,7 @@ mocha.describe('Document class', function () {
         assert.equal(doc.getTags().length, 0);
     });
 
-    mocha.it('can provide a hash object of its properties', function () {
+    it('can provide a hash object of its properties', function () {
         const doc = new Document("id1","invoice");
         const properties = doc.properties();
 
@@ -54,7 +54,7 @@ mocha.describe('Document class', function () {
         });
     });
 
-    mocha.it('is immutable', function () {
+    it('is immutable', function () {
         const doc1 = new Document("id1", "invoice");
         const prop1 = doc1.properties();
 
