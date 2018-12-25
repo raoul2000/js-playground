@@ -40,7 +40,9 @@ describe('Tag suggestion engine', function () {
     it('suggests a tag', function () {
         return tagSuggestion.suggestTag('tag2',store).
             then(
-                console.log,
+                (result) => {
+                    expect(result).to.have.length(3);
+                },
                 (err) => expect.fail(err)
             );
     });

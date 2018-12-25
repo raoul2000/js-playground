@@ -126,7 +126,9 @@ app.post(`${API_BASE_PATH}/tags`, function (req, res) {
     try {
         tags.create(req.body, store).
             then(
-                (responseBody) => res.json(responseBody),
+                (responseBody) => res.
+                    status(HttpStatus.CREATED).
+                    json(responseBody),
                 (error) => defaultErrorHandler(error,res)
             );
     } catch (error) {

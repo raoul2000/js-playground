@@ -16,7 +16,8 @@ describe("tag resource API", () => {
                         server = srv;
                         done();
                     });
-            });
+            }).
+            catch( (err) => done(err));
     });
 
     afterEach( () => {
@@ -37,17 +38,30 @@ describe("tag resource API", () => {
     });    
 
     it('create new tag on POST /tags', function(done) {
-        return request(server).
+        request(server).
             post('/api/tags').
             send({
                 "name" : "new tag name"
             }).
             expect('Content-Type', /json/).
-            expect(httpStatusCode.OK).
+            expect(httpStatusCode.CREATED).
             then( (response) => {
                 assert.equal(response.body.name, "new tag name");
                 done();
             }).
             catch((err) => done(err));
+    });
+
+    it('returns an error on duplicate Id', function(done) {
+        request(server).
+            post('/api/tags').
+            send({
+                "name" : "Smoke on the water"
+            }).
+            expect('Content-Type', /json/).
+            expect(httpStatusCode.INTERNAL_SERVER_ERROR).
+            then(() => {done();}).
+            catch((err) => done(err));
     });    
+
 });
