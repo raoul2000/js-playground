@@ -27,7 +27,7 @@ const API_BASE_PATH = '/api';
 
 // INIT app ////////////////////////////////////////////////////////////
 
-const store = new Store();
+let store = null;
 
 // INIT Server ////////////////////////////////////////////////////////////
 
@@ -124,11 +124,7 @@ app.delete(`${API_BASE_PATH}/tags/:id`, function (req, res) {
 app.post(`${API_BASE_PATH}/tags`, function (req, res) {
 
     try {
-        let tagProperties = {
-            "name" : req.body.name
-        };
-    
-        tags.create(tagProperties, store).
+        tags.create(req.body, store).
             then(
                 (responseBody) => res.json(responseBody),
                 (error) => defaultErrorHandler(error,res)
@@ -146,12 +142,7 @@ app.put(`${API_BASE_PATH}/tags/:id`, function (req, res) {
 
     try {
         let {id} = req.params;
-
-        let tagProperties = {
-            "name" : req.body.name
-        };
-    
-        tags.update(id, tagProperties, store).
+        tags.update(id, req.body, store).
             then(
                 (responseBody) => res.json(responseBody),
                 (error) => defaultErrorHandler(error,res)
@@ -164,7 +155,8 @@ app.put(`${API_BASE_PATH}/tags/:id`, function (req, res) {
 
 // ///////////////////////////////////////////////////////////////////////
 
-const startServer = (showConsole) => new Promise( (resolve) => {
+const startServer = (theStore, showConsole) => new Promise( (resolve) => {
+    store = theStore || new Store();
     let server = app.listen(port, function () {
         if( showConsole ) {
             console.log(`
@@ -181,11 +173,8 @@ serving files from ${dataPath}
     });
 });
 
-const startServerTest = () => Fixture.tags(store).
-    then( () => startServer() );
-
-
 module.exports = {
+    "app" : app,
     "startServer" : startServer,
-    "startServerTest" : startServerTest
+    "createStore" : () => new Store()
 };

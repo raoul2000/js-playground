@@ -1,3 +1,3 @@
 const server = require('./server');
 
-server.startServer(true);
+server.startServerTest();

@@ -8,7 +8,7 @@
     "watch-ts": "tsc -w",
     "test": "mocha ./test",
     "test-dbg": "mocha --inspect-brk ./test",
-    "server": "node ./src/backend/server.js --port 5454 --dataPath ./"
+    "server": "node ./src/backend/start-server.js --port 5454 --dataPath ./"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "@types/node": "^10.12.10",
     "@types/node-dir": "0.0.32",
     "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0"
   },
