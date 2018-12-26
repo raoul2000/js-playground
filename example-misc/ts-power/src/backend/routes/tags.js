@@ -42,7 +42,7 @@ const register = (app, store) => {
     /**
      * DELETE /tags/{tagId} : delete tag with given id
      */
-    app.delete('/:id', function (req, res) {
+    router.delete('/:id', function (req, res) {
         try {
             let {id} = req.params;
             tags.delete(id, store).
@@ -59,7 +59,7 @@ const register = (app, store) => {
     /**
      * POST /tags : create a new tag
      */
-    app.post('/', function (req, res) {
+    router.post('/', function (req, res) {
         try {
             tags.create(req.body, store).
                 then(
@@ -78,7 +78,7 @@ const register = (app, store) => {
     /**
      * PUT /tags : create a new tag
      */
-    app.put('/:id', function (req, res) {
+    router.put('/:id', function (req, res) {
         try {
             let {id} = req.params;
             tags.update(id, req.body, store).
