@@ -3,12 +3,12 @@
 const {assert, expect} = require('chai');
 const tagSuggestion = require('../src/backend/model/tag-suggestion.js');
 const Tag = require('../src/backend/model/tag');
-const Store = require('../src/backend/store/store');
+const storeLib = require('../src/backend/store/store');
 
 /**
  * @type {TMD.Store} a test data store
  */
-let store = new Store();
+let store = storeLib.createStore();
 
 describe('Tag suggestion engine', function () {
 

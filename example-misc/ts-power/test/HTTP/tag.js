@@ -1,19 +1,24 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
 
 const request = require('supertest');
 const {assert} = require('chai');
 const httpStatusCode = require('http-status-codes');
 const tmdServer = require('../../src/backend/server');
+const storeLib = require('../../src/backend/store/store');
 const Fixture = require('../../src/backend/store/fixture.js');
 
 describe("tag resource API", () => {
     let server = null;
     beforeEach( (done) => {
-        Fixture.tags(tmdServer.createStore()).
+        Fixture.tags(storeLib.createStore()).
             then( (store) => {
-                tmdServer.startServer(store).
-                    then( (srv) => {
-                        server = srv;
+                tmdServer.startServer({
+                    "store" : store, 
+                    "silent" : true
+                }).
+                    then( (result) => {
+                        server = result.server;
                         done();
                     });
             }).

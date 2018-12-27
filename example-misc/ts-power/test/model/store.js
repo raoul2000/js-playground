@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 
 const {assert} = require('chai');
-const Store = require("../../src/backend/store/store");
+const storeLib = require("../../src/backend/store/store");
 const Tag = require("../../src/backend/model/tag");
 const Document = require("../../src/backend/model/document");
 
@@ -13,7 +13,7 @@ let store = null;
 
 describe('General Store', function () {
     this.beforeEach( () => {
-        store = new Store();
+        store = storeLib.createStore();
     });
 
     it('adds a tag to the store', function () {

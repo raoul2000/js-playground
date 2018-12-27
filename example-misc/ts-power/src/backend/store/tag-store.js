@@ -119,11 +119,11 @@ TagStore.prototype.delete = function (tagId) {
 TagStore.prototype.update = function (tagId, tagProperties) {
 
     return new Promise( (resolve, reject) => {
-        this.getStoreImplementation().update({"_id" : tagId}, tagProperties, (err, docs) => {
+        this.getStoreImplementation().update({"_id" : tagId}, tagProperties,{}, (err, numberOfUpdated) => {
             if(err) {
                 reject(err);
             } else {
-                resolve(docs);
+                resolve(numberOfUpdated);
             }
         });
     });

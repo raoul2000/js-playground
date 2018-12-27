@@ -1,38 +1,18 @@
 
-const cli = require('commander');
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const HttpStatus = require('http-status-codes');
 
-const Fixture = require('./store/fixture.js');
-
-const serviceTagSuggestion = require('./resource/tag-suggestion.js');
-
-const Store = require('./store/store');
+const storeLib = require('./store/store');
 
 const DEFAULT_PORT = 3000;
 const DEFAULT_DATA_PATH = process.cwd();
-
-cli.
-    option('-p, --port <n>', 'port number the server is listening to').
-    option('-d, --dataPath <path>', 'path to the service folder').
-    parse(process.argv);
-
-const port = cli.port || DEFAULT_PORT;
-const dataPath = path.resolve(cli.dataPath || DEFAULT_DATA_PATH);
-const API_BASE_PATH = '/api';
+const DEFAULT_API_BASE_PATH = '/api';
 
 
 // INIT Server ////////////////////////////////////////////////////////////
-
-const app = express();
-
-app.use(bodyParser.urlencoded({"extended": true}));
-app.use(bodyParser.json());
-app.use(express.static(dataPath));
-app.use(cors());
+ 
 
 /**
  * Ressource URI
@@ -56,18 +36,40 @@ app.use(cors());
  */
 
 const tagsRoute = require('./routes/tags.js');
-
+let app = null;
 // ///////////////////////////////////////////////////////////////////////
+/**
+ * Initialize and start the server.
+ * 
+ * @param {TMD.ServerOptions} options server initialization options
+ * @returns {Promise<any>} promise resolved by the server instance
+ */
+const startServer = (options) => new Promise( (resolve) => {
 
-const startServer = (theStore, showConsole) => new Promise( (resolve) => {
-    const store = theStore || new Store();
+    // initialize options
+
+    let port = options.port || DEFAULT_PORT;
+    let dataPath = path.resolve(options.dataPath || DEFAULT_DATA_PATH);
+    let apiPath = options.apiPath || DEFAULT_API_BASE_PATH;
+    let store = options.store || storeLib.createStore();
+    
+    // create the app server instance
+
+    app = express();
+
+    app.use(bodyParser.urlencoded({"extended": true}));
+    app.use(bodyParser.json());
+    app.use(express.static(dataPath));
+    app.use(cors());
 
     // load middleware    
-    app.use(`${API_BASE_PATH}/tags`, tagsRoute.register(app, store));
 
+    app.use(`${apiPath}/tags`, tagsRoute.register(app, store));
+
+    // start the server and resolve the promise
 
     let server = app.listen(port, function () {
-        if( showConsole ) {
+        if( !options.silent ) {
             console.log(`
     
 ::: Server Ready
@@ -78,12 +80,18 @@ serving files from ${dataPath}
 (Ctrl + C to stop)`);
 
         }
-        resolve(server);
+        resolve({
+            "settings" : {
+                "port" : port,
+                "dataPath" : dataPath,
+                "apiPath" : apiPath
+            },
+            "server" : server
+        });
     });
 });
 
 module.exports = {
     "app" : app,
-    "startServer" : startServer,
-    "createStore" : () => new Store()
+    "startServer" : startServer
 };

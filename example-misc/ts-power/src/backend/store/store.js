@@ -63,4 +63,9 @@ const Store = function() {
     this.updateTag = ( tagId, tagProperties) => this.getTagStore().update(tagId, tagProperties);
 };
 
-module.exports = Store;
+const createStore = () => new Store();
+
+module.exports = {
+    "Store" : Store,
+    "createStore" : createStore
+};

@@ -1,5 +1,13 @@
 declare namespace TMD {
 
+    interface ServerOptions {
+        port? : number;
+        dataPath? : string
+        apiPath? : string;
+        store? : Store;
+        silent? : boolean
+    
+    }
     // Store /////////////////////////////////////////////////////////
 
     interface Store {

@@ -12,7 +12,6 @@ const findDocument = require('../model/find-document.js');
 // eslint-disable-next-line max-params
 const runImpl = (req, res, next, store) => {
 
-
     const tags = (req.query.tags || []).
         split(',').
         map( (tag) => tag.trim() ).
