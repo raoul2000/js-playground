@@ -6,7 +6,7 @@ const {assert} = require('chai');
 const httpStatusCode = require('http-status-codes');
 const tmdServer = require('../../src/backend/server');
 const storeLib = require('../../src/backend/store/store');
-const Fixture = require('../../src/backend/store/fixture.js');
+const Fixture = require('../../src/backend/store/fixtureManager.js');
 
 describe("tag resource API", () => {
     let server = null;

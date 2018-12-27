@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start" : "node ./src/backend/start-server.js --port 5454 --dataPath ./",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "test": "mocha  ./test/**/*.js",
