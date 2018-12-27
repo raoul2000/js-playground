@@ -3,8 +3,8 @@
 
 const {assert} = require('chai');
 const Store = require("../../src/backend/store/store");
-const Tag = require("../../src/backend/lib/tag");
-const Document = require("../../src/backend/lib/document");
+const Tag = require("../../src/backend/model/tag");
+const Document = require("../../src/backend/model/document");
 
 /**
  * @type {TMD.Store}

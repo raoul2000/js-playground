@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 
 const {assert, expect} = require('chai');
-const tagSuggestion = require('../src/backend/lib/tag-suggestion.js');
-const Tag = require('../src/backend/lib/tag');
+const tagSuggestion = require('../src/backend/model/tag-suggestion.js');
+const Tag = require('../src/backend/model/tag');
 const Store = require('../src/backend/store/store');
 
 /**

@@ -1,4 +1,4 @@
-const tagSuggestion = require('../lib/tag-suggestion.js');
+const tagSuggestion = require('../model/tag-suggestion.js');
 
 /**
  * Handle Tag suggestion end point

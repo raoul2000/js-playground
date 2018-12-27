@@ -1,4 +1,4 @@
-const Tag = require('../lib/tag.js');
+const Tag = require('../model/tag.js');
 
 /**
  * Add fixture tags

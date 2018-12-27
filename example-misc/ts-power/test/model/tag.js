@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 
 const {assert} = require('chai');
-const Tag = require("../../src/backend/lib/tag");
+const Tag = require("../../src/backend/model/tag");
 
 
 describe('Tag class', function () {

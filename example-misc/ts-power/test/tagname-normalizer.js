@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 const {assert} = require('chai');
-const TagnameNormalizer = require('../src/backend/lib/tagname-normalizer.js');
+const TagnameNormalizer = require('../src/backend/model/tagname-normalizer.js');
 
 
 describe('Tag name Normalizer', function () {

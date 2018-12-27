@@ -1,4 +1,4 @@
-const findDocument = require('../lib/find-document.js');
+const findDocument = require('../model/find-document.js');
 
 /**
  * comments ...

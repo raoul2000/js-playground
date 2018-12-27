@@ -1,4 +1,4 @@
-const Tag = require("../lib/tag");
+const Tag = require("../model/tag");
 
 
 // eslint-disable-next-line max-params

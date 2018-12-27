@@ -4,7 +4,7 @@
 const {assert} = require('chai');
 const NedbStore = require('nedb');
 const TagStore = require("../../src/backend/store/tag-store");
-const Tag = require("../../src/backend/lib/tag");
+const Tag = require("../../src/backend/model/tag");
 
 /**
  * @type {TMD.TagStore}

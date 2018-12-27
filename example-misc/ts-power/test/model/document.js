@@ -2,8 +2,8 @@
 /* eslint-disable no-magic-numbers */
 
 const {assert} = require('chai');
-const Document = require("../../src/backend/lib/document");
-const Tag = require("../../src/backend/lib/tag");
+const Document = require("../../src/backend/model/document");
+const Tag = require("../../src/backend/model/tag");
 
 describe('Document class', function () {
 
