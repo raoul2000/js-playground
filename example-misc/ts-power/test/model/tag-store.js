@@ -24,6 +24,15 @@ describe('Tag store', function () {
         ]).then( () => done());
     });
 
+    it('create instance', () => store.addTag(null).
+        then(
+            () => assert.fail(),
+            (err) => {
+                assert.exists(err);
+                //console.error(err);
+            }
+        ));
+
     it('adds a tag to the store', function () {
         return store.addTag(Tag.create({
             "id" : null,

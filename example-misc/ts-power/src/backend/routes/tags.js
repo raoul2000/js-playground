@@ -83,7 +83,10 @@ const register = (app, store) => {
             let {id} = req.params;
             tags.update(id, req.body, store).
                 then(
-                    (responseBody) => res.json(responseBody),
+                    (responseBody) => {
+                        console.log(responseBody);
+                        res.json(responseBody);
+                    },
                     (error) => helper.defaultErrorHandler(error,res)
                 );
         } catch (error) {

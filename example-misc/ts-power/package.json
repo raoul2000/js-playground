@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start" : "node ./src/backend/start-server.js --port 5454 --dataPath ./",
+    "test-server" : "node --inspect-brk ./src/backend/start-server.js --port 5454 --dataPath ./",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "test": "mocha  ./test/**/*.js",
-    "test-dbg": "mocha --inspect-brk ./test",
-    "server": "node ./src/backend/start-server.js --port 5454 --dataPath ./"
+    "test-dbg": "mocha --inspect-brk ./test"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +19,6 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.10",
     "@types/node-dir": "0.0.32",
-    "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0"
   },
@@ -35,6 +34,7 @@
     "nedb": "^1.8.0",
     "node-dir": "^0.1.17",
     "simple-statistics": "^6.1.1",
-    "yads": "^1.0.6"
+    "yads": "^1.0.6",
+    "chai": "^4.2.0"
   }
 }
