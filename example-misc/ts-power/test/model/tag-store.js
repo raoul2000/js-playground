@@ -29,7 +29,6 @@ describe('Tag store', function () {
             () => assert.fail(),
             (err) => {
                 assert.exists(err);
-                //console.error(err);
             }
         ));
 
@@ -42,7 +41,8 @@ describe('Tag store', function () {
             then( 
                 (doc) => {
                     assert.isNotNull(doc);
-                    assert.isTrue(doc.hasOwnProperty('_id'));
+                    assert.isFalse(doc.hasOwnProperty('_id'));
+                    assert.isTrue(doc.hasOwnProperty('id'));
                 },
                 () => assert.fail()
             );
@@ -80,7 +80,7 @@ describe('Tag store', function () {
                 (tag) => {
                     assert.deepEqual(tag, {
                         // @ts-ignore
-                        "_id": 'holidays', 
+                        "id": 'holidays', 
                         "name": 'holidays', 
                         "level": 1
                     });

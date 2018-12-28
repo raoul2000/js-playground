@@ -13,10 +13,10 @@ Content-Type: application/json
 
 ###
 
-PUT  {{baseURL}}/tags/a{{tagId}}
+PUT  {{baseURL}}/tags/{{tagId}}
 Content-Type: application/x-www-form-urlencoded
 
-namce=NEW TAG NAME
+name=NEW TAG NAME
 
 ###
 

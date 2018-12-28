@@ -25,7 +25,8 @@ describe('General Store', function () {
             then( 
                 (doc) => {
                     assert.isNotNull(doc);
-                    assert.isTrue(doc.hasOwnProperty('_id'));
+                    assert.isTrue(doc.hasOwnProperty('id'));
+                    assert.isFalse(doc.hasOwnProperty('_id'));
                 },
                 (err) => assert.instanceOf(err, Error)
             );
@@ -43,7 +44,8 @@ describe('General Store', function () {
             then( 
                 (doc) => {
                     assert.isNotNull(doc);
-                    assert.isTrue(doc.hasOwnProperty('_id'));
+                    assert.isTrue(doc.hasOwnProperty('id'));
+                    //assert.isFalse(doc.hasOwnProperty('_id'));
                 },
                 (err) => assert.instanceOf(err, Error)
             );

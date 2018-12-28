@@ -3,6 +3,15 @@
 
 const {assert} = require('../assert.js');
 
+const convertId = (doc) => {
+    if( doc === null) {
+        return doc;
+    }
+    doc.id = doc['_id'];
+    delete doc['_id'];
+
+    return doc;
+};
 /**
  * TagStore is an abstraction around persistent tag storage.
  * (in this case nedb)
@@ -11,7 +20,7 @@ const {assert} = require('../assert.js');
  * @returns {void}
  */
 const TagStore = function (nedbStore) {
-    assert.isNotNull(nedbStore,"argument 'nedbStore' is required");
+    assert.exists(nedbStore,"argument 'nedbStore' is required");
     
     let dataStore = nedbStore;
 
@@ -30,10 +39,11 @@ const TagStore = function (nedbStore) {
  * @returns {Promise<any>}  Promise resolved by the document added to the store
  */
 TagStore.prototype.addTag = function(tag) {
-
+    
     return new Promise((resolve, reject) => {
-        assert.exists(tag,"missing argument 'tag'");
+        assert.exists(tag);
 
+        // the tag name is used to create the tag ID
         const tagProperties = Object.assign({
             "_id" : tag.getName()
         }, tag.properties());
@@ -45,7 +55,7 @@ TagStore.prototype.addTag = function(tag) {
             if (err) {
                 reject(err);
             } else {
-                resolve(doc);
+                resolve(convertId(doc));
             }
         });
     });
@@ -57,19 +67,13 @@ TagStore.prototype.addTag = function(tag) {
  * @return {Promise<Array<TMD.TagProperties>>} list of all tags in the store
  */
 TagStore.prototype.getAll = function () {
-
+    
     return new Promise( (resolve, reject) => {
-        assert.exists(null,'missing arg');
         this.getStoreImplementation().find({}, (err, docs) => {
             if(err) {
                 reject(err);
             } else {
-                resolve(docs.map( (doc) => {
-                    doc.id = doc._id;
-                    delete doc._id;
-
-                    return doc;
-                }));
+                resolve(docs.map( convertId ));
             }
         });
     });
@@ -82,22 +86,17 @@ TagStore.prototype.getAll = function () {
  * @returns {Promise<TMD.Tag>} promise of a tag
  */
 TagStore.prototype.getTagById = function (tagId) {
-
+    
     return new Promise( (resolve, reject) => {
-        
-        if(  tagId  ) {
-            this.getStoreImplementation().findOne({"_id" : tagId}, (err, numRemoved) => {
-                if(err) {
-                    reject(err);
-                } else {
-                    resolve(numRemoved);
-                }
-            });
-        }
-        /* 
-        else {
-            reject(new Error("missing tag ID"));
-        }*/
+        assert.exists(tagId, "missing argument : tagId");
+
+        this.getStoreImplementation().findOne({"_id" : tagId}, (err, doc) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(convertId(doc));
+            }
+        });
     });
 };
 
@@ -109,35 +108,31 @@ TagStore.prototype.getTagById = function (tagId) {
  * is always 1
  */
 TagStore.prototype.delete = function (tagId) {
-
+    
     return new Promise( (resolve, reject) => {
-        this.getStoreImplementation().remove({"_id" : tagId}, {}, (err, docs) => {
+        assert.exists(tagId, "missing argument : tagId");
+
+        this.getStoreImplementation().remove({"_id" : tagId}, {}, (err, numRemoved) => {
             if(err) {
                 reject(err);
             } else {
-                resolve(docs);
+                resolve(numRemoved);
             }
         });
     });
 };
 
 TagStore.prototype.update = function (tagId, tagProperties) {
-
+    
     return new Promise( (resolve, reject) => {
-        if( typeof tagProperties !== 'object') {
-            reject(new Error('invalid tag properties'));
-        }
+        assert.exists(tagId);
+        assert.isObject(tagProperties);
 
-        this.getStoreImplementation().update({"_id" : tagId}, tagProperties,{
-            "returnUpdatedDocs" : true
-        }, (err, numberOfUpdated, affectedDocuments ) => {
+        this.getStoreImplementation().update({"_id" : tagId}, tagProperties,{}, (err, numberOfUpdated ) => {
             if(err) {
-                console.error(err);
                 reject(err);
-            } else if( numberOfUpdated === 0 ) {
-                reject(new Error(`no tag found with id ${tagId}`));
             } else {
-                resolve(affectedDocuments);
+                resolve(numberOfUpdated);
             }
         });
     });
