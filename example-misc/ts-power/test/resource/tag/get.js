@@ -4,14 +4,27 @@
 const request = require('supertest');
 const {assert} = require('chai');
 const httpStatusCode = require('http-status-codes');
-const tmdServer = require('../../src/backend/server');
-const storeLib = require('../../src/backend/store/store');
-const Fixture = require('../../src/backend/store/fixtureManager.js');
+const tmdServer = require('../../../src/backend/server');
+const storeLib = require('../../../src/backend/store/store');
+const FixtureManager = require('../../../src/backend/store/fixtureManager.js');
 
-describe("tag resource API", () => {
+describe("GET Tag endpoint", () => {
     let server = null;
     beforeEach( (done) => {
-        Fixture.tags(storeLib.createStore()).
+        const store = storeLib.createStore();
+        FixtureManager.storeFixture({
+            "tags" : [
+                {
+                    "name" : "tag1"
+                },
+                {
+                    "name" : "tag2"
+                },
+                {
+                    "name" : "tag3"
+                }
+            ]
+        }, store).
             then( (store) => {
                 tmdServer.startServer({
                     "store" : store, 
@@ -30,7 +43,7 @@ describe("tag resource API", () => {
     });
 
     it('list all tag with GET /tags', function(done) {
-        const EXPECTED_LENGTH = 6;
+        const EXPECTED_LENGTH = 3;
         request(server).
             get('/api/tags').
             expect('Content-Type', /json/).
@@ -42,31 +55,29 @@ describe("tag resource API", () => {
             catch((err) => done(err));
     });    
 
-    it('create new tag on POST /tags', function(done) {
+    it('gets one tag given its id', function(done) {
         request(server).
-            post('/api/tags').
-            send({
-                "name" : "new tag name"
-            }).
+            get('/api/tags/tag1').
             expect('Content-Type', /json/).
-            expect(httpStatusCode.CREATED).
-            then( (response) => {
-                assert.equal(response.body.name, "new tag name");
+            expect(httpStatusCode.OK).
+            then((resp) => {
+                assert.equal(resp.body.name , "tag1");
                 done();
             }).
             catch((err) => done(err));
-    });
+    });    
 
-    it('returns an error on duplicate Id', function(done) {
+    it('returns NULL if tag not found', function(done) {
         request(server).
-            post('/api/tags').
-            send({
-                "name" : "Smoke on the water"
-            }).
+            get('/api/tags/tag1_NOT_FOUND').
             expect('Content-Type', /json/).
-            expect(httpStatusCode.INTERNAL_SERVER_ERROR).
-            then(() => {done();}).
+            expect(httpStatusCode.OK).
+            then((resp) => {
+                assert.equal(resp.body , null);
+                done();
+            }).
             catch((err) => done(err));
     });    
+
 
 });

@@ -16,34 +16,41 @@ const tagsFixture = (store) => Promise.all([
     store.addTag(new Tag("5","Snake",1))
 ]).then( () => store);
 
-const loadFixture = (path, store) => new Promise( (resolve, reject) => {
+
+const storeFixture = (fixtureObj, store) => {
+
+    let applyFixtures = [];
+    if( fixtureObj.tags) {
+        fixtureObj.tags.forEach( (tagData) => {
+            applyFixtures.push(store.addTag(Tag.create(tagData)));
+        });
+    }
+
+    if( fixtureObj.documents) {
+        fixtureObj.documents.forEach( (documentData) => {
+            applyFixtures.push(store.addTag(Tag.create(documentData)));
+        });
+    }
+
+    return Promise.all(applyFixtures).
+        then( () => store);
+};
+
+
+const loadFixtureFromFile = (path, store) => new Promise( (resolve, reject) => {
     console.log(`\n>>> loading fixture from ${path}`);
     fs.readFile(path, 'utf8', function (err, data) {
         if(err) {
             reject(err);
+        } else {
+            resolve(storeFixture(JSON.parse(data), store));
+        }
 
-            return;
-        }
-        let fixtureObj = JSON.parse(data);
-        let applyFixtures = [];
-        if( fixtureObj.tags) {
-            fixtureObj.tags.forEach( (tagData) => {
-                applyFixtures.push(store.addTag(Tag.create(tagData)));
-            });
-        }
-/*
-        if( fixtureObj.documents) {
-            fixtureObj.documents.forEach( (documentData) => {
-                applyFixtures.push(store.addTag(Tag.create(documentData)));
-            });
-        }
-*/
-        Promise.all(applyFixtures).
-            then( () => resolve(store));
     });
 });
 
 module.exports = {
     "tags" : tagsFixture,
-    "load" : loadFixture
+    "load" : loadFixtureFromFile,
+    "storeFixture" : storeFixture
 };

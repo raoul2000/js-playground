@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 const {assert} = require('../assert.js');
+const Tag = require('../model/tag.js');
 
 const convertId = (doc) => {
     if( doc === null) {
@@ -122,19 +123,30 @@ TagStore.prototype.delete = function (tagId) {
     });
 };
 
+// updates a single tag by ID
 TagStore.prototype.update = function (tagId, tagProperties) {
     
     return new Promise( (resolve, reject) => {
         assert.exists(tagId);
         assert.isObject(tagProperties);
 
-        this.getStoreImplementation().update({"_id" : tagId}, tagProperties,{}, (err, numberOfUpdated ) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(numberOfUpdated);
+        const updateOptions = {
+            "returnUpdatedDocs" : true,
+            "multi" : false
+        };
+        let updatedTag = Tag.create(tagProperties);
+
+        this.getStoreImplementation().update({"_id" : tagId}, 
+            updatedTag.properties(), 
+            updateOptions, 
+            (err, numberOfUpdated, affectedDocuments) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(convertId(affectedDocuments));
+                }
             }
-        });
+        );
     });
 };
 

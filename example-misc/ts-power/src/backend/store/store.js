@@ -63,6 +63,9 @@ const Store = function() {
     this.updateTag = ( tagId, tagProperties) => this.getTagStore().update(tagId, tagProperties);
 };
 
+/**
+ * @returns {TMD.Store} the store
+ */
 const createStore = () => new Store();
 
 module.exports = {

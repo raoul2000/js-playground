@@ -17,6 +17,8 @@ PUT  {{baseURL}}/tags/{{tagId}}
 Content-Type: application/x-www-form-urlencoded
 
 name=NEW TAG NAME
+&level=1
+&dummy=33
 
 ###
 

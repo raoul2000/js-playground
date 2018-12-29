@@ -27,7 +27,8 @@ const create = (tagProperties, store) => {
 const deleteTag = (tagId, store) => store.deleteTag(tagId).
     then( (affectedRowsCount) => ({"affectedRows" : affectedRowsCount}));
 
-const update =  (tagId, tagProperties, store) =>  store.updateTag(tagId, tagProperties);
+const update =  (tagId, tagProperties, store) =>  store.updateTag(tagId, tagProperties).
+    then( (affectedDocument) => affectedDocument );
 
 module.exports = {
     "getAllTags" : getAllTags,
