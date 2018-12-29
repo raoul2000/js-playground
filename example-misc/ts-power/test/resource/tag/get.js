@@ -6,7 +6,7 @@ const {assert} = require('chai');
 const httpStatusCode = require('http-status-codes');
 const tmdServer = require('../../../src/backend/server');
 const storeLib = require('../../../src/backend/store/store');
-const FixtureManager = require('../../../src/backend/store/fixtureManager.js');
+const FixtureManager = require('../../fixtures/fixtureManager.js');
 
 describe("GET Tag endpoint", () => {
     let server = null;

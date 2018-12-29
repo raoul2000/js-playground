@@ -2,7 +2,7 @@ const cli = require('commander');
 
 const server = require('./server');
 const store = require('./store/store');
-const fixtureManager = require('./store/fixtureManager.js');
+const fixtureManager = require('../../test/fixtures/fixtureManager.js');
 
 
 cli.
