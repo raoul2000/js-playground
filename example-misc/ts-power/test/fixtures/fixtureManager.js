@@ -1,4 +1,4 @@
-const Tag = require('../model/tag.js');
+const Tag = require('../../src/backend/model/tag.js');
 const fs = require('fs');
 
 /**
