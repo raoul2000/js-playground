@@ -1,5 +1,5 @@
+/* eslint-disable no-console */
 import { f1, f2 } from './moduleA';
-
 
 const component = (text) => {
   const element = document.createElement('div');
@@ -13,7 +13,6 @@ const component = (text) => {
   f1('hello from index.js');
   return element;
 };
-
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(component('hello !'));

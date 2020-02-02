@@ -6,6 +6,7 @@
 - static type checking based on JSDoc comments and Type definition file
 - target browser : IE 11+
 - Git ready
+- unit testing
 
 ## Installation
 

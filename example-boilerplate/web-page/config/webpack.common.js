@@ -1,7 +1,7 @@
 const paths = require('./paths');
 
 module.exports = {
-    entry: paths.src + '/index.js',
+    entry: paths.src + '/main.js',
     output: {
         filename: 'main.js',
         path: paths.public

@@ -1,4 +1,7 @@
 declare namespace App {
+    /**
+     * Represent a person
+     */
     interface Person {
         /**
          * Identifier for a person
