@@ -1,3 +1,6 @@
+# Project Boilerplate
+TODO : check npm pre-commit
+
 ## Features
 
 - ES6 
