@@ -11,3 +11,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* layout */
+
+.app {
+  min-height: 100vh; 
+
+  display: flex;  
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;  
+  flex-direction: column;
+}
+
+.app .body {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-grow: 1;
+}
+
+.header {
+
+}
+
+.body {
+  background-color: aqua;
+}
+
+.footer{
+  background-color: blue;
+
+}
