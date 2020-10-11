@@ -1,8 +1,10 @@
 import React from 'react';
 import { GroupedList, GroupHeader, IGroupHeaderProps, IGroupHeaderCheckboxProps } from 'office-ui-fabric-react/lib/GroupedList';
-import { CheckboxVisibility, DetailsList, IColumn, DetailsRow, IGroupRenderProps, IGroupedListStyles, IDetailsRowStyles, IDetailsRowCheckProps
-, IDetailsCheckboxProps } from 'office-ui-fabric-react/lib/DetailsList';
-import {IRenderFunction} from 'office-ui-fabric-react/lib/Utilities';
+import {
+    CheckboxVisibility, DetailsList, IColumn, DetailsRow, IGroupRenderProps, IGroupedListStyles, IDetailsRowStyles, IDetailsRowCheckProps
+    , IDetailsCheckboxProps
+} from 'office-ui-fabric-react/lib/DetailsList';
+import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 
 const exampleChildClass = mergeStyles({
@@ -25,7 +27,7 @@ const groupedListStyles: IGroupedListStyles = {
 
 const listItems: Array<IExampleItem> = [
     {
-        name: "bob lorem ipsum long textbob lorem ipsum long textbob lorem ipsum long text"
+        name: "bob loremb loremb loremb loremb loremb lorem"
     },
     {
         name: "alice"
@@ -61,7 +63,7 @@ const groupProps: IGroupRenderProps = {
 const onRenderGroupHeaderCheckbox = (props?: IGroupHeaderCheckboxProps) => (
     <div>A</div>
 );
-const onRenderDatilRowCheck = (props: IDetailsRowCheckProps) => ( <div />)
+const onRenderDatilRowCheck = (props: IDetailsRowCheckProps) => (<div />)
 const onRenderDetailsCheckbox: IRenderFunction<IDetailsCheckboxProps> = () => (<div>X</div>);
 
 const onRenderCell = (nestingDepth?: number, item?: IExampleItem, itemIndex?: number): React.ReactNode => {
@@ -80,12 +82,14 @@ const onRenderCell = (nestingDepth?: number, item?: IExampleItem, itemIndex?: nu
 
 export const LeftBar: React.FunctionComponent = () => {
     return (
-        <GroupedList
-            items={listItems}
-            groups={groups}
-            onRenderCell={onRenderCell}
-            compact={true}
-            styles={groupedListStyles}
-        />
+        <div>
+            <GroupedList
+                items={listItems}
+                groups={groups}
+                onRenderCell={onRenderCell}
+                compact={true}
+                styles={groupedListStyles}
+            />
+        </div>
     );
 }

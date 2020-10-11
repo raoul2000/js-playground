@@ -1,0 +1,33 @@
+.app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.app header,
+.app footer {
+  background-color: tan;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+}
+.source-list {
+  /* 12em is the width of the columns */
+  flex: 1;
+  background-color: cornflowerblue;
+  min-width: 10em;
+  max-width: 15em;
+}
+.result-list {
+  flex: 1.5;
+  background-color: darksalmon;
+  min-width: 10em;
+  max-width: 20em;
+}
+.result-detail {
+  flex: 3;
+  background-color: wheat;
+}
+
