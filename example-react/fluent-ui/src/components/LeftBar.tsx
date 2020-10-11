@@ -43,6 +43,8 @@ const columns: Array<IColumn> = [
         key: "name",
         name: "the name",
         minWidth: 200,
+        maxWidth: 200,
+
         fieldName: "name"
     }
 ];
@@ -65,13 +67,12 @@ const onRenderDetailsCheckbox: IRenderFunction<IDetailsCheckboxProps> = () => (<
 const onRenderCell = (nestingDepth?: number, item?: IExampleItem, itemIndex?: number): React.ReactNode => {
     console.log(`onRenderCell : ${item}`);
     return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
-        <div className={exampleChildClass}>
+        <div>
             <DetailsRow
                 columns={columns}
                 groupNestingDepth={nestingDepth}
                 item={item}
                 itemIndex={itemIndex}
-                onRenderCheck={onRenderDatilRowCheck}
             />
         </div>
     ) : null;
@@ -84,7 +85,6 @@ export const LeftBar: React.FunctionComponent = () => {
             groups={groups}
             onRenderCell={onRenderCell}
             compact={true}
-            groupProps={groupProps}
             styles={groupedListStyles}
         />
     );
