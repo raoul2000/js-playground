@@ -69,7 +69,7 @@ const groupedListProps = {
 };
 const items: IExampleItem[] = [
     {
-        name: "Alice"
+        name: "Alice was here"
     },
     {
         name: "Bob"
