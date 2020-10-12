@@ -1,7 +1,13 @@
 import {SELECT_RSS_SOURCE, RssActionTypes, RssSourceState } from './types'
 
 export const initialState: RssSourceState = {
-    sources: []
+    sources: [
+        {
+            id: "id",
+            label: "source label",
+            url: "url"
+        }
+    ]
 }
 
 export function rssSourceReducer(

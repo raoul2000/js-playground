@@ -1,9 +1,26 @@
 import React from 'react';
+import { RssSource } from '../store/rss-source/types'
 
-export const SourceList:  React.FunctionComponent = () => {
+const sources: Array<RssSource> = [
+    {
+        id: 'une-inter',
+        label: 'La Une International',
+        url: 'https://www.lemonde.fr/international/rss_full.xml'
+    },
+    {
+        id: 'une-fr',
+        label: 'La Une France',
+        url: 'https://www.lemonde.fr/rss/une.xml'
+    }
+]
+export const SourceList: React.FunctionComponent = () => {
     return (
         <div id="sourceList">
-            sourceList
+            {sources.map((source) => (
+                <div key={source.id}>
+                    {source.label}
+                </div>
+            ))}
         </div>
     )
 }
