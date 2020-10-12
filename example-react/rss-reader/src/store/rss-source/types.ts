@@ -1,4 +1,4 @@
-export const SELECT_RSS_SOURCE = "SELECT_RSS_SOURCE";
+export const SELECT_RSS_SOURCE = "@rssSource/SELECT_RSS_SOURCE";
 
 export interface RssSource {
     id: string

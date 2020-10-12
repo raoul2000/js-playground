@@ -1,4 +1,4 @@
-import { RssSource, SELECT_RSS_SOURCE, RssActionTypes } from './types'
+import { RssActionTypes, RssSource, SELECT_RSS_SOURCE  } from './types'
 
 export function selectRssSource(rssSource: RssSource): RssActionTypes {
     return {

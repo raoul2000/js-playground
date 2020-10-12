@@ -1,13 +1,7 @@
-import {SELECT_RSS_SOURCE, RssActionTypes, RssSourceState } from './types'
+import { RssSourceState, RssActionTypes, SELECT_RSS_SOURCE } from './types'
 
 export const initialState: RssSourceState = {
-    sources: [
-        {
-            id: "id",
-            label: "source label",
-            url: "url"
-        }
-    ]
+    sources: []
 }
 
 export function rssSourceReducer(
@@ -16,9 +10,7 @@ export function rssSourceReducer(
 ): RssSourceState {
     switch (action.type) {
         case SELECT_RSS_SOURCE:
-            return {
-                sources: [...state.sources]
-            }
+            return state;
         default:
             return state;
     }
