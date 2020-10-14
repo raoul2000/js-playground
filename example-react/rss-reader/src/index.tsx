@@ -5,9 +5,6 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { store } from './store'
 import { addRssSource } from './store/rss-source/actions';
-import { RssSource } from './store/rss-source/types';
-
-
 
 [
   {

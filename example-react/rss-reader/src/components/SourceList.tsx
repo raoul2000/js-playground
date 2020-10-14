@@ -1,20 +1,20 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux'
-import { RssSource, RssSourceId, RssSourceState } from '../store/rss-source/types'
+import {RootState} from '../store';
 
 
-const mapState = (state: RssSourceState) => ({
-    rssSources: state.rssSources,
-    selectedSourceId: state.selectedRssSource
+const mapState = (state: RootState) => ({
+    rssSources: state.rssSource.rssSources,
+    selectedSourceId: state.rssSource.selectedRssSource
 })
 const connector = connect(mapState);
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux 
 
-const SourceList = (props:Props ) => {
+const SourceList = (props:Props) => {
     return (
         <div id="sourceList">
-            {props.rssSources.map((source) => (
+            {props.rssSources && props.rssSources.map((source) => (
                 <div key={source.id} className={source.id === props.selectedSourceId ? 'selected' : undefined}>
                     {source.label}
                 </div>
