@@ -1,16 +1,15 @@
-import { combineReducers, createStore, Reducer } from "redux";
-import { rssSourceReducer } from './rss-source/reducers'
-import { devToolsEnhancer } from 'redux-devtools-extension';
-import { RssActionTypes, RssSourceState } from './rss-source/types';
+import { combineReducers, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { systemReducer } from './system/reducers'
+import { chatReducer } from './chat/reducers'
 
-export interface ApplicationState {
-    rssSource: RssSourceState
-}
+const composeEnhancers = composeWithDevTools({});
 
-//const rootReducer: Reducer<ApplicationState, RssActionTypes> = combineReducers({
 const rootReducer = combineReducers({
-    myRssSource: rssSourceReducer
+    system: systemReducer,
+    chat: chatReducer
 })
 
-export const store = createStore(rootReducer, devToolsEnhancer({}));
 export type RootState = ReturnType<typeof rootReducer>
+
+export const store = createStore(rootReducer, composeEnhancers());
