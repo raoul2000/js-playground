@@ -21,6 +21,16 @@ import { addRssSource } from './store/rss-source/actions';
     id: 'une-sport',
     label: 'La Une Sport',
     url: 'https://www.lemonde.fr/rss/sport.xml'
+  },
+  {
+    id: 'une-politique',
+    label: 'La Une Politique',
+    url: 'https://www.lemonde.fr/rss/sport.xml'
+  },
+  {
+    id: 'une-div',
+    label: 'La Une Divert',
+    url: 'https://www.lemonde.fr/rss/sport.xml'
   }
 ].map(source => store.dispatch(addRssSource(source)));
 

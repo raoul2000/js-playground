@@ -4,7 +4,6 @@ import { selectRssSource } from '../store/rss-source/actions'
 import { RssSourceId,RssSource } from '../store/rss-source/types'
 import classNames from 'classnames';
 
-
 const mapDispatch = {
     select: (id: RssSourceId) => selectRssSource(id)
 }

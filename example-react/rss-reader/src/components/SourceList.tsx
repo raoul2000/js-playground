@@ -21,7 +21,11 @@ const SourceList = (props: Props) => {
     return (
         <div id="sourceList">
             {props.rssSources && props.rssSources.map((source) => (
-                <SourceListItem source={source} isSelected={source.id === props.selectedSourceId} />
+                <SourceListItem 
+                    key={source.id} 
+                    source={source} 
+                    isSelected={source.id === props.selectedSourceId}
+                />
             ))}
         </div>
     )

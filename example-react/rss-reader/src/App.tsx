@@ -1,8 +1,8 @@
 import React from 'react';
 
 import './App.css';
-import  SourceList  from './components/SourceList';
-import { ResultList } from './components/ResultList';
+import SourceList from './components/SourceList';
+import ResultList from './components/ResultList';
 import { ResultDetail } from './components/ResultDetail';
 
 function App() {
