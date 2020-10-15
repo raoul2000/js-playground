@@ -15,7 +15,7 @@ import { addRssSource } from './store/rss-source/actions';
   {
     id: 'une-fr',
     label: 'La Une France',
-    url: 'https://www.lemonde.fr/rss/une.xml'
+    url: 'http://localhost:3000/test-response/une.xml'
   },
   {
     id: 'une-sport',

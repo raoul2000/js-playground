@@ -16,8 +16,7 @@ const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux
 
-const SourceList = (props: Props) => {
-
+const SourceList:React.FC<Props> = (props: Props) => {
     return (
         <div id="sourceList">
             {props.rssSources && props.rssSources.map((source) => (
