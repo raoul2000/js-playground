@@ -7,7 +7,7 @@ import SourceListItem from './SourceListItem'
 
 const mapState = (state: RootState) => ({
     rssSources: state.rssSource.rssSources,
-    selectedSourceId: state.rssSource.selectedRssSource
+    selectedSourceId: state.rssSource.selectedRssSourceId
 })
 const connector = connect(mapState);
 type PropsFromRedux = ConnectedProps<typeof connector>

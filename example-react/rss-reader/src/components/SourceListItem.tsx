@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux'
 import { selectRssSource } from '../store/rss-source/actions'
-import { RssSourceId,RssSource } from '../store/rss-source/types'
+import { RssSourceId, RssSource } from '../store/rss-source/types'
 import classNames from 'classnames';
 
 const mapDispatch = {
@@ -15,9 +15,9 @@ type Props = PropsFromRedux & {
 }
 
 const SourceListItem = (props: Props) => {
-    const {source, select, isSelected } = props;
+    const { source, select, isSelected } = props;
     const itemClassName = classNames({
-        'source-item' : true,
+        'source-item': true,
         'selected': isSelected
     });
     return (

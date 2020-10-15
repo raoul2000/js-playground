@@ -2,7 +2,8 @@ import { RssSourceState, RssActionTypes, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELE
 
 export const initialState: RssSourceState = {
     rssSources: [],
-    selectedRssSource: ''
+    selectedRssSourceId: undefined,
+    readStatus: undefined
 }
 
 export function rssSourceReducer(
@@ -13,7 +14,7 @@ export function rssSourceReducer(
         case SELECT_RSS_SOURCE:
             return {
                 ...state,
-                selectedRssSource: action.payload.id
+                selectedRssSourceId: action.payload.id
             }
         case ADD_RSS_SOURCE:
             return {
