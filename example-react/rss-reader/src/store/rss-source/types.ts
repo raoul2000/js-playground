@@ -7,6 +7,8 @@ export const READ_RSS_PENDING = "@rssSource/READ_RSS_PENDING";
 export const READ_RSS_SUCCESS = "@rssSource/READ_RSS_SUCCESS";
 export const READ_RSS_ERROR = "@rssSource/READ_RSS_ERROR";
 
+export const SET_RSS_DOCUMENT = "@rssSource/SET_RSS_DOCUMENT";
+
 export type RssSourceId = string;
 
 export interface RssSource {
@@ -22,11 +24,11 @@ export interface RssSource {
      * URL of the RSS feed for this source
      */
     url: string
-} 
+}
 /**
  * The status of the RSS read operation
  */
-export enum RssReadStatus  {
+export enum RssReadStatus {
     /**
      * The RSS source is about to be read
      */
@@ -41,6 +43,52 @@ export enum RssReadStatus  {
     ERROR = "ERROR"
 }
 
+export interface Enclosure {
+    url: string;
+    length?: number;
+    type?: string;
+}
+export interface Item {
+    [key: string]: any;
+    link?: string;
+    guid?: string;
+    title?: string;
+    pubDate?: string;
+    creator?: string;
+    content?: string;
+    isoDate?: string;
+    categories?: string[];
+    contentSnippet?: string;
+    enclosure?: Enclosure;
+}
+
+export interface RssDocument {
+    [key: string]: any;
+    image?: {
+        link?: string;
+        url: string;
+        title?: string;
+    },
+    link?: string;
+    title?: string;
+    items?: Item[];
+    feedUrl?: string;
+    description?: string;
+    itunes?: {
+        [key: string]: any;
+        image?: string;
+        owner?: {
+            name?: string;
+            email?: string;
+        };
+        author?: string;
+        summary?: string;
+        explicit?: string;
+        categories?: string[];
+        keywords?: string[];
+    };
+}
+
 export interface RssSourceState {
     /**
      * The list of RSS sources currently loaded in the app. 
@@ -50,7 +98,7 @@ export interface RssSourceState {
      * The currently selected RSS source. 
      * 
      * This property is `undefined` when no RSS source is selected, otherwise it 
-     * contains the ID of an RSS Source
+     * contains the ID of the selected RSS Source
      */
     selectedRssSourceId: RssSourceId | undefined
     /**
@@ -58,27 +106,38 @@ export interface RssSourceState {
      * performed on the source with ID equal to `selectedRssSourceId`. 
      */
     readStatus: RssReadStatus | undefined
+    /**
+     * RSS document for the selected source or `undefined` when no RSS source is selected
+     * or the selected RSS source has not been fetched
+     */
+    rssDocument: RssDocument | undefined
+
 }
 
-interface SelectRssSourceAction extends Action{
+interface SelectRssSourceAction extends Action {
     type: typeof SELECT_RSS_SOURCE,
     payload: {
         id: RssSourceId
     }
 }
 
-interface AddRssSourceAction extends Action{
+interface AddRssSourceAction extends Action {
     type: typeof ADD_RSS_SOURCE,
     payload: {
         rssSource: RssSource
     }
 }
 
-interface DeleteRssSourceAction extends Action{
+interface DeleteRssSourceAction extends Action {
     type: typeof DELETE_RSS_SOURCE,
     payload: {
         id: RssSourceId
     }
 }
-
-export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction;
+interface SetRssDocumentAction extends Action {
+    type: typeof SET_RSS_DOCUMENT,
+    payload: {
+        rssDocument: RssDocument
+    }
+}
+export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction | SetRssDocumentAction;

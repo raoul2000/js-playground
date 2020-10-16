@@ -7,6 +7,8 @@ import SourceListItem from './SourceListItem'
 import useFetch, { CachePolicies } from 'use-http'
 import { convertCompilerOptionsFromJson } from 'typescript';
 import axios from 'axios';
+import Parser from 'rss-parser';
+import ResultListItem from './ResultListItem'
 
 const mapState = (state: RootState) => ({
     rssSources: state.rssSource.rssSources,
@@ -20,19 +22,23 @@ const ResultList: React.FC<Props> = (props: Props) => {
     const { selectedSourceId, rssSources } = props;
     const selectedSource = selectedSourceId ? rssSources.find(source => source.id === selectedSourceId) : null;
 
-    const [rssContent, setRssContent] = useState();
+    const [rssContent, setRssContent] = useState<Parser.Output>();
     const [refreshCount, setRefreshCount] = useState(0);
     const [error, setError] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const doRefresh = useCallback( () => { setRefreshCount(refreshCount + 1);},[refreshCount]);
+    const doRefresh = useCallback(() => { setRefreshCount(refreshCount + 1); }, [refreshCount]);
 
     useEffect(() => {
         if (selectedSource) {
             setIsLoading(true)
-            axios
-                .get(selectedSource.url)
-                .then((result) => { setRssContent(result.data); })
+            setError(undefined);
+            const rssParser = new Parser();
+            rssParser.parseURL(selectedSource.url)
+                .then((result) => {
+                    console.log(result);
+                    setRssContent(result);
+                })
                 .catch(error => {
                     setError(error.message);
                     setRssContent(undefined);
@@ -53,7 +59,11 @@ const ResultList: React.FC<Props> = (props: Props) => {
             <div className="resultListItems">
                 {isLoading && <div>Loading</div>}
                 {error}
-                {rssContent}
+                {rssContent && !isLoading && rssContent.items?.map(item => (
+                    <div key={item.guid}>
+                        <ResultListItem rssItem={item} isSelected={false}/>
+                    </div>
+                ))}
             </div>
         </div>
     )

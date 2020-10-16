@@ -19,6 +19,7 @@
     "react-redux": "^7.2.1",
     "react-scripts": "3.4.3",
     "redux-devtools-extension": "^2.13.8",
+    "rss-parser": "^3.9.0",
     "typescript": "^3.7.5",
     "use-http": "^1.0.15"
   },
