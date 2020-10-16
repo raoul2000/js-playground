@@ -16,7 +16,8 @@
 npx create-react-app rss-reader --template typescript
 ```
 
-## Redux
+## Reference
+### Redux
 
 Install dependencies :
 ```
@@ -27,5 +28,10 @@ References:
 - [React Redux](https://react-redux.js.org/)
 - [Redux DevTools Extension](http://extension.remotedev.io/)
 
+### About async data fetch
+- [How to fetch data with React Hooks?](https://www.robinwieruch.de/react-hooks-fetch-data)
+- [Hook: useFetch](https://use-http.com)
+- [react-async-utils](https://github.com/CarlosGines/react-async-utils)
 
-
+### Others
+- [How the useEffect Hook Works (with Examples)](https://daveceddia.com/useeffect-hook-examples/)

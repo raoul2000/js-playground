@@ -12,7 +12,6 @@
     "@types/react": "^16.9.52",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
-    "axios": "^0.20.0",
     "classnames": "^2.2.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -20,7 +19,7 @@
     "react-scripts": "3.4.3",
     "redux-devtools-extension": "^2.13.8",
     "typescript": "^3.7.5",
-    "use-axios-client": "^2.0.0"
+    "use-http": "^1.0.15"
   },
   "scripts": {
     "start": "react-scripts start",
