@@ -31,7 +31,18 @@ import { addRssSource } from './store/rss-source/actions';
     id: 'une-div',
     label: 'La Une Divert',
     url: 'https://www.lemonde.fr/rss/sport.xml'
+  },
+  {
+    id: 'libe-1',
+    label: 'Libération 1',
+    url: 'http://localhost:3000/test-response/libe_1.xml'
+  },
+  {
+    id: 'ofr-1',
+    label: 'Ouest France A la Une',
+    url: 'http://localhost:3000/test-response/rss-en-continu.xml'
   }
+  
 ].map(source => store.dispatch(addRssSource(source)));
 
 
