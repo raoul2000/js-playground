@@ -1,6 +1,6 @@
 import {
     RssSourceState, RssActionTypes, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
-    LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR, SELECT_RSS_ITEM, RssReadStatus
+    LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR, SELECT_RSS_ITEM, RssReadStatus, RssSourceId
 } from './types'
 
 export const initialState: RssSourceState = {
@@ -18,8 +18,8 @@ export function rssSourceReducer(
 ): RssSourceState {
     switch (action.type) {
         case SELECT_RSS_SOURCE:
-            const isNewSelection = action.payload.id !== state.selectedRssSourceId 
-            if(isNewSelection) {
+            const isNewSelection = action.payload.id !== state.selectedRssSourceId
+            if (isNewSelection) {
                 return {
                     ...state,
                     selectedRssSourceId: action.payload.id,
@@ -60,7 +60,8 @@ export function rssSourceReducer(
             return {
                 ...state,
                 readStatus: RssReadStatus.ERROR,
-                readErrorMessage: action.payload.message
+                readErrorMessage: action.payload.message,
+                selectedRssItemId: undefined
             }
         case SELECT_RSS_ITEM:
             return {
@@ -71,3 +72,27 @@ export function rssSourceReducer(
             return state;
     }
 }
+
+// Selectors ////////////////////////////////////////////////////////////////////////////////////////////
+export const getSelectedRssSource = (state:RssSourceState) => {
+    const { rssSources, selectedRssSourceId } = state;
+    if (rssSources && selectedRssSourceId) {
+        return getRssSourceById(state, selectedRssSourceId);
+    }
+    return null;
+
+}
+export const getRssSourceById = (state: RssSourceState, sourceId: RssSourceId) => {
+    const { rssSources } = state;
+    if (rssSources && sourceId) {
+        return rssSources.find(source => source.id === sourceId);
+    }
+    return null;
+}
+export const getRssItemById = (state: RssSourceState) => {
+    const { rssDocument, selectedRssItemId } = state;
+    if (rssDocument && rssDocument.items && selectedRssItemId) {
+        return rssDocument.items.find(item => item.guid === selectedRssItemId)
+    }
+    return null;
+} 

@@ -16,14 +16,14 @@ const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>
 type Props = PropsFromRedux
 
-const SourceList:React.FC<Props> = (props: Props) => {
+const SourceList: React.FC<Props> = ({ rssSources, selectedSourceId }: Props) => {
     return (
         <div id="sourceList">
-            {props.rssSources && props.rssSources.map((source) => (
-                <SourceListItem 
-                    key={source.id} 
-                    source={source} 
-                    isSelected={source.id === props.selectedSourceId}
+            {rssSources && rssSources.map((source) => (
+                <SourceListItem
+                    key={source.id}
+                    source={source}
+                    isSelected={source.id === selectedSourceId}
                 />
             ))}
         </div>

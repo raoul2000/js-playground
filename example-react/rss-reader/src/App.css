@@ -13,6 +13,10 @@
   display: flex;
   flex: 1;
 }
+.body > nav,
+.body > main {
+  padding :0.2em;
+}
 .source-list {
   /* 12em is the width of the columns */
   flex: 1;

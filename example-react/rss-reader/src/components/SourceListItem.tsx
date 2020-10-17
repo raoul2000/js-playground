@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 
 const mapDispatch = {
-    select: (id: RssSourceId) => selectRssSource(id)
+    selectSource: (id: RssSourceId) => selectRssSource(id)
 }
 const connector = connect(null, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>
@@ -15,11 +15,10 @@ type Props = PropsFromRedux & {
     isSelected: boolean
 }
 
-const SourceListItem: React.FC<Props> = (props: Props) => {
-    const { source, select, isSelected } = props;
+const SourceListItem: React.FC<Props> = ({ source, selectSource, isSelected }: Props) => {
 
-    const handleClick = () => {
-        select(source.id);
+    const handleClickOnRssSource = () => {
+        selectSource(source.id);
     };
 
     const itemClassName = classNames({
@@ -30,7 +29,7 @@ const SourceListItem: React.FC<Props> = (props: Props) => {
         <div
             key={source.id}
             className={itemClassName}
-            onClick={handleClick}
+            onClick={handleClickOnRssSource}
         >
             {source.label}
         </div>
