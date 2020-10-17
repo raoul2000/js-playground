@@ -1,26 +1,35 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux'
-import { selectRssSource } from '../store/rss-source/actions'
-import { RssSourceId, RssSource } from '../store/rss-source/types'
+import { RootState } from '../store'
+import { selectRssItem } from '../store/rss-source/actions'
+import { RssItemId, Item } from '../store/rss-source/types'
 import classNames from 'classnames';
-import Parser from 'rss-parser';
 
 const mapDispatch = {
-    select: (id: RssSourceId) => selectRssSource(id)
+    selectItem: (id?: RssItemId) => selectRssItem(id)
 }
+
 const connector = connect(null, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>
-type Props = {
-    rssItem:Parser.Output,
-    isSelected:boolean
+type Props = PropsFromRedux & {
+    rssItem: Item,
+    isSelected: boolean
 }
 
-const ResultListITem: React.FC<Props> = (props: Props) => {
-    const { rssItem, isSelected } = props;
+const ResultListITem: React.FC<Props> = ({ rssItem, isSelected, selectItem }: Props) => {
+    const itemClassName = classNames({
+        'rss-item': true,
+        'selected': isSelected
+    });
 
     return (
-        <div>
-            {rssItem.title}
+        <div
+            className={itemClassName}
+            onClick={() => selectItem(rssItem.guid)}
+        >
+            <small>
+                {rssItem.title}
+            </small>
         </div>
     )
 }

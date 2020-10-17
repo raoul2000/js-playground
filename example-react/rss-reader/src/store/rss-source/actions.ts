@@ -1,8 +1,8 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import { AnyAction } from 'redux';
 import {
-    RssActionTypes, RssSourceId, RssSource, RssDocument, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
-    LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR
+    RssActionTypes, RssSourceId, RssSource, RssItemId, RssDocument, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
+    LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR, SELECT_RSS_ITEM
 } from './types'
 import Parser from 'rss-parser';
 
@@ -55,6 +55,14 @@ export function setRssLoadingError(message: string): RssActionTypes {
         type: LOAD_RSS_ERROR,
         payload: {
             message
+        }
+    }
+}
+export function selectRssItem(id?: RssItemId): RssActionTypes {
+    return {
+        type: SELECT_RSS_ITEM,
+        payload: {
+            id
         }
     }
 }

@@ -9,8 +9,10 @@ export const LOAD_RSS_ERROR = "@rssSource/LOAD_RSS_ERROR";
 
 export const LOAD_RSS_DOCUMENT = "@rssSource/LOAD_RSS_DOCUMENT";
 export const SET_RSS_DOCUMENT = "@rssSource/SET_RSS_DOCUMENT";
+export const SELECT_RSS_ITEM = "@rssSource/SELECT_RSS_ITEM";
 
 export type RssSourceId = string;
+export type RssItemId = string;
 
 export interface RssSource {
     /**
@@ -116,22 +118,23 @@ export interface RssSourceState {
      * Contains the message when the read operation ends in error
      */
     readErrorMessage: string | undefined 
+    /**
+     * Id of the RSS item currently selected or `undefined` if no RSS item is selected
+     */
+    selectedRssItemId: RssItemId | undefined
 }
-
 interface SelectRssSourceAction extends Action {
     type: typeof SELECT_RSS_SOURCE,
     payload: {
         id: RssSourceId
     }
 }
-
 interface AddRssSourceAction extends Action {
     type: typeof ADD_RSS_SOURCE,
     payload: {
         rssSource: RssSource
     }
 }
-
 interface DeleteRssSourceAction extends Action {
     type: typeof DELETE_RSS_SOURCE,
     payload: {
@@ -164,5 +167,11 @@ interface LoadRssSocumentAction extends Action {
         rssSource: RssSource
     }
 }
+interface SelectRssItemAction extends Action {
+    type: typeof SELECT_RSS_ITEM,
+    payload: {
+        id?: RssItemId
+    }
+}
 export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction | SetRssDocumentAction | LoadRssSocumentAction
-| setRssLoadingPendingAction | setRssLoadingSuccessAction | setRssLoadingErrorAction ;
+| setRssLoadingPendingAction | setRssLoadingSuccessAction | setRssLoadingErrorAction | SelectRssItemAction ;

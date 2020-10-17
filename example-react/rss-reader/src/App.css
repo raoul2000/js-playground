@@ -20,17 +20,31 @@
   min-width: 10em;
   max-width: 15em;
 }
+.source-list .selected {
+  background-color: #03A9F4;
+}
 .source-item {
   cursor: pointer;
 }
-.source-list .selected {
-  background-color: #03A9F4;
+.source-item:hover {
+  background-color: #5cc8fa;
 }
 .result-list {
   flex: 1.5;
   background-color: darksalmon;
   min-width: 10em;
   max-width: 20em;
+}
+.result-list .selected {
+  background-color: yellow;
+}
+.rss-item {
+  cursor: pointer;
+  
+}
+.rss-item:hover {
+  background-color: rgb(255, 255, 164);
+
 }
 .result-detail {
   flex: 3;
