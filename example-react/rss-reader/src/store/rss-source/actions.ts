@@ -58,7 +58,15 @@ export function setRssLoadingError(message: string): RssActionTypes {
         }
     }
 }
-
+/**
+ * Load an RSS Source and store it as a RssDocument object.
+ * The URL of the RSS Source is used to perform an HTTP/GET request. The response is then
+ * parsed as a RssDocument object and stored. 
+ * 
+ * This *thunk* action will update the `readStatus` property to reflect request progress.
+ * 
+ * @param rssSource the RSS source to load
+ */
 export function loadRssDocument(rssSource: RssSource): ThunkAction<void, {}, {}, AnyAction> {
     return (dispatch: ThunkDispatch<{}, {}, AnyAction>): void => {
 
