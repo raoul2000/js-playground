@@ -3,10 +3,11 @@ import { Action } from 'redux';
 export const ADD_RSS_SOURCE = "@rssSource/ADD_RSS_SOURCE";
 export const SELECT_RSS_SOURCE = "@rssSource/SELECT_RSS_SOURCE";
 export const DELETE_RSS_SOURCE = "@rssSource/DELETE_RSS_SOURCE";
-export const READ_RSS_PENDING = "@rssSource/READ_RSS_PENDING";
-export const READ_RSS_SUCCESS = "@rssSource/READ_RSS_SUCCESS";
-export const READ_RSS_ERROR = "@rssSource/READ_RSS_ERROR";
+export const LOAD_RSS_PENDING = "@rssSource/LOAD_RSS_PENDING";
+export const LOAD_RSS_SUCCESS = "@rssSource/LOAD_RSS_SUCCESS";
+export const LOAD_RSS_ERROR = "@rssSource/LOAD_RSS_ERROR";
 
+export const LOAD_RSS_DOCUMENT = "@rssSource/LOAD_RSS_DOCUMENT";
 export const SET_RSS_DOCUMENT = "@rssSource/SET_RSS_DOCUMENT";
 
 export type RssSourceId = string;
@@ -95,7 +96,7 @@ export interface RssSourceState {
      */
     rssSources: Array<RssSource>;
     /**
-     * The currently selected RSS source. 
+     * Id of the selected RSS source. 
      * 
      * This property is `undefined` when no RSS source is selected, otherwise it 
      * contains the ID of the selected RSS Source
@@ -111,7 +112,10 @@ export interface RssSourceState {
      * or the selected RSS source has not been fetched
      */
     rssDocument: RssDocument | undefined
-
+    /**
+     * Contains the message when the read operation ends in error
+     */
+    readErrorMessage: string | undefined 
 }
 
 interface SelectRssSourceAction extends Action {
@@ -137,7 +141,28 @@ interface DeleteRssSourceAction extends Action {
 interface SetRssDocumentAction extends Action {
     type: typeof SET_RSS_DOCUMENT,
     payload: {
-        rssDocument: RssDocument
+        rssDocument: RssDocument | undefined
     }
 }
-export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction | SetRssDocumentAction;
+interface setRssLoadingPendingAction extends Action {
+    type: typeof LOAD_RSS_PENDING,
+    payload: {}
+}
+interface setRssLoadingSuccessAction extends Action {
+    type: typeof LOAD_RSS_SUCCESS,
+    payload: {}
+}
+interface setRssLoadingErrorAction extends Action {
+    type: typeof LOAD_RSS_ERROR,
+    payload: {
+        message: string
+    }
+}
+interface LoadRssSocumentAction extends Action {
+    type: typeof LOAD_RSS_DOCUMENT,
+    payload: {
+        rssSource: RssSource
+    }
+}
+export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction | SetRssDocumentAction | LoadRssSocumentAction
+| setRssLoadingPendingAction | setRssLoadingSuccessAction | setRssLoadingErrorAction ;

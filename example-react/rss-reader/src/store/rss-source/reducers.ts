@@ -1,9 +1,11 @@
-import { RssSourceState, RssActionTypes, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT } from './types'
+import { RssSourceState, RssActionTypes, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
+LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR, RssReadStatus } from './types'
 
 export const initialState: RssSourceState = {
     rssSources: [],
     selectedRssSourceId: undefined,
-    readStatus: undefined, // not used,
+    readStatus: undefined, 
+    readErrorMessage: undefined,
     rssDocument: undefined
 }
 
@@ -33,7 +35,24 @@ export function rssSourceReducer(
             return {
                 ...state,
                 rssDocument: action.payload.rssDocument
-            }            
+            }          
+        case LOAD_RSS_PENDING:
+            return {
+                ...state,
+                readStatus: RssReadStatus.PENDING,
+                readErrorMessage: undefined
+            }  
+        case LOAD_RSS_SUCCESS:
+            return {
+                ...state,
+                readStatus: RssReadStatus.SUCCESS
+            }  
+        case LOAD_RSS_ERROR:
+            return {
+                ...state,
+                readStatus: RssReadStatus.ERROR,
+                readErrorMessage: action.payload.message
+            }  
         default:
             return state;
     }

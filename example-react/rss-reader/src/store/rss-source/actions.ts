@@ -1,4 +1,10 @@
-import { RssActionTypes, RssSourceId, RssSource, RssDocument, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT } from './types'
+import { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import { AnyAction } from 'redux';
+import {
+    RssActionTypes, RssSourceId, RssSource, RssDocument, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
+    LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR
+} from './types'
+import Parser from 'rss-parser';
 
 export function selectRssSource(id: RssSourceId): RssActionTypes {
     return {
@@ -8,7 +14,6 @@ export function selectRssSource(id: RssSourceId): RssActionTypes {
         }
     }
 }
-
 export function addRssSource(source: RssSource): RssActionTypes {
     return {
         type: ADD_RSS_SOURCE,
@@ -17,7 +22,6 @@ export function addRssSource(source: RssSource): RssActionTypes {
         }
     }
 }
-
 export function deleteRssSource(id: RssSourceId): RssActionTypes {
     return {
         type: DELETE_RSS_SOURCE,
@@ -26,12 +30,48 @@ export function deleteRssSource(id: RssSourceId): RssActionTypes {
         }
     }
 }
-
-export function setRssDocument(rssDocument: RssDocument): RssActionTypes {
+export function setRssDocument(rssDocument?: RssDocument): RssActionTypes {
     return {
         type: SET_RSS_DOCUMENT,
         payload: {
             rssDocument
         }
+    }
+}
+export function setRssLoadingPending(): RssActionTypes {
+    return {
+        type: LOAD_RSS_PENDING,
+        payload: {}
+    }
+}
+export function setRssLoadingSuccess(): RssActionTypes {
+    return {
+        type: LOAD_RSS_SUCCESS,
+        payload: {}
+    }
+}
+export function setRssLoadingError(message: string): RssActionTypes {
+    return {
+        type: LOAD_RSS_ERROR,
+        payload: {
+            message
+        }
+    }
+}
+
+export function loadRssDocument(rssSource: RssSource): ThunkAction<void, {}, {}, AnyAction> {
+    return (dispatch: ThunkDispatch<{}, {}, AnyAction>): void => {
+
+        dispatch(setRssLoadingPending());
+        const rssParser = new Parser();
+        rssParser.parseURL(rssSource.url)
+            .then((result) => {
+                dispatch(setRssLoadingSuccess());
+                dispatch(setRssDocument(result));
+            })
+            .catch(error => {
+                dispatch(setRssLoadingError(error.message));
+                dispatch(setRssDocument());
+            })
     }
 }

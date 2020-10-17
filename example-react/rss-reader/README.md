@@ -35,3 +35,4 @@ References:
 
 ### Others
 - [How the useEffect Hook Works (with Examples)](https://daveceddia.com/useeffect-hook-examples/)
+- [React & Redux in TypeScript - Complete Guide](https://github.com/piotrwitek/react-redux-typescript-guide)
