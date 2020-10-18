@@ -24,7 +24,7 @@ const ResultListITem: React.FC<Props> = ({ rssItem, isSelected, selectItem }: Pr
     return (
         <div
             className={itemClassName}
-            onClick={() => selectItem(rssItem.guid)}
+            onClick={() => selectItem(rssItem.id)}
         >
             <small>
                 {rssItem.title}

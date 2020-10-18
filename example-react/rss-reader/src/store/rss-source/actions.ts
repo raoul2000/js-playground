@@ -4,7 +4,7 @@ import {
     RssActionTypes, RssSourceId, RssSource, RssItemId, RssDocument, SELECT_RSS_SOURCE, ADD_RSS_SOURCE, DELETE_RSS_SOURCE, SET_RSS_DOCUMENT,
     LOAD_RSS_PENDING, LOAD_RSS_SUCCESS, LOAD_RSS_ERROR, SELECT_RSS_ITEM
 } from './types'
-import Parser from 'rss-parser';
+import {fetchRssDocument} from '../../lib/rss-loader';
 
 export function selectRssSource(id: RssSourceId): RssActionTypes {
     return {
@@ -79,8 +79,7 @@ export function loadRssDocument(rssSource: RssSource): ThunkAction<void, {}, {},
     return (dispatch: ThunkDispatch<{}, {}, AnyAction>): void => {
 
         dispatch(setRssLoadingPending());
-        const rssParser = new Parser();
-        rssParser.parseURL(rssSource.url)
+        fetchRssDocument(rssSource.url)
             .then((result) => {
                 dispatch(setRssLoadingSuccess());
                 dispatch(setRssDocument(result));

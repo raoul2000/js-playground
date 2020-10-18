@@ -21,7 +21,7 @@ const SourceListItem: React.FC<Props> = ({ source, selectSource, isSelected }: P
         selectSource(source.id);
     };
 
-    const itemClassName = classNames({
+    const itemClassName: string = classNames({
         'source-item': true,
         'selected': isSelected
     });

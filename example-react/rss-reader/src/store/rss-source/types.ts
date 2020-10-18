@@ -45,51 +45,22 @@ export enum RssReadStatus {
      */
     ERROR = "ERROR"
 }
-
-export interface Enclosure {
-    url: string;
-    length?: number;
-    type?: string;
-}
+/**
+ * Represent an entry in the RSS Document article list 
+ */
 export interface Item {
-    [key: string]: any;
-    link?: string;
-    guid?: string;
+    id: string;
     title?: string;
-    pubDate?: string;
-    creator?: string;
     content?: string;
-    isoDate?: string;
-    categories?: string[];
-    contentSnippet?: string;
-    enclosure?: Enclosure;
-}
-
-export interface RssDocument {
-    [key: string]: any;
-    image?: {
-        link?: string;
-        url: string;
-        title?: string;
-    },
     link?: string;
+    pubDate?: string;
+}
+/**
+ * Represent the parsed verison of an RSS source
+ */
+export interface RssDocument {
     title?: string;
-    items?: Item[];
-    feedUrl?: string;
-    description?: string;
-    itunes?: {
-        [key: string]: any;
-        image?: string;
-        owner?: {
-            name?: string;
-            email?: string;
-        };
-        author?: string;
-        summary?: string;
-        explicit?: string;
-        categories?: string[];
-        keywords?: string[];
-    };
+    items: Item[];
 }
 
 export interface RssSourceState {
@@ -117,7 +88,7 @@ export interface RssSourceState {
     /**
      * Contains the message when the read operation ends in error
      */
-    readErrorMessage: string | undefined 
+    readErrorMessage: string | undefined
     /**
      * Id of the RSS item currently selected or `undefined` if no RSS item is selected
      */
@@ -174,4 +145,4 @@ interface SelectRssItemAction extends Action {
     }
 }
 export type RssActionTypes = SelectRssSourceAction | AddRssSourceAction | DeleteRssSourceAction | SetRssDocumentAction | LoadRssSocumentAction
-| setRssLoadingPendingAction | setRssLoadingSuccessAction | setRssLoadingErrorAction | SelectRssItemAction ;
+    | setRssLoadingPendingAction | setRssLoadingSuccessAction | setRssLoadingErrorAction | SelectRssItemAction;

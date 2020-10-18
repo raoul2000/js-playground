@@ -92,7 +92,7 @@ export const getRssSourceById = (state: RssSourceState, sourceId: RssSourceId) =
 export const getRssItemById = (state: RssSourceState) => {
     const { rssDocument, selectedRssItemId } = state;
     if (rssDocument && rssDocument.items && selectedRssItemId) {
-        return rssDocument.items.find(item => item.guid === selectedRssItemId)
+        return rssDocument.items.find(item => item.id === selectedRssItemId)
     }
     return null;
 } 

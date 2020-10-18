@@ -34,7 +34,7 @@ const ResultList: React.FC<Props> = (props: Props) => {
     };
     // load RSS Document each time the selected RSS source Id changes
     useEffect(handleLoadRssDocument, [selectedSourceId])
-    
+    console.log(rssDocument);
     return (
         <div id="resultList">
             <h3>
@@ -45,7 +45,7 @@ const ResultList: React.FC<Props> = (props: Props) => {
                 {rssLoadingStatus === RssReadStatus.PENDING && <div>loading ...</div>}
                 {rssLoadingStatus === RssReadStatus.ERROR && <div>{rssLoadErrorMessage}</div>}
                 {rssDocument && rssDocument.items?.map(item => (
-                    <ResultListItem key={item.guid} rssItem={item} isSelected={selectedItemId === item.guid} />
+                    <ResultListItem key={item.id} rssItem={item} isSelected={selectedItemId === item.id} />
                 ))}
             </div>
         </div>
