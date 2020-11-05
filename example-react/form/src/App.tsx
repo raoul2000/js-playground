@@ -1,11 +1,14 @@
 import React from 'react';
 import './App.css';
-import Form1 from './components/Form1';
+import AppPlayContext from './app-context/AppPlayContext';
+import AppPlayForm from './app-form/AppPlayForm';
+import MyForm from './app-formik/MyForm';
+
 
 function App() {
   return (
     <div className="App">
-      <Form1 />
+      <MyForm  />
     </div>
   );
 }

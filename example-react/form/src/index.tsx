@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Child1 from './app-context/Child1';
+
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <hr />
+    <Child1 name="hello" />
   </React.StrictMode>,
   document.getElementById('root')
 );

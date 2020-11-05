@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 export const ACTION_SET_FIRST_NAME = 'SET_FIRST_NAME';
 export const ACTION_SET_LAST_NAME = 'SET_LAST_NAME';
@@ -16,20 +16,28 @@ type Action =
     | { type: 'ACTION_SET_FIRST_NAME', firstname: string }
     | { type: 'ACTION_SET_LAST_NAME', lastname: string };
 
-const initialState: RootState = {
+export const initialState: RootState = {
     firstname: null,
     lastname: null
 };
 
-const store = createContext<RootState>(initialState);
-const { Provider } = store;
+export const FormContext = createContext<{
+    state: RootState;
+    dispatch: React.Dispatch<Action>;
+}>({
+    state: initialState,
+    dispatch: () => null
+});
 
-const reducer = (state: RootState, action: Action): RootState => {
+//export const useFormContext = () => useContext(FormContext);
+
+
+export const reducer = (state: RootState, action: Action): RootState => {
     switch (action.type) {
         case "ACTION_SET_FIRST_NAME":
             return {
                 ...state,
-                firstname: action.firstname
+                firstname: action.firstname !== state.firstname ? action.firstname : state.firstname
             }
         case 'ACTION_SET_LAST_NAME':
             return {
@@ -40,9 +48,3 @@ const reducer = (state: RootState, action: Action): RootState => {
             throw new Error('invalid action');
     }
 }
-
-const StateProvider:React.FC<React.ReactElement> = ({ children }) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
-
-    //return (<Provider value={ { state, dispatch } }> { children } < /Provider>);
-};
