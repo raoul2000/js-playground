@@ -1,165 +1,80 @@
-import React from 'react';
-
+import React from 'react'
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { Calendar } from 'primereact/calendar';
 import { useFormik } from 'formik';
+import 'primeflex/primeflex.css';
 
 type Inputs = {
-    firstName?: string
-    lastName?: string
-    email?: string
+    firstname1?: string
+    lastname1?: string
+    birthday?: Date
 };
-
-const validate = (values:Inputs):Inputs => {
-
-    const errors:Inputs = {};
-
-    if (!values.firstName) {
-
-        errors.firstName = 'Required';
-
-    } else if (values.firstName.length > 15) {
-
-        errors.firstName = 'Must be 15 characters or less';
-
+type ValidationError = {
+    firstname1?: string
+    lastname1?: string
+    birthday?: string
+};
+const now: Date = new Date();
+const validate = (values: Inputs): ValidationError => {
+    const errors: ValidationError = {};
+    if (!values.firstname1 && values.firstname1?.length === 0) {
+        errors.firstname1 = 'firstname is required';
     }
-
-
-
-    if (!values.lastName) {
-
-        errors.lastName = 'Required';
-
-    } else if (values.lastName.length > 20) {
-
-        errors.lastName = 'Must be 20 characters or less';
-
+    if (!values.birthday) {
+        errors.birthday = 'birthday is required';
+    } else if (values.birthday.getDay() === now.getDay()) {
+        errors.birthday = 'today is not ok';
     }
-
-
-
-    if (!values.email) {
-
-        errors.email = 'Required';
-
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-
-        errors.email = 'Invalid email address';
-
-    }
-
-
-
     return errors;
-
-};
-
-
+}
 
 const MyForm = () => {
-
     const formik = useFormik({
-
         initialValues: {
-
-            firstName: '',
-
-            lastName: '',
-
-            email: '',
-
+            firstname1: '',
+            birthday: now
         },
-
         validate,
-
         onSubmit: values => {
-
-            alert(JSON.stringify(values, null, 2));
-
+            console.log(values);
         },
-
     });
 
     return (
-
         <form onSubmit={formik.handleSubmit}>
-
-            <label htmlFor="firstName">First Name</label>
-
-            <input
-
-                id="firstName"
-
-                name="firstName"
-
-                type="text"
-
-                onChange={formik.handleChange}
-
-                onBlur={formik.handleBlur}
-
-                value={formik.values.firstName}
-
-            />
-
-            {formik.touched.firstName && formik.errors.firstName ? (
-
-                <div>{formik.errors.firstName}</div>
-
-            ) : null}
-
-            <label htmlFor="lastName">Last Name</label>
-
-            <input
-
-                id="lastName"
-
-                name="lastName"
-
-                type="text"
-
-                onChange={formik.handleChange}
-
-                onBlur={formik.handleBlur}
-
-                value={formik.values.lastName}
-
-            />
-
-            {formik.touched.lastName && formik.errors.lastName ? (
-
-                <div>{formik.errors.lastName}</div>
-
-            ) : null}
-
-            <label htmlFor="email">Email Address</label>
-
-            <input
-
-                id="email"
-
-                name="email"
-
-                type="email"
-
-                onChange={formik.handleChange}
-
-                onBlur={formik.handleBlur}
-
-                value={formik.values.email}
-
-            />
-
-            {formik.touched.email && formik.errors.email ? (
-
-                <div>{formik.errors.email}</div>
-
-            ) : null}
-
-            <button type="submit">Submit</button>
-
+            <div className="p-fluid p-grid p-formgrid">
+                <div className="p-fluid">
+                    <div className="p-field">
+                        <label htmlFor="firstname1">Firstname</label>
+                        <InputText
+                            id="firstname1"
+                            type="text"
+                            {...formik.getFieldProps('firstname1')}
+                            autoComplete="off"
+                        />
+                        {formik.touched.firstname1 && formik.errors.firstname1 ? <div>{formik.errors.firstname1}</div> : null}
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="lastname1">Lastname</label>
+                        <InputText id="lastname1" type="text" autoComplete="off" />
+                    </div>
+                    <div className="p-field p-col-12 p-md-4">
+                        <label htmlFor="basic">Basic</label>
+                        <Calendar
+                            id="birthday"
+                            name="birthday"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.birthday}
+                        />
+                        {formik.touched.birthday && formik.errors.birthday ? <div>{formik.errors.birthday}</div> : null}
+                    </div>
+                </div>
+                <Button label="Submit" type="Submit" />
+            </div>
         </form>
-
-    );
-
-};
+    )
+}
 
 export default MyForm;
