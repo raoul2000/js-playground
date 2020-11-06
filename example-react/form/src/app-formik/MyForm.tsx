@@ -3,18 +3,22 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { useFormik } from 'formik';
+import { Dropdown } from 'primereact/dropdown';
 import 'primeflex/primeflex.css';
 
 type Inputs = {
     firstname1?: string
     lastname1?: string
     birthday?: Date
+    city?: string;
 };
 type ValidationError = {
     firstname1?: string
     lastname1?: string
     birthday?: string
+    city?: string;
 };
+
 const now: Date = new Date();
 const validate = (values: Inputs): ValidationError => {
     const errors: ValidationError = {};
@@ -28,20 +32,36 @@ const validate = (values: Inputs): ValidationError => {
     }
     return errors;
 }
-
+const cities = [
+    { name: 'New York', code: 'NY' },
+    { name: 'Rome', code: 'RM' },
+    { name: 'London', code: 'LDN' },
+    { name: 'Istanbul', code: 'IST' },
+    { name: 'Paris', code: 'PRS' }
+];
 const MyForm = () => {
+    const initialValues: Inputs = {
+        firstname1: '',
+        birthday: now
+    }
+    const handleSubmit = (values: Inputs) => console.log(values);
+
     const formik = useFormik({
         initialValues: {
             firstname1: '',
-            birthday: now
+            birthday: now,
+            city: 'NY'
         },
         validate,
         onSubmit: values => {
             console.log(values);
         },
     });
-
+    const handleBlur = (e:Event) => {
+        console.log(e);
+    }
     return (
+
         <form onSubmit={formik.handleSubmit}>
             <div className="p-fluid p-grid p-formgrid">
                 <div className="p-fluid">
@@ -59,6 +79,20 @@ const MyForm = () => {
                         <label htmlFor="lastname1">Lastname</label>
                         <InputText id="lastname1" type="text" autoComplete="off" />
                     </div>
+                    <div className="p-field">
+                        <label htmlFor="city">City</label>
+                        <Dropdown
+                            id="city"
+                            name="city"
+                            options={cities}
+                            optionLabel="name"
+                            placeholder="Select a City"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.city}
+                        />
+                    </div>
+
                     <div className="p-field p-col-12 p-md-4">
                         <label htmlFor="basic">Basic</label>
                         <Calendar
@@ -74,6 +108,7 @@ const MyForm = () => {
                 <Button label="Submit" type="Submit" />
             </div>
         </form>
+
     )
 }
 
