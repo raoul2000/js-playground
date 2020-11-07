@@ -1,16 +1,19 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import 'primeflex/primeflex.css';
-import { isParameter } from 'typescript';
+
 
 type Inputs = {
     firstname1?: string
     lastname1?: string
     birthday?: Date
-    city?: string;
+    city?: {
+        code: string
+        name: string
+    };
 };
 type ValidationError = {
     firstname1?: string
@@ -18,20 +21,44 @@ type ValidationError = {
     birthday?: string
     city?: string;
 };
+
+type FieldTouched = {
+    firstname1?: boolean
+    lastname1?: boolean
+    birthday?: boolean
+    city?: boolean;
+};
 type OnChangeEvent = {
-    name:string
-    value:any
+    name: string
+    value: any
+}
+type PrimeReactEvent = {
+    originalEvent: Event
+    value: any
+    checked: boolean
+    target: {
+        name: string
+        id: string
+        value: any
+    }
 }
 const now: Date = new Date();
 const initialValues: Inputs = {
-    firstname1: '',
+    firstname1: 'hello',
     birthday: now
 }
 const validate = (values: Inputs): ValidationError => {
     const errors: ValidationError = {};
-    if (!values.firstname1 && values.firstname1?.length === 0) {
+    if( values.city?.code === 'LDN') {
+        errors.city = 'london is too cold';
+    }
+    if (!values.firstname1) {
         errors.firstname1 = 'firstname is required';
     }
+    if (!values.lastname1) {
+        errors.lastname1 = 'lastname is required';
+    }
+
     if (!values.birthday) {
         errors.birthday = 'birthday is required';
     } else if (values.birthday.getDay() === now.getDay()) {
@@ -46,30 +73,56 @@ const cities = [
     { name: 'Istanbul', code: 'IST' },
     { name: 'Paris', code: 'PRS' }
 ];
-const formReducer = (state: Inputs, event:OnChangeEvent) => {
+const formReducer = (state: Inputs, event: OnChangeEvent) => {
     return {
         ...state,
         [event.name]: event.value
     }
 }
+console.log('my form');
 const MyForm = () => {
     const [formData, setFormData] = useReducer(formReducer, initialValues);
+    const [errors, setErrors] = useState<ValidationError>({});
+    const [touched, setTouched] = useState<FieldTouched>({});
 
+    useEffect(() => {
+        setErrors(validate(formData));
+    }, [formData]);
+
+    const markFieldAsTouched = (name: string) => {
+        if (touched[name as keyof FieldTouched] !== true) {
+            setTouched({
+                ...touched,
+                [name]: true
+            });
+        }
+    }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log(formData);
+        console.log(touched);
     }
     const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+        const name: string = event.currentTarget.name;
+        markFieldAsTouched(name);
         setFormData({
             name: event.currentTarget.name,
             value: event.currentTarget.value,
         });
     }
-    const handleDropdownChange =  (e: {originalEvent: Event, value: any, target: {name: string, id: string, value: any}}): void => {
+    const handleBlur = (event: React.FormEvent<HTMLInputElement>) => {
+        const name: string = event.currentTarget.name;
+        markFieldAsTouched(name);
+    }
+
+    const handleComponentChange = (e: PrimeReactEvent): void => {
         setFormData({
             name: e.target.name,
-            value:e.value
+            value: e.value
         })
+    }
+    const handleComponentBlur = (name: string) => {
+        markFieldAsTouched(name);
     }
     return (
         <form onSubmit={handleSubmit}>
@@ -82,13 +135,25 @@ const MyForm = () => {
                             name="firstname1"
                             type="text"
                             autoComplete="off"
+                            value={formData.firstname1}
                             onChange={handleChange}
-                            
+                            onBlur={handleBlur}
                         />
+                        {touched.firstname1 && errors.firstname1
+                            && <div>{errors.firstname1}</div>}
                     </div>
                     <div className="p-field">
                         <label htmlFor="lastname1">Lastname</label>
-                        <InputText id="lastname1" type="text" autoComplete="off" />
+                        <InputText
+                            id="lastname1"
+                            name="lastname1"
+                            type="text"
+                            autoComplete="off"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        />
+                        {touched.lastname1 && errors.lastname1
+                            && <div>{errors.lastname1}</div>}
                     </div>
                     <div className="p-field">
                         <label htmlFor="city">City</label>
@@ -98,19 +163,24 @@ const MyForm = () => {
                             options={cities}
                             optionLabel="name"
                             placeholder="Select a City"
-                            onChange={handleDropdownChange}
+                            onChange={handleComponentChange}
+                            onBlur={() => handleComponentBlur('city')}
                             value={formData.city}
-                            
                         />
+                        {touched.city && errors.city
+                            && <div>{errors.city}</div>}                        
                     </div>
                     <div className="p-field p-col-12 p-md-4">
                         <label htmlFor="basic">Basic</label>
                         <Calendar
                             id="birthday"
                             name="birthday"
-                            onChange={handleDropdownChange}
+                            onChange={handleComponentChange}
+                            onBlur={() => handleComponentBlur('birthday')}
                             value={formData.birthday}
                         />
+                        {touched.birthday && errors.birthday
+                            && <div>{errors.birthday}</div>}                          
                     </div>
                 </div>
                 <Button label="Submit" type="Submit" />

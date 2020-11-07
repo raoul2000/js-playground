@@ -29,6 +29,8 @@ const validate = (values: Inputs): ValidationError => {
         errors.birthday = 'birthday is required';
     } else if (values.birthday.getDay() === now.getDay()) {
         errors.birthday = 'today is not ok';
+    } else if(values.city === 'LDN') {
+        errors.city = 'london is too cold';
     }
     return errors;
 }
@@ -39,6 +41,11 @@ const cities = [
     { name: 'Istanbul', code: 'IST' },
     { name: 'Paris', code: 'PRS' }
 ];
+/**
+ * The problem is that for Dropdown component, the Event fire onBlur does not
+ * contain the name of the form field (here 'city') and formik is lost. The Validation on blur
+ * doesn't work for this field (and probably others)
+ */
 const MyForm = () => {
     const initialValues: Inputs = {
         firstname1: '',
