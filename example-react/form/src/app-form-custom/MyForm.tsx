@@ -3,6 +3,9 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
+import { InputTextarea } from 'primereact/inputtextarea';
+import MyInputText from './MyInputText';
+
 import 'primeflex/primeflex.css';
 
 
@@ -14,12 +17,14 @@ type Inputs = {
         code: string
         name: string
     };
+    comment?: string
 };
 type ValidationError = {
     firstname1?: string
     lastname1?: string
     birthday?: string
-    city?: string;
+    city?: string
+    comment?: string
 };
 
 type FieldTouched = {
@@ -27,6 +32,7 @@ type FieldTouched = {
     lastname1?: boolean
     birthday?: boolean
     city?: boolean;
+    comment?: boolean;
 };
 type OnChangeEvent = {
     name: string
@@ -57,6 +63,9 @@ const validate = (values: Inputs): ValidationError => {
     }
     if (!values.lastname1) {
         errors.lastname1 = 'lastname is required';
+    }
+    if (!values.comment) {
+        errors.comment = 'comment is required';
     }
 
     if (!values.birthday) {
@@ -97,10 +106,25 @@ const MyForm = () => {
             });
         }
     }
+    const markAllFieldsTouched = (names:string[]) => {
+        const newTouched = names.reduce((prev, curr) => ({
+            ...prev,
+            [curr]:true
+        }), {});
+        setTouched(newTouched);
+    }
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(formData);
-        console.log(touched);
+        const errors = validate(formData);
+        if(Object.keys(errors).length !== 0) {
+            console.warn('validation Errors !! ');
+            setErrors(errors);
+            markAllFieldsTouched(Object.keys(errors));
+        } else {
+            console.log('OK');
+            console.log(formData);
+        }
     }
     const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
         const name: string = event.currentTarget.name;
@@ -111,6 +135,19 @@ const MyForm = () => {
         });
     }
     const handleBlur = (event: React.FormEvent<HTMLInputElement>) => {
+        const name: string = event.currentTarget.name;
+        markFieldAsTouched(name);
+    }
+
+    const handleTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+        const name: string = event.currentTarget.name;
+        markFieldAsTouched(name);
+        setFormData({
+            name: event.currentTarget.name,
+            value: event.currentTarget.value,
+        });
+    }
+    const handleTextAreaBlur = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const name: string = event.currentTarget.name;
         markFieldAsTouched(name);
     }
@@ -133,27 +170,33 @@ const MyForm = () => {
                         <InputText
                             id="firstname1"
                             name="firstname1"
-                            type="text"
                             autoComplete="off"
                             value={formData.firstname1}
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
                         {touched.firstname1 && errors.firstname1
-                            && <div>{errors.firstname1}</div>}
+                            && 
+                            <small id="username2-help" className="p-invalid p-d-block">{errors.firstname1}</small>
+                        }
                     </div>
                     <div className="p-field">
                         <label htmlFor="lastname1">Lastname</label>
                         <InputText
                             id="lastname1"
                             name="lastname1"
-                            type="text"
                             autoComplete="off"
                             onChange={handleChange}
                             onBlur={handleBlur}
                         />
                         {touched.lastname1 && errors.lastname1
                             && <div>{errors.lastname1}</div>}
+                    </div>
+                    <div className="p-field">
+                        <label htmlFor="address">address</label>
+                        <MyInputText 
+                            name="address"
+                        />
                     </div>
                     <div className="p-field">
                         <label htmlFor="city">City</label>
@@ -182,6 +225,24 @@ const MyForm = () => {
                         {touched.birthday && errors.birthday
                             && <div>{errors.birthday}</div>}                          
                     </div>
+
+                    <div className="p-field p-col-12 p-md-4">
+                        <label htmlFor="comment">Comment</label>
+                        <InputTextarea 
+                            id="comment"
+                            name="comment"
+                            autoResize 
+                            tooltip="enter your comment"
+                            placeholder="enter a comment ..."
+                            onChange={handleTextAreaChange}
+                            onBlur={handleTextAreaBlur}
+                            value={formData.comment}
+                        />
+                        {touched.comment && errors.comment
+                            && <div>{errors.comment}</div>}                          
+                    </div>
+
+                    
                 </div>
                 <Button label="Submit" type="Submit" />
             </div>
