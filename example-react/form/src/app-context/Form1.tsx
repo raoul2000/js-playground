@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { FormContext } from '../store';
+import { FormContext } from './store';
 
 
 const Form1: React.FC<{}> = () => {
