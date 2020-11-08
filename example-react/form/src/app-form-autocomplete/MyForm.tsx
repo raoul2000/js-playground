@@ -188,6 +188,8 @@ const MyForm: React.FC<{}> = () => {
                     <div className="p-field">
                         <label htmlFor="person">Person</label>
                         <AutoComplete
+                            name="person"
+                            id="person"
                             field="name"
                             value={formData.selectedPerson}
                             suggestions={filteredPersons}
