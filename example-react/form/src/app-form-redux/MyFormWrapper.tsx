@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Provider } from 'react-redux';
 import { store } from './store';
 import { InputText } from 'primereact/inputtext';
@@ -9,7 +9,10 @@ import { Fieldset } from 'primereact/fieldset';
 import { Calendar } from 'primereact/calendar';
 import { Button } from "primereact/button";
 import { TabView, TabPanel } from 'primereact/tabview';
+import { AutoComplete } from 'primereact/autocomplete';
 import MyForm from './MyForm';
+import UsernameField from './UsernameField';
+import ManagedList from './ManagedList';
 
 const cities = [
     { name: 'New York', code: 'NY' },
@@ -18,9 +21,39 @@ const cities = [
     { name: 'Istanbul', code: 'IST' },
     { name: 'Paris', code: 'PRS' }
 ];
+type Person = {
+    name: string
+    email: string
+}
+const allPersons: Person[] = [
+    { name: 'bob', email: 'bob@email.com' },
+    { name: 'alice', email: 'alice@email.com' },
+    { name: 'charles', email: 'charles@email.com' },
+    { name: 'David', email: 'David@email.com' },
+]
 
 const MyFormWrapper: React.FC<{}> = () => {
     //const [activeIndex, setActiveIndex] = useState(1);
+
+    const [filteredPersons, setFilteredPersons] = useState<Person[]>(allPersons);
+    const [selectedPerson, setSelectedPerson] = useState<Person>();
+    //console.log(selectedPerson);
+    const searchPersons = (event: { originalEvent: Event, query: string }) => {
+        setTimeout(() => {
+            if (!event.query.trim().length) {
+                // TODO: remove persons already added to formData.persons (duplicates are forbidden)
+                setFilteredPersons([...allPersons]);
+            }
+            else {
+                setFilteredPersons(allPersons.filter((person) => {
+                    return person.name.toLowerCase().startsWith(event.query.toLowerCase());
+                }));
+            }
+        }, 250);
+    }
+    const handleChangePerson = (e: { originalEvent: Event, value: any, target: { name: string, id: string, value: any } }) => {
+        setSelectedPerson(e.value);
+    }    
 
     return (
         <Provider store={store}>
@@ -31,9 +64,19 @@ const MyFormWrapper: React.FC<{}> = () => {
                             <div className="p-field p-grid">
                                 <label htmlFor="firstname4" className="p-col-fixed" style={{ minWidth: '100px' }}>Firstname:</label>
                                 <div className="p-col">
-                                    <InputText id="firstname4" type="text" />
+                                    <AutoComplete
+                                        name="person"
+                                        id="person"
+                                        field="name"
+                                        value={selectedPerson}
+                                        suggestions={filteredPersons}
+                                        completeMethod={searchPersons}
+                                        onChange={handleChangePerson}
+                                        multiple
+                                    />
                                 </div>
                             </div>
+                            <UsernameField />
                             <div className="p-field p-grid">
                                 <label htmlFor="lastname4" className="p-col-fixed" style={{ minWidth: '100px' }}>Lastname:</label>
                                 <div className="p-col">
@@ -52,10 +95,11 @@ const MyFormWrapper: React.FC<{}> = () => {
                                     <label htmlFor="textarea">comment</label>
                                 </span>
                             </div>
+                            <ManagedList />
                         </div>
 
                         <Accordion multiple>
-                            <AccordionTab  header={<React.Fragment><i className="pi pi-calendar"></i><span> Deadlines </span></React.Fragment>}>
+                            <AccordionTab header={<React.Fragment><i className="pi pi-calendar"></i><span> Deadlines </span></React.Fragment>}>
                                 <div className="p-field p-grid">
                                     <label htmlFor="deadline1" className="p-col-fixed" style={{ minWidth: '100px' }}>main:</label>
                                     <div className="p-col">
@@ -75,8 +119,8 @@ const MyFormWrapper: React.FC<{}> = () => {
                                     <label htmlFor="deadline1" className="p-col-fixed" style={{ minWidth: '100px' }}>third:</label>
                                     <div className="p-col">
                                         <div className="p-inputgroup">
-                                            <Calendar id="deadline3" showTime 
-                                            tooltip="modified" tooltipOptions={{position: 'bottom'}}
+                                            <Calendar id="deadline3" showTime
+                                                tooltip="modified" tooltipOptions={{ position: 'bottom' }}
                                             />
                                             <Button icon="pi pi-unlock" className="p-button-danger" />
                                         </div>
