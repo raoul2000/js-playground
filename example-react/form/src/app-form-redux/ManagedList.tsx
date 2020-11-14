@@ -23,14 +23,19 @@ const allPersons: Person[] = [
 
 const ManagedList: React.FC<{}> = () => {
 
-    const [value, setValue] = useState<Person>();
+    // options for the dropdown 
+    const [options, setOptions] = useState<Person[]>(allPersons);
+    // the current dropdown selected option
+    const [selectedOption, setSelectedOption] = useState<Person>();
+    // Data list
     const [values, setValues] = useState<Person[]>([]);
 
     const addPerson = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (value) {
-            setValues([...values, value])
-            setValue(undefined)
+        if (selectedOption) {
+            setValues([selectedOption, ...values])
+            setSelectedOption(undefined)
+            setOptions(options.filter( item => item.name !== selectedOption.name));
         }
     }
     const itemTemplate = (rowData: Person) => (
@@ -42,7 +47,8 @@ const ManagedList: React.FC<{}> = () => {
         e.stopPropagation();
         setValues(
             values.filter( item => item.name !== rowData.name)
-        )
+        );
+        setOptions([rowData,...options]);
     }
     const actionBodyTemplate = (rowData: Person) => (
         <>
@@ -54,10 +60,10 @@ const ManagedList: React.FC<{}> = () => {
             <div className="p-field p-grid"> 
                 <div className="p-col" style={{ minWidth: '250px' }}>
                     <Dropdown
-                        value={value}
+                        value={selectedOption}
                         dataKey="name"
-                        options={allPersons}
-                        onChange={(e) => setValue(e.value)}
+                        options={options}
+                        onChange={(e) => setSelectedOption(e.value)}
                         optionLabel="name"
                         filter
                         showClear
@@ -68,7 +74,7 @@ const ManagedList: React.FC<{}> = () => {
                     />
                 </div>
                 <div className="p-col-fixed" style={{ width: '100px' }}>
-                    <Button label="Add" type="button" icon="pi pi-check" onClick={addPerson} disabled={!value} />
+                    <Button label="Add" type="button" icon="pi pi-check" onClick={addPerson} disabled={!selectedOption} />
                 </div>
             </div>
             <div className="p-field p-grid">

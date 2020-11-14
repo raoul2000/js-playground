@@ -13,6 +13,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import MyForm from './MyForm';
 import UsernameField from './UsernameField';
 import ManagedList from './ManagedList';
+import ManagedListAutoComplete from './ManagedListAutoComplete';
 
 const cities = [
     { name: 'New York', code: 'NY' },
@@ -95,7 +96,14 @@ const MyFormWrapper: React.FC<{}> = () => {
                                     <label htmlFor="textarea">comment</label>
                                 </span>
                             </div>
-                            <ManagedList />
+
+                            <Fieldset legend="Auto complete" toggleable>
+                                <ManagedListAutoComplete />
+                            </Fieldset>
+
+                            <Fieldset legend="Header" toggleable>
+                                <ManagedList />
+                            </Fieldset>
                         </div>
 
                         <Accordion multiple>
