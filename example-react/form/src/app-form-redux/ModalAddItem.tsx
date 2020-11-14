@@ -51,20 +51,20 @@ const ModalAddItem: React.FC<Props> = ({ visible, item, onSubmit, onCancel }) =>
         <Dialog
             header="New Item"
             visible={visible}
-            style={{ width: '60vw' }}
+            style={{ width: '60vw', maxWidth: '400px'}}
             footer={renderFooter()}
             onHide={() => cancelAdd()}
             position="right"
         >
             <div className="p-fluid p-grid">
-                <div className="p-field p-col-12 p-md-4">
+                <div className="p-field p-col-12">
                     <label htmlFor="inputgroup">name</label>
                     <InputText id="name"
                         disabled
                         type="text" value={newOption?.name}
                     />
                 </div>
-                <div className="p-field p-col-12 p-md-4">
+                <div className="p-field p-col-12">
                     <label htmlFor="lastname1">email</label>
                     <InputText
                         id="email"
@@ -76,6 +76,11 @@ const ModalAddItem: React.FC<Props> = ({ visible, item, onSubmit, onCancel }) =>
                         })}
                         autoComplete="off"
                         placeholder="enter email ..."
+                        onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                            if (e.key === 'Enter' ) {
+                                submitNewOption();
+                            }
+                        }}
                     />
                 </div>
             </div>
