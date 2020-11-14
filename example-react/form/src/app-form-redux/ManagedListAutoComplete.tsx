@@ -3,8 +3,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
+import  ModalAddItem  from './ModalAddItem';
 
 type Person = {
     name: string
@@ -33,26 +32,8 @@ const ManagedListAutoComplete: React.FC<{}> = () => {
     // modal state
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     // new option creation
-    const [newOption, setNewOption] = useState<Person>({name:'', email:''});
+    const [newOption, setNewOption] = useState<Person>({ name: '', email: '' });
 
-    const addPerson_old = () => {
-        // TODO: avoid duplicate
-        console.log(selectedOption);
-        if (!selectedOption) {
-            return;
-        }
-        if (typeof selectedOption === 'object') {
-            setValues([selectedOption, ...values])
-            setSelectedOption(undefined)
-        } else if (typeof selectedOption === 'string') {
-            // user is about to create a new option and add it to the value list
-            setNewOption({
-                name: selectedOption,
-                email: ''
-            });
-            setModalVisible(true);
-        }
-    }
     const addPerson = (data: Person | string) => {
         // TODO: avoid duplicate
         console.log(data);
@@ -108,23 +89,23 @@ const ManagedListAutoComplete: React.FC<{}> = () => {
             setFilteredOptions(filteredOptions);
         }, 100);
     }
-    const cancelAdd = () => {
+    /**
+     * User has confirmed item creation
+     * @param item the new item 
+     */
+    const handleItemSubmit = (item:Person) => {
+        addPerson(item);
+        setModalVisible(false);
+    }
+    /**
+     * User canceled the new item creation 
+     */
+    const handleCancelItem = () => {
         setModalVisible(false);
         setSelectedOption(undefined);
     }
-    const submitNewOption = () => {
-        // validation
-        // TODO: validate form
-        // save
-        addPerson(newOption);
-        setModalVisible(false)
-    }
-    const renderFooter = () => (
-        <div>
-            <Button label="Cancel" type="button" icon="pi pi-times" onClick={() => cancelAdd()} className="p-button-text" />
-            <Button label="Save" type="button" icon="pi pi-check" onClick={() => submitNewOption() } autoFocus />
-        </div>
-    )
+
+
     return (
         <>
             <div className="p-field p-grid">
@@ -144,7 +125,7 @@ const ManagedListAutoComplete: React.FC<{}> = () => {
                     />
                 </div>
                 <div className="p-col-fixed" style={{ width: '100px' }}>
-                    <Button label="Add" type="button" icon="pi pi-check" onClick={ () => selectedOption &&  addPerson(selectedOption)} disabled={!selectedOption} />
+                    <Button label="Add" type="button" icon="pi pi-check" onClick={() => selectedOption && addPerson(selectedOption)} disabled={!selectedOption} />
                 </div>
             </div>
             <div className="p-field p-grid">
@@ -155,42 +136,12 @@ const ManagedListAutoComplete: React.FC<{}> = () => {
                     </DataTable>
                 </div>
             </div>
-
-            <Dialog
-                header="New Item"
+            <ModalAddItem 
                 visible={modalVisible}
-                style={{ width: '60vw' }}
-                footer={renderFooter()}
-                onHide={() => cancelAdd()}
-                position="right"
-            >
-                <div className="p-fluid p-grid">
-                    <div className="p-field p-col-12 p-md-4">
-                        <span className="p-float-label">
-                            <InputText id="name" 
-                                disabled
-                                type="text" value={newOption?.name}
-                            />
-                            <label htmlFor="inputgroup">name</label>
-                        </span>
-                    </div>
-                    <div className="p-field p-col-12 p-md-4">
-                        <span className="p-float-label">
-                            <InputText 
-                                id="email" 
-                                type="text"  
-                                value={newOption?.email}
-                                onChange={ (e) => setNewOption({
-                                    ...newOption,
-                                    email: e.currentTarget.value
-                                })}
-                                autoComplete="off"
-                            />
-                            <label htmlFor="inputgroup">email</label>
-                        </span>
-                    </div>
-                </div>
-            </Dialog>
+                onSubmit={ (item) => handleItemSubmit(item)}
+                onCancel={() => handleCancelItem()}
+                item={newOption}
+            />
         </>
     )
 }
