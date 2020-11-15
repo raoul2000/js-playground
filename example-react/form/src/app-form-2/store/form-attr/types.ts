@@ -4,6 +4,7 @@ export const UPDATE_FORM = "@form-attr/UPDATE";
 
 export interface FormAttrState {
     firstname?:string
+    lastname?:string
     person?: Person
 }
 

@@ -4,11 +4,16 @@ import { FormDocState } from './store/form-doc/types';
 
 export enum ActionType {
     ACTION_UPDATE_FORM_ATTR = 'ACTION_UPDATE_FORM_ATTR',
+    ACTION_UPDATE_FORM_ATTR_FIELD = 'ACTION_UPDATE_FORM_ATTR_FIELD',
     ACTION_UPDATE_FORM_DOC = 'ACTION_UPDATE_FORM_DOC'
 }
 // Discriminated unions Type for Actions
 type Action =
     | { type: 'ACTION_UPDATE_FORM_ATTR', payload: FormAttrState }
+    | { type: 'ACTION_UPDATE_FORM_ATTR_FIELD', payload: {
+        fieldName: string,
+        value: any
+    } }
     | { type: 'ACTION_UPDATE_FORM_DOC', payload: FormDocState };
 
 
@@ -36,6 +41,14 @@ export const reducer = (state: FormContextType, action: Action): FormContextType
             return {
                 ...state,
                 formAttr: {...action.payload}
+            }
+        case 'ACTION_UPDATE_FORM_ATTR_FIELD':
+            return {
+                ...state,
+                formAttr: {
+                    ...state.formAttr,
+                    [action.payload.fieldName]: action.payload.value
+                }
             }
         case 'ACTION_UPDATE_FORM_DOC':
             return {
