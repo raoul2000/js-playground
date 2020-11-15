@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { Person} from '../../types';
-export const UPDATE_FORM = "@form-attr/UPDATE";
+export const UPDATE_FORM_ATTR = "@form-attr/UPDATE";
 
 export interface FormAttrState {
     firstname?:string
@@ -9,7 +9,7 @@ export interface FormAttrState {
 }
 
 interface UpdateFormAttrAction extends Action {
-    type: typeof UPDATE_FORM,
+    type: typeof UPDATE_FORM_ATTR,
     payload: {
         formData: FormAttrState
     }

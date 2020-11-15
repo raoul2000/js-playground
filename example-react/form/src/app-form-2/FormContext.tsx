@@ -1,59 +1,79 @@
-import  { createContext, Context } from 'react'
+import { createContext, Context } from 'react'
 import { FormAttrState } from './store/form-attr/types';
 import { FormDocState } from './store/form-doc/types';
 
 export enum ActionType {
     ACTION_UPDATE_FORM_ATTR = 'ACTION_UPDATE_FORM_ATTR',
     ACTION_UPDATE_FORM_ATTR_FIELD = 'ACTION_UPDATE_FORM_ATTR_FIELD',
-    ACTION_UPDATE_FORM_DOC = 'ACTION_UPDATE_FORM_DOC'
+    ACTION_UPDATE_FORM_DOC = 'ACTION_UPDATE_FORM_DOC',
+    ACTION_UPDATE_FORM_DOC_FIELD = 'ACTION_UPDATE_FORM_DOC_FIELD'
 }
 // Discriminated unions Type for Actions
 type Action =
     | { type: 'ACTION_UPDATE_FORM_ATTR', payload: FormAttrState }
-    | { type: 'ACTION_UPDATE_FORM_ATTR_FIELD', payload: {
-        fieldName: string,
-        value: any
-    } }
-    | { type: 'ACTION_UPDATE_FORM_DOC', payload: FormDocState };
+    | {
+        type: 'ACTION_UPDATE_FORM_ATTR_FIELD', payload: {
+            fieldName: string,
+            value: any
+        }
+    }
+    | { type: 'ACTION_UPDATE_FORM_DOC', payload: FormDocState }
+    | {
+        type: 'ACTION_UPDATE_FORM_DOC_FIELD', payload: {
+            fieldName: string,
+            value: any
+        }
+    };
 
 
 export type FormContextType = {
     formAttr: FormAttrState
     formDoc: FormDocState
 }
-const initialState:FormContextType = {
+
+const initialContext: FormContextType = {
     formAttr: {},
     formDoc: {}
 };
 
-//const FormContext: Context<FormContextType> = createContext<FormContextType>({ formAttr: {}, formDoc: {} });
 const FormContext = createContext<{
-    state: FormContextType;
-    dispatch: React.Dispatch<Action>;
+    context: FormContextType;
+    dispatchContext: React.Dispatch<Action>;
 }>({
-    state: initialState,
-    dispatch: () => null
+    context: initialContext,
+    dispatchContext: () => null
 });
 
-export const reducer = (state: FormContextType, action: Action): FormContextType => {
+export const contextReducer = (state: FormContextType, action: Action): FormContextType => {
+    let result: FormContextType;
     switch (action.type) {
         case "ACTION_UPDATE_FORM_ATTR":
             return {
                 ...state,
-                formAttr: {...action.payload}
+                formAttr: { ...action.payload }
             }
         case 'ACTION_UPDATE_FORM_ATTR_FIELD':
-            return {
-                ...state,
+            result = {
+                formDoc: { ...state.formDoc },
                 formAttr: {
                     ...state.formAttr,
                     [action.payload.fieldName]: action.payload.value
                 }
+            };
+            return result;
+        case 'ACTION_UPDATE_FORM_DOC_FIELD':
+            result = {
+                ...state,
+                formDoc: {
+                    ...state.formDoc,
+                    [action.payload.fieldName]: action.payload.value
+                }
             }
+            return result;
         case 'ACTION_UPDATE_FORM_DOC':
             return {
                 ...state,
-                formDoc: {...action.payload}
+                formDoc: { ...action.payload }
             }
         default:
             throw new Error('invalid action');

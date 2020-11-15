@@ -5,11 +5,12 @@ import { InputText } from 'primereact/inputtext';
 
 type Props = {
     name: string
+    label: string
     initialValue: string
     onBlur: (name: string, value:string) => void
 }
 
-const TextField: React.FC<Props> = ({ onBlur, name, initialValue }): JSX.Element => {
+const TextField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.Element => {
     const [currentValue, setCurrentValue] = useState<string>(initialValue);
 
     const handleBlur = () => {
@@ -19,7 +20,7 @@ const TextField: React.FC<Props> = ({ onBlur, name, initialValue }): JSX.Element
     return (
         <div className="p-fluid">
             <div className="p-field p-grid">
-                <label htmlFor="firstname" className="p-col-fixed" style={{ minWidth: '100px' }}>First Name:</label>
+                <label htmlFor={name} className="p-col-fixed" style={{ minWidth: '100px' }}>{label}:</label>
                 <div className="p-col">
                     <InputText
                         id={name}

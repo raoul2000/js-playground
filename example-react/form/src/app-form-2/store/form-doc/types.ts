@@ -1,14 +1,14 @@
 import { Action } from 'redux';
 
-export const UPDATE_FORM = "@form-doc/UPDATE";
+export const UPDATE_FORM_DOC = "@form-doc/UPDATE";
 
 export interface FormDocState {
     name?:string
-    age?:number
+    birthday?:Date
 }
 
 interface UpdateFormDocAction extends Action {
-    type: typeof UPDATE_FORM,
+    type: typeof UPDATE_FORM_DOC,
     payload: {
         formData: FormDocState
     }

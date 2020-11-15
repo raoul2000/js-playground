@@ -1,26 +1,27 @@
 import React, { useEffect, useState,useContext } from 'react';
 import FormContext from '../FormContext';
 
-import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import TextField from './TextField';
+import TextField from './components/TextField';
 
 
 
 // Component definition --------------------- 
 type Props = {
-    onSubmit: () => void
+    onSaveForm: () => void
 }
-const FormAttribute: React.FC<Props> = ({onSubmit}):JSX.Element=> {
-    const { state, dispatch } = useContext(FormContext);
+const FormAttribute: React.FC<Props> = ({onSaveForm}):JSX.Element=> {
+    const { context, dispatchContext } = useContext(FormContext);
 
-    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(state.formAttr);
-        onSubmit();
+    }
+    const handleSave = () => {
+        console.log(context.formAttr);
+        onSaveForm();
     }
     const handleChange = (fieldName: string, value: any) => {
-        dispatch({
+        dispatchContext({
             type:"ACTION_UPDATE_FORM_ATTR_FIELD", 
             payload: { 
                 fieldName,
@@ -32,15 +33,17 @@ const FormAttribute: React.FC<Props> = ({onSubmit}):JSX.Element=> {
         <form onSubmit={(e) => handleSubmit(e)}>
             <TextField 
                 name="firstname"
-                initialValue={state.formAttr.firstname || ''}
+                label="First Name"
+                initialValue={context.formAttr.firstname || ''}
                 onBlur={handleChange}
-            />
+                />
             <TextField 
                 name="lastname"
-                initialValue={state.formAttr.lastname || ''}
+                label="Last Name"
+                initialValue={context.formAttr.lastname || ''}
                 onBlur={handleChange}
             />
-            <Button>Save</Button>
+            <Button type="button" onClick={handleSave}>Save</Button>
         </form>
     )
 }

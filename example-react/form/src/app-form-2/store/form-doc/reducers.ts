@@ -1,5 +1,5 @@
 
-import { FormDocAction, FormDocState, UPDATE_FORM } from './types'
+import { FormDocAction, FormDocState, UPDATE_FORM_DOC } from './types'
 
 export const initialState: FormDocState = {}
 
@@ -8,14 +8,13 @@ export function formDocReducer(
     action: FormDocAction
 ): FormDocState {
     switch (action.type) {
-        case UPDATE_FORM:
+        case UPDATE_FORM_DOC:
             return {
+                ...state,
                 ...action.payload.formData
             };
         default:
-            return initialState;
-            // TODO: better to throw exception here
-            //throw new Error('invalid action');
+            return state;
     }
 }
 

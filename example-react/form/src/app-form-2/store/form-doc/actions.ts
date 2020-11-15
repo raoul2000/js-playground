@@ -1,8 +1,9 @@
-import { FormDocState, FormDocAction, UPDATE_FORM } from './types'
+import { FormDocState, FormDocAction, UPDATE_FORM_DOC } from './types'
 
-export function updateForm(formData: FormDocState): FormDocAction {
+
+export function updateDocForm(formData: FormDocState): FormDocAction {
     return {
-        type: UPDATE_FORM,
+        type: UPDATE_FORM_DOC,
         payload: {
             formData
         }

@@ -4,7 +4,8 @@ import { FormAttrState, FormAttrAction } from './store/form-attr/types';
 import { FormDocState, FormDocAction } from './store/form-doc/types';
 import { RootState } from './store';
 import { updateAttrForm } from './store/form-attr/actions';
-import FormContext, {FormContextType, reducer} from './FormContext';
+import { updateDocForm } from './store/form-doc/actions';
+import FormContext, {FormContextType, contextReducer} from './FormContext';
 
 import { TabView, TabPanel } from 'primereact/tabview';
 import FormAttribute from './panels/FormAttribute';
@@ -17,7 +18,8 @@ const mapState = (state: RootState) => ({
     formDocState: state.formDoc
 })
 const mapDispatch = {
-    updateAttrForm
+    updateAttrForm,
+    updateDocForm
 }
 const connector = connect(mapState, mapDispatch);
 type PropsFromRedux = ConnectedProps<typeof connector>
@@ -25,24 +27,27 @@ type Props = PropsFromRedux
 
 // Component ------------------------------------
 
-const FormWrapper: React.FC<Props> = ({ formAttrState, formDocState, updateAttrForm }: Props) => {
+const FormWrapper: React.FC<Props> = ({ formAttrState, formDocState, updateAttrForm, updateDocForm }: Props) => {
     // set redux context 
     const initialContext:FormContextType = {
         formAttr: formAttrState,
         formDoc: formDocState
     };
-    const [state, dispatch] = useReducer(reducer, initialContext);
-    const handleSubmit = () => {
-        updateAttrForm(state.formAttr);
+    const [context, dispatchContext] = useReducer(contextReducer, initialContext);
+    const handleSubmitFormAttr = () => {
+        updateAttrForm(context.formAttr);
+    }
+    const handleSubmitFormDoc = () => {
+        updateDocForm(context.formDoc);
     }
     return (
-        <FormContext.Provider value={{state, dispatch}}>
+        <FormContext.Provider value={{context, dispatchContext}}>
             <TabView>
                 <TabPanel header="Attributes" leftIcon="pi pi-calendar">
-                    <FormAttribute onSubmit={() => handleSubmit()}/>
+                    <FormAttribute onSaveForm={() => handleSubmitFormAttr()}/>
                 </TabPanel>
                 <TabPanel header=" Document " leftIcon="pi pi-file">
-                    <FormDocument />
+                    <FormDocument  onSaveForm={() => handleSubmitFormDoc()}/>
                 </TabPanel>
             </TabView>
         </FormContext.Provider>
