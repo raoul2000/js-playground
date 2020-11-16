@@ -8,14 +8,12 @@ type Props = {
     name: string
     label: string
     initialValue: Date
-    onBlur: (name: string, value: Date) => void
+    onChange: (name: string, value: Date) => void
 }
 type CalendarChangeEvent = { originalEvent: Event, value: Date | Date[], target: { name: string, id: string, value: Date | Date[] } };
-type CalendarSelectEvent = {   originalEvent: Event, value: Date };
 
-const DateField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.Element => {
+const DateField: React.FC<Props> = ({ onChange, name, label, initialValue }): JSX.Element => {
 
-    const [currentValue, setCurrentValue] = useState<Date>(initialValue);
     // when user selects a date from the calendar and close it, no blur event is fired
     // Actually blur event is fired only when the input text field looses focus, which is the 
     // case when the date is selected from the calendar layer. If several date are selected successively
@@ -24,8 +22,7 @@ const DateField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.
         const d: Date = Array.isArray(e.value) ? e.value[0] : e.value;
         if (d) {
             console.log('cal change', d)
-            onBlur(name, d);
-            //setCurrentValue(d);
+            onChange(name, d);
         }
     }
 
@@ -37,6 +34,10 @@ const DateField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.
                     id={name}
                     value={initialValue}
                     onChange={(e) => handleDateChange(e)}
+                    showOnFocus={false}
+                    showIcon={true}
+                    icon="pi pi-calendar"
+                    onBlur={() => console.log('blur')}
                     showTime
                 />
             </div>
