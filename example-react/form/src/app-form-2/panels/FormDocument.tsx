@@ -43,6 +43,12 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
                 initialValue={context.formDoc.birthday || new Date()}
                 onBlur={handleChange}            
             />
+            <DateField 
+                name="meetingDate"
+                label="Meeting Date"
+                initialValue={context.formDoc.meetingDate || new Date()}
+                onBlur={handleChange}            
+            />
             <Button type="button" onClick={handleSave}>Save</Button>
         </form>
     )

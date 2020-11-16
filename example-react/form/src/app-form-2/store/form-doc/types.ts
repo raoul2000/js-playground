@@ -5,6 +5,7 @@ export const UPDATE_FORM_DOC = "@form-doc/UPDATE";
 export interface FormDocState {
     name?:string
     birthday?:Date
+    meetingDate?:Date
 }
 
 interface UpdateFormDocAction extends Action {

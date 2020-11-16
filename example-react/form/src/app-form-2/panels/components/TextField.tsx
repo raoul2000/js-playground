@@ -12,9 +12,14 @@ type Props = {
 
 const TextField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.Element => {
     const [currentValue, setCurrentValue] = useState<string>(initialValue);
+    //const [errors, setErrors] = useState<string>({});
+    //const [touched, setTouched] = useState<boolean>({});
 
     const handleBlur = () => {
         onBlur(name, currentValue);
+    }
+    const handleChange = (e:React.FormEvent<HTMLInputElement>) => {
+        setCurrentValue(e.currentTarget.value);
     }
 
     return (
@@ -28,7 +33,7 @@ const TextField: React.FC<Props> = ({ onBlur, name, label, initialValue }): JSX.
                         value={currentValue}
                         type="text"
                         autoComplete="off"
-                        onChange={(e) => setCurrentValue(e.currentTarget.value)}
+                        onChange={(e) => handleChange(e)}
                         onBlur={() => handleBlur()}
                     />
                 </div>
