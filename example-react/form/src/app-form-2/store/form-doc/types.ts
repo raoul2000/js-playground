@@ -6,6 +6,7 @@ export interface FormDocState {
     name?:string
     birthday?:Date
     meetingDate?:Date
+    deadline?:Date
 }
 
 interface UpdateFormDocAction extends Action {

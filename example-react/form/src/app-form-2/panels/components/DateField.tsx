@@ -1,19 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useRef, RefObject } from 'react'
 
 import { Calendar } from 'primereact/calendar';
+import { Button } from 'primereact/button';
 
 // Component definition --------------------- 
 
 type Props = {
     name: string
     label: string
-    initialValue: Date
+    value?: Date
     onChange: (name: string, value: Date) => void
 }
 type CalendarChangeEvent = { originalEvent: Event, value: Date | Date[], target: { name: string, id: string, value: Date | Date[] } };
 
-const DateField: React.FC<Props> = ({ onChange, name, label, initialValue }): JSX.Element => {
+const DateField: React.FC<Props> = ({ onChange, name, label, value }): JSX.Element => {
+    const textInput = useRef<HTMLElement>();
+    const [localValue, setLocalValue] = useState<Date>();
 
+    useEffect(() => {
+        setLocalValue(value)
+    }, [value]);
     // when user selects a date from the calendar and close it, no blur event is fired
     // Actually blur event is fired only when the input text field looses focus, which is the 
     // case when the date is selected from the calendar layer. If several date are selected successively
@@ -25,21 +31,24 @@ const DateField: React.FC<Props> = ({ onChange, name, label, initialValue }): JS
             onChange(name, d);
         }
     }
-
+    console.log(name, value);
     return (
         <div className="p-field p-grid">
             <label htmlFor={name} className="p-col-fixed" style={{ minWidth: '100px' }}>{label}:</label>
-            <div className="p-col">
-                <Calendar
-                    id={name}
-                    value={initialValue}
-                    onChange={(e) => handleDateChange(e)}
-                    showOnFocus={false}
-                    showIcon={true}
-                    icon="pi pi-calendar"
-                    onBlur={() => console.log('blur')}
-                    showTime
-                />
+            <div className="p-col" style={{ maxWidth: '200px' }}>
+                <div className="p-inputgroup">
+                    <Button icon="pi pi-unlock" className="p-button-secondary" />
+                    <Calendar
+                        id={name}
+                        value={value}
+                        onChange={(e) => handleDateChange(e)}
+                        showOnFocus={false}
+                        showIcon={true}
+                        icon="pi pi-calendar"
+                        onBlur={() => console.log('blur')}
+                        showTime
+                    />
+                </div>
             </div>
         </div>
     )
