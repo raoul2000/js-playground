@@ -27,23 +27,52 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
             // this is not working ! 
             // the value of the calendar is modified but the input text that displays the date is
             // not updated (only the calendar layer is updated)
+            // see https://forum.primefaces.org/viewtopic.php?f=57&t=63900
+            const dateValue:Date = (value as Date);
+
+
+            if( context.formDoc.meetingDate?.getTime()  === context.formDoc.birthday?.getTime()) {
+                console.log(`updating meetingDate to : ${dateValue}`)
+                dispatchContext({
+                    type: "ACTION_UPDATE_FORM_DOC_FIELD",
+                    payload: {
+                        fieldName: 'meetingDate',
+                        value: new Date(dateValue)
+                    }
+                });             
+            }
+            if( context.formDoc.deadline?.getTime()  === context.formDoc.birthday?.getTime()) {
+                console.log(`updating deadline to : ${dateValue}`)
+                dispatchContext({
+                    type: "ACTION_UPDATE_FORM_DOC_FIELD",
+                    payload: {
+                        fieldName: 'deadline',
+                        value: new Date(dateValue)
+                    }
+                });             
+            }
+
             const dateFieldNames:Array<keyof FormDocState> = [ 'meetingDate', 'deadline'];
             dateFieldNames.forEach( (dateFieldName) => {
-                if( (context.formDoc[dateFieldName] as Date) == context.formDoc.birthday) {
+                
+
+
+/*                 if( (context.formDoc[dateFieldName] as Date) === context.formDoc.birthday) {
+                    console.log(`updating ${dateFieldName} to : ${dateValue}`)
                     dispatchContext({
                         type: "ACTION_UPDATE_FORM_DOC_FIELD",
                         payload: {
                             fieldName: dateFieldName,
-                            value
+                            value: new Date(dateValue)
                         }
                     });        
                 }
-            });
+ */            });
             dispatchContext({
                 type: "ACTION_UPDATE_FORM_DOC_FIELD",
                 payload: {
                     fieldName,
-                    value
+                    value: new Date(dateValue)
                 }
             });
         } else {
@@ -69,18 +98,21 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
                 name="birthday"
                 label="Birthday"
                 value={context.formDoc.birthday}
-                onChange={handleChange}            
+                onChange={handleChange}          
+                isMaster={true}  
             />
             <DateField 
                 name="meetingDate"
                 label="Meeting Date"
                 value={context.formDoc.meetingDate}
+                masterValue={context.formDoc.birthday}
                 onChange={handleChange}            
             />
             <DateField 
                 name="deadline"
                 label="Deadline"
                 value={context.formDoc.deadline}
+                masterValue={context.formDoc.birthday}
                 onChange={handleChange}            
             />
             <Button type="button" onClick={handleSave}>Save</Button>
