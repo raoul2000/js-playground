@@ -12,27 +12,25 @@ type Props = {
     value?: Date
     masterValue?: Date
     isMaster?: boolean
+    validate?: (d?: Date) => boolean
     onChange: (name: string, value: Date) => void
 }
 type CalendarChangeEvent = { originalEvent: Event, value: Date | Date[], target: { name: string, id: string, value: Date | Date[] } };
 
-const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue, isMaster = false }): JSX.Element => {
+// WARNING : in version primereact 5.0.1 there is a bug preventing the text input value to be updated
+// programmatically (only the calendar layer is updated)
+// see https://forum.primefaces.org/viewtopic.php?f=57&t=63900
+
+const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue, isMaster = false, validate }): JSX.Element => {
 
     const [locked, setLocked] = useState<boolean>(!isMaster && (masterValue === undefined || masterValue?.getTime() === value?.getTime()));
-    console.log(`input : ${name} - locked = ${locked} - isMaster = ${isMaster} - masterValue = ${masterValue} - value = ${value}`)
-    console.log( masterValue?.getTime())
-    console.log(  value?.getTime())
-    /*     const textInput = useRef<HTMLElement>();
-        const [localValue, setLocalValue] = useState<Date>();
-    
-        useEffect(() => {
-            setLocalValue(value)
-        }, [value]); */
+    const [isValid, setIsValid] = useState<boolean>(validate === undefined || validate(value))
+    const [isTouched, setIsTouched] = useState<boolean>(false);
 
-    // when user selects a date from the calendar and close it, no blur event is fired
-    // Actually blur event is fired only when the input text field looses focus, which is the 
-    // case when the date is selected from the calendar layer. If several date are selected successively
-    // from the cal layer, no blur event => no way to update the value
+    useEffect(() => {
+        setIsValid(validate === undefined || validate(value));
+    }, [validate, value]);
+
     const handleDateChange = (e: CalendarChangeEvent) => {
         const d: Date = Array.isArray(e.value) ? e.value[0] : e.value;
         if (d) {
@@ -40,12 +38,17 @@ const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue,
             d.setSeconds(0);
             d.setMilliseconds(0);
             onChange(name, d);
+            setIsTouched(true);
         }
     }
+
     const toggleLock = () => {
         setLocked(!locked);
         onChange(name, masterValue || new Date())
     }
+
+    const handleCalendarBlur = () => setIsTouched(true)
+    const validationErrorClass = !isValid && isTouched ? 'p-invalid' : '';
     return (
         <div className="p-field p-grid">
             <label htmlFor={name} className="p-col-fixed" style={{ minWidth: '100px' }}>{label}:</label>
@@ -58,6 +61,7 @@ const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue,
                         ? <InputText
                             value={masterValue?.toDateString()}
                             disabled={true}
+                            className={validationErrorClass}
                         />
                         : <Calendar
                             id={name}
@@ -66,11 +70,15 @@ const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue,
                             showOnFocus={false}
                             showIcon={true}
                             icon="pi pi-calendar"
-                            onBlur={() => console.log('blur')}
+                            onBlur={() => handleCalendarBlur()}
                             showTime
+                            className={validationErrorClass}
                         />
                     }
                 </div>
+                {isTouched && !isValid
+                    && <small id="username-help" className="p-invalid">Username is not available.</small>
+                }
             </div>
         </div>
     )

@@ -21,8 +21,7 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
         console.log(context.formDoc);
         onSaveForm();
     }
-    const handleChange = (fieldName: string, value: any) => {
-        
+    const handleChange = (fieldName: string, value: any) => {        
         if( fieldName === 'birthday') {
             // this is not working ! 
             // the value of the calendar is modified but the input text that displays the date is
@@ -51,23 +50,6 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
                     }
                 });             
             }
-
-            const dateFieldNames:Array<keyof FormDocState> = [ 'meetingDate', 'deadline'];
-            dateFieldNames.forEach( (dateFieldName) => {
-                
-
-
-/*                 if( (context.formDoc[dateFieldName] as Date) === context.formDoc.birthday) {
-                    console.log(`updating ${dateFieldName} to : ${dateValue}`)
-                    dispatchContext({
-                        type: "ACTION_UPDATE_FORM_DOC_FIELD",
-                        payload: {
-                            fieldName: dateFieldName,
-                            value: new Date(dateValue)
-                        }
-                    });        
-                }
- */            });
             dispatchContext({
                 type: "ACTION_UPDATE_FORM_DOC_FIELD",
                 payload: {
@@ -85,6 +67,9 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
             });
         }
     }
+    const validate = (d?:Date) => {
+        return( d !== undefined && d.getDay() !== 1);
+    }
     console.log(context.formDoc);
     return (
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -100,20 +85,23 @@ const FormDocument: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
                 value={context.formDoc.birthday}
                 onChange={handleChange}          
                 isMaster={true}  
+                validate={validate}
             />
             <DateField 
                 name="meetingDate"
                 label="Meeting Date"
                 value={context.formDoc.meetingDate}
                 masterValue={context.formDoc.birthday}
-                onChange={handleChange}            
+                onChange={handleChange}   
+                validate={validate}         
             />
             <DateField 
                 name="deadline"
                 label="Deadline"
                 value={context.formDoc.deadline}
                 masterValue={context.formDoc.birthday}
-                onChange={handleChange}            
+                onChange={handleChange}    
+                validate={validate}           
             />
             <Button type="button" onClick={handleSave}>Save</Button>
         </form>
