@@ -4,7 +4,7 @@ import { Calendar } from 'primereact/calendar';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 
-// Component definition --------------------- 
+// Component definition ------------------------- 
 
 type Props = {
     name: string
@@ -34,7 +34,6 @@ const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue,
     const handleDateChange = (e: CalendarChangeEvent) => {
         const d: Date = Array.isArray(e.value) ? e.value[0] : e.value;
         if (d) {
-            console.log('cal change', d)
             d.setSeconds(0);
             d.setMilliseconds(0);
             onChange(name, d);

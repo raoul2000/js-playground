@@ -9,7 +9,8 @@ import FormContext, {FormContextType, contextReducer} from './FormContext';
 
 import { TabView, TabPanel } from 'primereact/tabview';
 import FormAttribute from './panels/FormAttribute';
-import FormDocument from './panels/FormDocument';
+import FormDocumentWithWidget from './panels/FormDocumentWithWidget';
+//import FormDocument from './panels/FormDocument';
 
 // redux store connection --------------------- 
 
@@ -47,7 +48,7 @@ const FormWrapper: React.FC<Props> = ({ formAttrState, formDocState, updateAttrF
                     <FormAttribute onSaveForm={() => handleSubmitFormAttr()}/>
                 </TabPanel>
                 <TabPanel header=" Document " leftIcon="pi pi-file">
-                    <FormDocument  onSaveForm={() => handleSubmitFormDoc()}/>
+                    <FormDocumentWithWidget  onSaveForm={() => handleSubmitFormDoc()}/>
                 </TabPanel>
             </TabView>
         </FormContext.Provider>
