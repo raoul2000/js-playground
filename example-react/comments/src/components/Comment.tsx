@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useStore } from '../store';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import { removeTags } from '../helpers';
+import { saveAllComments } from '../logic/comments';
 
 type Props = {
     id: number;
@@ -22,7 +23,7 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
     const currentUserIsAuthor = currentUser.id === comment?.authorId;
 
     const handleChange = (evt: ContentEditableEvent) => {
-        textRef.current = removeTags(evt.target.value);
+        textRef.current = evt.target.value;
     };
 
     const handleOnPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
@@ -67,7 +68,7 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
                 }
 
                 <div className="comment-author">{comment?.author}</div>
-                <div className="comment-info">{comment?.created}</div>
+                <div className="comment-info">{comment?.modified.toDateString()}</div>
 
                 <ContentEditable
                     html={textRef.current} // innerHTML of the editable div

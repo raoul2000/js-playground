@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 import { useStore } from '../store';
 import { Comment } from './Comment';
-import {CommentForm} from './CommentForm';
-import {fetchComments} from '../helpers';
+import { CommentForm } from './CommentForm';
+import { loadAllComments } from '../logic/comments';
+import { validateCommentList } from '../logic/schema';
 
 export const CommentList: React.FC<{}> = (): JSX.Element => {
-    const [loadCommentList, commentList, setCurrentUser ] = useStore(state => [state.loadCommentList, state.commentList, state.setCurrentUser]);
+    const [loadCommentList, commentList, setCurrentUser] = useStore(state => [state.loadCommentList, state.commentList, state.setCurrentUser]);
 
     useEffect(() => {
-        fetchComments()
+        loadAllComments('dummyObjectId')
+            .then( commentList => {
+                if(validateCommentList(commentList)) {
+                    return loadCommentList(commentList);
+                } else {
+                    return null;
+                }
+            }
             .then(loadCommentList);
         setCurrentUser('authorId-1', 'Author One');
     }, []);

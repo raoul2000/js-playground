@@ -23,7 +23,9 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
+article[contenteditable=true]:hover {
+  background-color: aqua;
+}
 .App-link {
   color: #61dafb;
 }

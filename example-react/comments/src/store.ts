@@ -18,6 +18,9 @@ type State = {
     commentList: App.CommentList;
     increase: (by: number) => void;
     loadCommentList: (commentList: App.CommentList) => void;
+    /**
+     * Add a comment with  the current user as author
+     */
     addComment: (text: string) => void;
     updateComment: (id: number, text: string) => void;
     deleteComment: (id: number) => void;
@@ -57,7 +60,7 @@ export const useStore = create<State>(devtools(set => ({
                     id: state.commentList.nextId,
                     authorId: state.currentUser.id,
                     author: state.currentUser.name,
-                    created: 12,
+                    modified: new Date(),
                     text
                 }
             ]

@@ -39,28 +39,8 @@ export const deepCopy = <T>(target: T): T => {
 };
 
 
-const createCommentList = (): App.CommentList => {
-    const result: App.CommentList = {
-        nextId: 3,
-        comments: []
-    };
-    for (let index = 0; index < 3; index++) {
-        result.comments.push({
-            id: index,
-            author: `author-${index}`,
-            authorId: `authorId-${index}`,
-            created: index + 1000,
-            text: `comment text ${index}`
-        });
-    }
-    return result;
-};
 
-export const fetchComments = (): Promise<App.CommentList> => new Promise((resolve) => {
-    setTimeout(() => {
-        resolve(createCommentList());
-    }, 1000);
-});
+
 
 export const removeTags = (str: string): string => str
     ? str.replace(/(<([^>]+)>)/gi, "")

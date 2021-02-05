@@ -14,9 +14,9 @@ export namespace App {
          */
         author: string;
         /**
-         * Comment creation timestamp
+         * Date this comment was last modified
          */
-        created:number;
+        modified:Date;
         /**
          * Text of the comment
          */
