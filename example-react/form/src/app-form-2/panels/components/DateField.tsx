@@ -11,6 +11,7 @@ type Props = {
     label: string
     value?: Date
     masterValue?: Date
+    computedValue?: Date
     isMaster?: boolean
     validate?: (d?: Date) => boolean
     onChange: (name: string, value: Date) => void
@@ -22,31 +23,33 @@ type CalendarChangeEvent = { originalEvent: Event, value: Date | Date[], target:
 // see https://forum.primefaces.org/viewtopic.php?f=57&t=63900
 
 const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue, isMaster = false, validate }): JSX.Element => {
-
     const [locked, setLocked] = useState<boolean>(!isMaster && (masterValue === undefined || masterValue?.getTime() === value?.getTime()));
-    const [isValid, setIsValid] = useState<boolean>(validate === undefined || validate(value))
+    const [isValid, setIsValid] = useState<boolean>(true);
     const [isTouched, setIsTouched] = useState<boolean>(false);
+    //debugger;
 
     useEffect(() => {
         setIsValid(validate === undefined || validate(value));
     }, [validate, value]);
 
+/*     useEffect(() => {
+        setLocked(!isMaster && (masterValue === undefined || masterValue?.getTime() === value?.getTime()));
+    }, [masterValue]);
+ */
     const handleDateChange = (e: CalendarChangeEvent) => {
         const d: Date = Array.isArray(e.value) ? e.value[0] : e.value;
         if (d) {
-            d.setSeconds(0);
-            d.setMilliseconds(0);
+            d.setSeconds(0,0);
             onChange(name, d);
             setIsTouched(true);
         }
     }
 
     const toggleLock = () => {
+        onChange(name, masterValue || new Date());
         setLocked(!locked);
-        onChange(name, masterValue || new Date())
     }
 
-    const handleCalendarBlur = () => setIsTouched(true)
     const validationErrorClass = !isValid && isTouched ? 'p-invalid' : '';
     return (
         <div className="p-field p-grid">
@@ -69,7 +72,7 @@ const DateField: React.FC<Props> = ({ onChange, name, label, value, masterValue,
                             showOnFocus={false}
                             showIcon={true}
                             icon="pi pi-calendar"
-                            onBlur={() => handleCalendarBlur()}
+                            onBlur={() => !isTouched && setIsTouched(true)}
                             showTime
                             className={validationErrorClass}
                         />

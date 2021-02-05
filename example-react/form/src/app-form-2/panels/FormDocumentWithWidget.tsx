@@ -3,8 +3,8 @@ import FormContext from '../FormContext';
 
 import { Button } from 'primereact/button';
 import TextField from './components/TextField';
-import DeadlinesWidgets, { Deadlines } from './components/DeadlinesWidget';
-import { FormDocState } from '../store/form-doc/types';
+import DeadlinesWidgets from './components/DeadlinesWidget';
+import { FormDocState, Deadlines } from '../store/form-doc/types';
 
 // Component definition --------------------- 
 type Props = {
@@ -13,11 +13,8 @@ type Props = {
 
 const FormDocumentWithWidget: React.FC<Props> = ({ onSaveForm }): JSX.Element => {
     const { context, dispatchContext } = useContext(FormContext);
-    const deadlines:Deadlines = {
-        date0: context.formDoc.birthday,
-        date1: context.formDoc.deadline,
-        date2: context.formDoc.meetingDate
-    };
+    //const [deadlines, setDeadlines] = useState<Deadlines>({});
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     }
@@ -25,7 +22,7 @@ const FormDocumentWithWidget: React.FC<Props> = ({ onSaveForm }): JSX.Element =>
         console.log(context.formDoc);
         onSaveForm();
     }
-    const handleDeadlinesChange = (v:Deadlines) => {
+    const old_handleDeadlinesChange = (v:Deadlines) => {
         console.log(v);
 
         if( v.date0?.getTime() !==  context.formDoc.birthday?.getTime()){
@@ -102,7 +99,13 @@ const FormDocumentWithWidget: React.FC<Props> = ({ onSaveForm }): JSX.Element =>
             });
         }
     }
-
+    const handleDeadlinesChange = (v:Deadlines) => {
+        dispatchContext({
+            type: "ACTION_UPDATE_DEADLINES",
+            payload: v
+        });
+        //setDeadlines(v);
+    }
     console.log(context.formDoc);
     return (
         <form onSubmit={(e) => handleSubmit(e)}>
@@ -113,7 +116,7 @@ const FormDocumentWithWidget: React.FC<Props> = ({ onSaveForm }): JSX.Element =>
                 onBlur={handleChange}
             />
             <DeadlinesWidgets
-                values={deadlines}
+                values={context.formDoc.deadlines}
                 onChange={(v) => handleDeadlinesChange(v)}
             />
             <Button type="button" onClick={handleSave}>Save</Button>
