@@ -19,6 +19,8 @@ type State = {
     increase: (by: number) => void;
     loadCommentList: (commentList: App.CommentList) => void;
     addComment: (text: string) => void;
+    updateComment: (id: number, text: string) => void;
+    deleteComment: (id: number) => void;
     setCurrentUser: (id: string, name: string) => void;
 }
 
@@ -60,5 +62,28 @@ export const useStore = create<State>(devtools(set => ({
                 }
             ]
         }
-    }))
+    })),
+    updateComment: (id: number, text: string) => set( state => ({
+        ...state,
+        commentList: {
+            ...state.commentList,
+            comments: state.commentList.comments.map(comment => {
+                if( comment.id !== id) {
+                    return comment;
+                } else {
+                    return {
+                        ...comment,
+                        text
+                    }
+                }
+            })
+        }
+    })),
+    deleteComment: (id: number) => set( state => ({
+        ...state,
+        commentList: {
+            ...state.commentList,
+            comments: state.commentList.comments.filter( comment => comment.id !== id)
+        }
+    })),
 })));

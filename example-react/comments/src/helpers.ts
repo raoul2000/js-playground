@@ -56,8 +56,13 @@ const createCommentList = (): App.CommentList => {
     return result;
 };
 
-export const fetchComments = ():Promise<App.CommentList> => new Promise( (resolve) => {
+export const fetchComments = (): Promise<App.CommentList> => new Promise((resolve) => {
     setTimeout(() => {
         resolve(createCommentList());
     }, 1000);
 });
+
+export const removeTags = (str: string): string => str
+    ? str.replace(/(<([^>]+)>)/gi, "")
+    : str;
+
