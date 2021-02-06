@@ -10,14 +10,9 @@ export const CommentList: React.FC<{}> = (): JSX.Element => {
 
     useEffect(() => {
         loadAllComments('dummyObjectId')
-            .then( commentList => {
-                if(validateCommentList(commentList)) {
-                    return loadCommentList(commentList);
-                } else {
-                    return null;
-                }
-            }
-            .then(loadCommentList);
+            .then(validateCommentList)
+            .then(loadCommentList)
+            .catch(console.error);
         setCurrentUser('authorId-1', 'Author One');
     }, []);
 
