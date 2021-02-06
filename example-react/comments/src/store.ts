@@ -1,23 +1,31 @@
-import create, { SetState } from 'zustand'
+import create from 'zustand'
 import { App } from './types';
 import { deepCopy } from './helpers';
 import { devtools } from 'zustand/middleware'
 
 type State = {
-    bears: number;
     currentUser: {
         /**
-         * Méthode user object Loid
+         * user object Loid
          */
         id: string,
         /**
-         * Méthode user login name
+         * user login name
          */
         name: string
     },
+    /**
+     * Db identifier of the object being commented
+     */
+    objectId: string;
+    /**
+     * List of comments
+     */
     commentList: App.CommentList;
-    increase: (by: number) => void;
-    loadCommentList: (commentList: App.CommentList) => void;
+    /**
+     * Initialize the comment list
+     */
+    setCommentList: (commentList: App.CommentList) => void;
     /**
      * Add a comment with  the current user as author
      */
@@ -25,10 +33,11 @@ type State = {
     updateComment: (id: number, text: string) => void;
     deleteComment: (id: number) => void;
     setCurrentUser: (id: string, name: string) => void;
+    setObjectId: (objectId: string) => void;
 }
 
 export const useStore = create<State>(devtools(set => ({
-    bears: 0,
+    objectId: '',
     currentUser: {
         id: '',
         name: ''
@@ -37,7 +46,6 @@ export const useStore = create<State>(devtools(set => ({
         nextId: 0,
         comments: []
     },
-    increase: (by) => set(state => ({ bears: state.bears + by })),
     setCurrentUser: (id: string, name: string) => set(state => ({
         ...state,
         currentUser: {
@@ -45,7 +53,11 @@ export const useStore = create<State>(devtools(set => ({
             name
         }
     })),
-    loadCommentList: (commentList) => set(state => ({
+    setObjectId: (objectId) => set(state => ({
+        ...state,
+        objectId
+    })),
+    setCommentList: (commentList) => set(state => ({
         ...state,
         commentList: deepCopy<App.CommentList>(commentList)
     })),
@@ -66,12 +78,12 @@ export const useStore = create<State>(devtools(set => ({
             ]
         }
     })),
-    updateComment: (id: number, text: string) => set( state => ({
+    updateComment: (id: number, text: string) => set(state => ({
         ...state,
         commentList: {
             ...state.commentList,
             comments: state.commentList.comments.map(comment => {
-                if( comment.id !== id) {
+                if (comment.id !== id) {
                     return comment;
                 } else {
                     return {
@@ -82,11 +94,11 @@ export const useStore = create<State>(devtools(set => ({
             })
         }
     })),
-    deleteComment: (id: number) => set( state => ({
+    deleteComment: (id: number) => set(state => ({
         ...state,
         commentList: {
             ...state.commentList,
-            comments: state.commentList.comments.filter( comment => comment.id !== id)
+            comments: state.commentList.comments.filter(comment => comment.id !== id)
         }
     })),
 })));

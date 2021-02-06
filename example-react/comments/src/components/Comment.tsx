@@ -2,8 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useStore } from '../store';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import { removeTags } from '../helpers';
-import { saveAllComments } from '../logic/comments';
-
+import { updateComment, deleteComment } from '../services/logic/comments';
 type Props = {
     id: number;
 };
@@ -11,10 +10,8 @@ type Props = {
 export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
 
     const comment = useStore(state => state.commentList.comments.find(comment => comment.id === id));
-    const [updateComment, deleteComment] = useStore(state => [state.updateComment, state.deleteComment]);
-
     const textRef = useRef(comment?.text || '');
-    const currentUser = useStore(state => state.currentUser);
+    const [currentUser, objectId, setCommentList] = useStore(state => [state.currentUser, state.objectId, state.setCommentList]);
 
     // this state is only here to force component re-render as the comment text
     // needs to be stored in the textRef object because of ContentEditable limitation
@@ -39,11 +36,21 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
 
     const handleOnBlur = () => {
         if (comment && comment.text !== textRef.current) {
-            updateComment(comment.id, textRef.current);
+            updateComment(objectId, {
+                ...comment,
+                modified: new Date(),
+                text: textRef.current
+            })
+                .then(setCommentList);
         }
     };
 
-    const handleDeleteComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => comment && deleteComment(comment.id);
+    const handleDeleteComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (comment) {
+            deleteComment(objectId, comment.id)
+                .then(setCommentList);
+        }
+    }
 
     return (
         <li

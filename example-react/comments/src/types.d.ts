@@ -10,7 +10,7 @@ export namespace App {
          */
         authorId: string;
         /**
-         * Méthode login name of the user who created this comment
+         * login name of the user who created this comment
          */
         author: string;
         /**

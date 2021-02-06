@@ -2,18 +2,17 @@ import React, { useEffect } from 'react';
 import { useStore } from '../store';
 import { Comment } from './Comment';
 import { CommentForm } from './CommentForm';
-import { loadAllComments } from '../logic/comments';
-import { validateCommentList } from '../logic/schema';
+import { readComments } from '../services/logic/comments';
 
 export const CommentList: React.FC<{}> = (): JSX.Element => {
-    const [loadCommentList, commentList, setCurrentUser] = useStore(state => [state.loadCommentList, state.commentList, state.setCurrentUser]);
+    const [setCommentList, commentList, setCurrentUser, setObjectId] = useStore(state => [state.setCommentList, state.commentList, state.setCurrentUser, state.setObjectId]);
 
     useEffect(() => {
-        loadAllComments('dummyObjectId')
-            .then(validateCommentList)
-            .then(loadCommentList)
+        readComments('dummyObjectId')
+            .then(setCommentList)
             .catch(console.error);
         setCurrentUser('authorId-1', 'Author One');
+        setObjectId('dummyObjectId');
     }, []);
 
     return (
