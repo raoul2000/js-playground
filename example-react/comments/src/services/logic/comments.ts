@@ -66,7 +66,7 @@ export const readComments = (objectId: string): Promise<App.CommentList> => new 
         } catch (error) {
             rejects(error);
         }
-    }, 1000);
+    }, 500);
 });
 
 const writeComments = (commentList: App.CommentList): Promise<App.CommentList> => new Promise((resolve, reject) => {

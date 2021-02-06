@@ -1,23 +1,28 @@
 import React, { useRef, useState } from 'react';
+import { App } from '../types';
 import { useStore } from '../store';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import { removeTags } from '../helpers';
 import { updateComment, deleteComment } from '../services/logic/comments';
+
 type Props = {
     id: number;
 };
 
 export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
 
-    const comment = useStore(state => state.commentList.comments.find(comment => comment.id === id));
+    const comment: App.Comment | undefined = useStore(state => state.commentList.comments.find(comment => comment.id === id));
     const textRef = useRef(comment?.text || '');
     const [currentUser, objectId, setCommentList] = useStore(state => [state.currentUser, state.objectId, state.setCommentList]);
-
+    const [uiStatus, editedCommentId, setStatusEdit, setStatusIdle, setStatusRefresh] = useStore(state => [state.uiStatus, state.editedCommentId, state.setStatusEdit, 
+        state.setStatusIdle, state.setStatusRefresh]);
+    
     // this state is only here to force component re-render as the comment text
     // needs to be stored in the textRef object because of ContentEditable limitation
     // see https://github.com/lovasoa/react-contenteditable#known-issues
     const [editedCommentText, setEditedCommentText] = useState<string>('');
     const currentUserIsAuthor = currentUser.id === comment?.authorId;
+    const currentCommentIsEdited = uiStatus === 'edit' && editedCommentId === comment?.id;
 
     const handleChange = (evt: ContentEditableEvent) => {
         textRef.current = evt.target.value;
@@ -34,23 +39,84 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
         }
     };
 
-    const handleOnBlur = () => {
+    const handleDeleteComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (comment) {
+            setStatusRefresh();
+            deleteComment(objectId, comment.id)
+                .then(setCommentList)
+                .finally(() => setStatusIdle());
+        }
+    };
+    const handleEditComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if (comment) {
+            setStatusEdit(comment.id);
+        }
+    };
+    const handleSubmitChange = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if (comment && comment.text !== textRef.current) {
+            setStatusRefresh();
             updateComment(objectId, {
                 ...comment,
                 modified: new Date(),
                 text: textRef.current
             })
-                .then(setCommentList);
+                .then(setCommentList)
+                .finally(() => setStatusIdle());
         }
     };
-
-    const handleDeleteComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        if (comment) {
-            deleteComment(objectId, comment.id)
-                .then(setCommentList);
+    const handleCancelEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        if(comment) {
+            textRef.current = comment.text;
         }
+        setStatusIdle();
     }
+
+    /**
+     * Render action buttons for a comment belonging to the current user
+     */
+    const renderActionsButtons = (): JSX.Element => {
+        if (uiStatus === 'idle') {
+            return (
+                <>
+                    <button
+                        className="btn btn-comment-edit btn-primary btn-sm"
+                        onClick={handleEditComment}
+                        title="Edit"
+                    >
+                        <i className="fas fa-pencil-alt"></i>edit
+                    </button>
+                    <button
+                        className="btn btn-comment-delete btn-sm btn-danger"
+                        title="Delete"
+                        onClick={handleDeleteComment}
+                    >
+                        <i className="fa fa-trash"></i>delete
+                    </button>
+                </>
+            );
+        } else if (uiStatus === 'edit' && editedCommentId === comment?.id) {
+            return (
+                <>
+                    <button
+                        className="btn btn-comment-edit btn-primary btn-sm"
+                        onClick={handleSubmitChange}
+                        title="Save"
+                    >
+                        <i className="fas fa-pencil-alt"></i>save
+                    </button>
+                    <button
+                        className="btn btn-comment-delete btn-sm btn-danger"
+                        title="Cancel"
+                        onClick={handleCancelEdit}
+                    >
+                        <i className="fa fa-trash"></i>cancel
+                    </button>
+                </>
+            );
+        } else {
+            return (<></>)
+        }
+    };
 
     return (
         <li
@@ -64,13 +130,7 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
                     currentUserIsAuthor
                     &&
                     <div className="comment-actions">
-                        <button
-                            className="btn btn-comment-delete btn-sm btn-danger"
-                            title="Delete"
-                            onClick={handleDeleteComment}
-                        >
-                            <i className="fa fa-trash"></i>
-                        </button>
+                        {renderActionsButtons()}
                     </div>
                 }
 
@@ -80,11 +140,10 @@ export const Comment: React.FC<Props> = ({ id }): JSX.Element => {
                 <ContentEditable
                     html={textRef.current} // innerHTML of the editable div
                     className="comment-body"
-                    disabled={!currentUserIsAuthor}       // use true to disable editing
+                    disabled={!currentUserIsAuthor || !currentCommentIsEdited }       // use true to disable editing
                     onChange={handleChange} // handle innerHTML change
                     tagName='article' // Use a custom HTML tag (uses a div by default)
                     onPaste={handleOnPaste}
-                    onBlur={handleOnBlur}
                 />
             </div>
         </li>

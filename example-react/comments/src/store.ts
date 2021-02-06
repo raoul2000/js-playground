@@ -3,6 +3,7 @@ import { App } from './types';
 import { deepCopy } from './helpers';
 import { devtools } from 'zustand/middleware'
 
+type UiStatus = 'idle' | 'refresh' | 'edit';
 type State = {
     currentUser: {
         /**
@@ -14,6 +15,8 @@ type State = {
          */
         name: string
     },
+    uiStatus: UiStatus,
+    editedCommentId: number,
     /**
      * Db identifier of the object being commented
      */
@@ -34,10 +37,15 @@ type State = {
     deleteComment: (id: number) => void;
     setCurrentUser: (id: string, name: string) => void;
     setObjectId: (objectId: string) => void;
+    setStatusIdle: () => void;
+    setStatusRefresh: () => void;
+    setStatusEdit: (commentId: number) => void;
 }
 
 export const useStore = create<State>(devtools(set => ({
     objectId: '',
+    uiStatus: 'idle',
+    editedCommentId: 0,
     currentUser: {
         id: '',
         name: ''
@@ -46,6 +54,19 @@ export const useStore = create<State>(devtools(set => ({
         nextId: 0,
         comments: []
     },
+    setStatusIdle: () => set( state => ({
+        ...state,
+        uiStatus: 'idle'
+    })),
+    setStatusRefresh: () => set( state => ({
+        ...state,
+        uiStatus: 'refresh'
+    })),
+    setStatusEdit: (commentId: number) => set( state => ({
+        ...state,
+        uiStatus: 'edit',
+        editedCommentId: commentId
+    })),
     setCurrentUser: (id: string, name: string) => set(state => ({
         ...state,
         currentUser: {
