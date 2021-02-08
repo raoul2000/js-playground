@@ -23,6 +23,14 @@ const createCommentList = (): App.CommentList => {
                 text: `comment text ${index}`
             });
         }
+        storage.nextId++;
+        storage.comments.push({
+            id: 3,
+            author: `author-0`,
+            authorId: `authorId-0`,
+            modified: new Date(),
+            text: `comment text 0`
+        });
     }
     return storage;
 };
@@ -45,14 +53,14 @@ export const readComments = (objectId: string): Promise<App.CommentList> => new 
         try {
             validateCommentListSchema(commentList);
             // simulate comment added by other user (50% probability)
-            if (getRandomInt(2) === 1) {
+            if (getRandomInt(2) === 1 && false) {
                 commentList = {
                     ...commentList,
                     nextId: commentList.nextId + 1,
                     comments: [
                         ...commentList.comments,
                         {
-                            id: commentList.nextId,
+                            id: getRandomInt(2000),
                             authorId: 'SurpriseId',
                             author: 'surprise',
                             modified: new Date(),
