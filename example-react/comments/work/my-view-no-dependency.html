@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <style>
+        body {
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .comments-wrapper {
+            height: 100%;
+            padding: 10px;
+            flex-direction: column;
+            display: flex;
+        }
+
+        .comments-wrapper>header {
+            height: 4rem;
+            min-height: 4rem;
+            background-color: #c9d5ef;
+            width: 100%;
+        }
+
+        .comments-wrapper>section.comments {
+            padding: 1rem;
+            padding-top: 1rem;
+            /* position: absolute; */
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* top: 5.9rem; */
+            /* bottom: 75px; */
+            flex-grow: 1;
+        }
+
+        a {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 15px;
+            color: #777;
+        }
+
+        p.comment-body {
+            font-size: 1.3rem;
+        }
+
+        .comments ol {
+            /* margin-top: 0.4rem; */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /* padding-top: 1rem; */
+        }
+
+        .comments .img-avatar {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        .comment {
+            display: flex;
+            padding: 0;
+            padding-top: 0.8rem;
+        }
+
+        .comments .my-comment {
+            background-color: #f5f6f6;
+            /* display: flex; */
+        }
+
+        .comments .my-comment:hover .comment-actions {
+            visibility: visible;
+        }
+
+        .comment-main {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .comment-info {
+            color: #a7a7a7;
+            font-size: 1.2rem;
+        }
+
+        .comment-author {
+            font-size: 1.7rem;
+            font-weight: bold;
+        }
+
+        .comment-actions {
+            /* text-align: right; */
+            float: right;
+            visibility: hidden;
+        }
+
+        .comments-wrapper>footer {
+            /* height: 5rem; */
+            background-color: beige;
+            display: flex;
+            padding: 1rem;
+            /* position: absolute; */
+            /* bottom: 0; */
+            /* left: 0; */
+            /* right: 0; */
+        }
+
+        .comment-input {
+            flex-grow: 1;
+        }
+
+        .comment-input>article,
+        .comment-input>textarea {
+            width: 100%;
+            height: 3rem;
+            font-size: 1.4rem;
+            background-color: white;
+        }
+
+        .comment-input-actions {
+            margin-left: 10px;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .comment-body[contenteditable='true'] {
+            background-color: white;
+            padding: 0.5rem;
+        }
+    </style>
+    <script>
+
+        const handleContentEditable = (ev) => {
+            console.log(ev);
+            if (ev.currentTarget.classList.contains('edit-button')) {
+                console.log('edit');
+                const pElement = ev.currentTarget.closest('div.comment-main').querySelector('.comment-body');
+                pElement.setAttribute('contenteditable',
+                    pElement.getAttribute('contenteditable') == 'true'
+                        ? 'false'
+                        : 'true'
+                );
+            }
+        };
+        window.addEventListener("DOMContentLoaded", (event) => {
+            console.log("DOM entièrement chargé et analysé");
+            // to avoid paste HTML see http://jsfiddle.net/marinagon/461uye5p/
+            // better to use textarea because contenteditable allow to past HTML ?
+            // for auto grow text area (vanilla JS) see https://stackoverflow.com/questions/34764304/contenteditable-allowing-only-plain-text
+            document
+                .querySelectorAll('.comment-actions > button')
+                .forEach(button => button.addEventListener('click', handleContentEditable));
+
+            // textarea change
+            document.getElementById('comment').addEventListener('keypress', (event) => {
+                console.log(event.target.value);
+                const text = event.target.value;
+                if( text.split("\n").length > 2) {
+                    console.log('boo');
+                    event.target.style.height = '10rem';
+                } else {
+                    console.log('bar');
+                    event.target.style.height = '3rem';
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="comments-wrapper">
+        <header>
+            some header
+        </header>
+        <section class="comments">
+            <ol>
+                <li class="comment my-comment">
+                    <div>
+                        <div class="img-avatar" style="background-image: url('./images/Emmanuel_II.jpg');">
+                        </div>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-actions">
+                            <button type="button" class="btn btn-primary btn-xs edit-button">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="comment-author">John Mac Arthur Junior</div>
+                        <div class="comment-info">24/20/2021</div>
+                        <p class="comment-body" contenteditable="false">
+                            Curabitur vel malesuada tortor, sit amet ultricies mauris. Aenean consectetur ultricies
+                            luctus.
+                            Curabitur vel malesuada tortor, sit amet ultricies mauris. Aenean consectetur ultricies
+                            luctus.
+                        </p>
+
+                    </div>
+                </li>
+                <li class="comment">
+                    <div>
+                        <div class="img-avatar" style="background-image: url('./images/Emmanuel_II.jpg');">
+                        </div>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-actions">
+                            <button type="button" class="btn btn-primary btn-xs">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="comment-author">Bobby Bronson</div>
+                        <div class="comment-info">24/20/2021</div>
+                        <p class="comment-body">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto necessitatibus
+                            laudantium autem doloribus sequi numquam odio! At delectus quam sit pariatur quos eum est
+                            consequatur a ratione ipsa! Perspiciatis, praesentium.
+                        </p>
+
+                    </div>
+                </li>
+                <li class="comment">
+                    <div>
+                        <div class="img-avatar" style="background-image: url('./images/Emmanuel_II.jpg');">
+                        </div>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-actions">
+                            <button type="button" class="btn btn-primary btn-xs">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="comment-author">Bobby Bronson</div>
+                        <div class="comment-info">24/20/2021</div>
+                        <p class="comment-body">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto necessitatibus
+                            laudantium autem doloribus sequi numquam odio! At delectus quam sit pariatur quos eum est
+                            consequatur a ratione ipsa! Perspiciatis, praesentium.
+                        </p>
+
+                    </div>
+                </li>
+                <li class="comment">
+                    <div>
+                        <div class="img-avatar" style="background-image: url('./images/Emmanuel_II.jpg');">
+                        </div>
+                    </div>
+                    <div class="comment-main">
+                        <div class="comment-actions">
+                            <button type="button" class="btn btn-primary btn-xs">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="comment-author">Bobby Bronson</div>
+                        <div class="comment-info">24/20/2021</div>
+                        <p class="comment-body">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto necessitatibus
+                            laudantium autem doloribus sequi numquam odio! At delectus quam sit pariatur quos eum est
+                            consequatur a ratione ipsa! Perspiciatis, praesentium.
+                        </p>
+
+                    </div>
+                </li>
+            </ol>
+        </section>
+        <footer>
+            <div class="comment-input">
+                <!--article contenteditable="true"></article -->
+                <textarea name="comment" id="comment" cols="30" rows="2"></textarea>
+            </div>
+            <div class="comment-input-actions">
+                <button type="button" class="btn btn-success btn-xs">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
