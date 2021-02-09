@@ -5,6 +5,7 @@ import React, {
     TextareaHTMLAttributes,
 } from "react";
 
+// from https://medium.com/@lucasalgus/creating-a-custom-auto-resize-textarea-component-for-your-react-web-application-6959c0ad68bc
 const AutoTextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement>) => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const [text, setText] = useState("");
@@ -12,13 +13,17 @@ const AutoTextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement>) => {
     const [parentHeight, setParentHeight] = useState("auto");
 
     useEffect(() => {
-        setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
-        setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`);
+        if (textAreaRef.current! && textAreaRef.current!.scrollHeight < 100) {
+            setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
+            setTextAreaHeight(`${textAreaRef.current!.scrollHeight}px`);
+        }
     }, [text]);
 
     const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setTextAreaHeight("auto");
-        setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
+        if (textAreaRef.current! && textAreaRef.current!.scrollHeight < 100) {
+            setTextAreaHeight("auto");
+            setParentHeight(`${textAreaRef.current!.scrollHeight}px`);
+        }
         setText(event.target.value);
 
         if (props.onChange) {

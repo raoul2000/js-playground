@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useUiStore } from '../store';
+import AutoTextArea from './AutoTextArea';
 
 type Props = {
     onAddComment: (text: string) => void
@@ -17,14 +18,14 @@ export const CommentForm: React.FC<Props> = ({ onAddComment }): JSX.Element => {
     return (
         <>
             <div className="comment-input">
-                <textarea
+                <AutoTextArea
                     id="comment"
                     name="comment"
                     placeholder="your comment ..."
                     value={newCommentText}
                     onChange={(e) => setNewCommentText(e.target.value)}
                     disabled={editedCommentId !== -1}
-                ></textarea>
+                ></AutoTextArea>
             </div>
             <div className="comment-input-actions">
                 <button

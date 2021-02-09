@@ -7,8 +7,8 @@ import { readComments } from '../services/logic/comments';
 export const CommentList: React.FC<{}> = (): JSX.Element => {
 
     const [contextInfo, setContextInfo] = useState<{ currentUserId: string, objectId: string }>();
-    const [status, commentList, setCommentList, addComment, updateComment, deleteComment] = useStore(state => [state.status, state.commentList, state.setCommentList, 
-        state.addComment, state.updateComment, state.deleteComment]);
+    const [status, commentList, setCommentList, addComment, updateComment, deleteComment] = useStore(state => [state.status, state.commentList, state.setCommentList,
+    state.addComment, state.updateComment, state.deleteComment]);
     const editedCommentId = useUiStore(state => state.editedCommentId);
 
     useEffect(() => {
@@ -37,9 +37,11 @@ export const CommentList: React.FC<{}> = (): JSX.Element => {
     }
     return (
         <div className="comments-wrapper">
-            nextId = {commentList.nextId}
-            { editedCommentId !== -1 ? ' editing...' : ''}
-            <div>status = {status}</div>
+            <header>
+                nextId = {commentList.nextId}
+                {editedCommentId !== -1 ? ' editing...' : ''}
+                <div>status = {status}</div>
+            </header>
 
             {
                 contextInfo
