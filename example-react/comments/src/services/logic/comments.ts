@@ -8,6 +8,10 @@ function getRandomInt(max: number) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
+// see : https://developer.mozilla.org/fr/docs/Web/API/WindowBase64/D%C3%A9coder_encoder_en_base64
+// btoa(encodeURI('⚠️')) => "JUUyJTlBJUEwJUVGJUI4JThG"
+// decodeURI(atob('JUUyJTlBJUEwJUVGJUI4JThG')) => "⚠️"
+
 const createCommentList = (): App.CommentList => {
     if (!storage) {
         storage = {
