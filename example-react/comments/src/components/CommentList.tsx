@@ -65,7 +65,10 @@ export const CommentList: React.FC<{}> = (): JSX.Element => {
                 </section>
             }
             <footer>
-                <CommentForm onAddComment={handleAddComment} />
+                <CommentForm 
+                    onAddComment={handleAddComment} 
+                    allowPrivateComment={true}
+                    />
             </footer>
         </div>
     );

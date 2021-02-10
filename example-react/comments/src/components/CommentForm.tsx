@@ -3,16 +3,21 @@ import { useUiStore } from '../store';
 import AutoTextArea from './AutoTextArea';
 
 type Props = {
-    onAddComment: (text: string) => void
+    onAddComment: (text: string) => void,
+    allowPrivateComment: boolean
 };
 
-export const CommentForm: React.FC<Props> = ({ onAddComment }): JSX.Element => {
+export const CommentForm: React.FC<Props> = ({ onAddComment, allowPrivateComment }): JSX.Element => {
     const [newCommentText, setNewCommentText] = useState<string>('');
+    const [privateComment, setPrivateComment] = useState<boolean>(false);
     const [editedCommentId] = useUiStore(state => [state.editedCommentId]);
 
     const handleCreateComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         onAddComment(newCommentText);
         setNewCommentText('');
+        if (allowPrivateComment) {
+            setPrivateComment(false);
+        }
     }
 
     return (
@@ -26,6 +31,16 @@ export const CommentForm: React.FC<Props> = ({ onAddComment }): JSX.Element => {
                     onChange={(e) => setNewCommentText(e.target.value)}
                     disabled={editedCommentId !== -1}
                 ></AutoTextArea>
+                {
+                    allowPrivateComment
+                    &&
+                    <div>
+                        <label htmlFor="chk-private-comment">
+                            <input id="chk-private-comment" type="checkbox" checked={privateComment}
+                                onChange={() => setPrivateComment(!privateComment)} /> make private
+                    </label>
+                    </div>
+                }
             </div>
             <div className="comment-input-actions">
                 <button
