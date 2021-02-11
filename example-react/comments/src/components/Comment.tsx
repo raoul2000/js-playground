@@ -30,7 +30,7 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
     const handleChange = (evt: ContentEditableEvent) => {
         textRef.current = evt.target.value;
     };
-
+    // FIXME: past jump to the end of existing text !! :(
     const handleOnPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         const pastedText = e.clipboardData.getData('text/plain');

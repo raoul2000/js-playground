@@ -38,10 +38,6 @@ export const deepCopy = <T>(target: T): T => {
     return target;
 };
 
-
-
-
-
 export const removeTags = (str: string): string => str
     ? str.replace(/(<([^>]+)>)/gi, "")
     : str;
