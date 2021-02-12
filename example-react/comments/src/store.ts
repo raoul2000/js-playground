@@ -49,7 +49,7 @@ export const useStore = create<State>(devtools(set => ({
                     }
                 }
             });
-        }, 1000);
+        }, 10);
     },
     updateComment: (id: number, text: string) => {
         set(state => ({ status: 'pending' }));
@@ -70,7 +70,7 @@ export const useStore = create<State>(devtools(set => ({
                     })
                 }
             }));
-        }, 5000);
+        }, 0);
     },
     deleteComment: (id: number) => set(state => ({
         commentList: {

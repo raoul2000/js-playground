@@ -2,6 +2,19 @@ import React, { useRef, useState } from 'react';
 import { App } from '../types';
 import { useUiStore } from '../store';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+import TextareaAutosize from 'react-textarea-autosize';
+
+const tagsToReplace:Record<string,string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+};
+
+export const XMLEscape = (text: string): string => {
+    return text.replace(/[&<>]/g, (tag) => {
+        return tagsToReplace[tag] || tag;
+    })
+};
 
 const removeTags = (str: string): string => str
     ? str.replace(/(<([^>]+)>)/gi, "")
@@ -36,9 +49,10 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
         const pastedText = e.clipboardData.getData('text/plain');
         if (pastedText.length !== 0) {
             const cleanedText = removeTags(pastedText);
-
-            setEditedCommentText(editedCommentText + cleanedText);
-            textRef.current += cleanedText;
+            console.log(`pasting ${cleanedText}`);
+            e.clipboardData.setData('text/plain', cleanedText);
+            //setEditedCommentText(editedCommentText + cleanedText);
+            //textRef.current += cleanedText;
         }
     };
 
@@ -47,9 +61,10 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
     };
     const handleEditComment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         setEditedCommentId(comment.id);
+        setEditedCommentText(comment.text);
     };
     const handleSubmitChange = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        onUpdateComment(comment.id, textRef.current);
+        onUpdateComment(comment.id, editedCommentText);
         setEditedCommentId(-1);
     };
     const handleCancelEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -57,6 +72,7 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
         textRef.current = comment.text;
     }
 
+    const convertToHtml = (str:string):string => XMLEscape(str).replace(/(?:\r\n|\r|\n)/g, '<br>');
     /**
      * Render action buttons for a comment belonging to the current user
      */
@@ -122,7 +138,25 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
 
                 <div className="comment-author">{comment?.author}</div>
                 <div className="comment-info">{comment?.modified.toDateString()}</div>
+                {
+                    editedCommentId !== -1
+                        ?
+                        <TextareaAutosize 
+                            value={editedCommentText}
+                            onChange={(e) => setEditedCommentText(e.currentTarget.value)}
+                            maxRows={5}
+                        />
+                        : 
+                        <div 
+                            dangerouslySetInnerHTML={{ __html:convertToHtml(comment.text)}}
+                        ></div>
+                }
 
+            </div>
+        </li>
+    );
+}
+/*
                 <ContentEditable
                     html={textRef.current} // innerHTML of the editable div
                     className="comment-body"
@@ -131,7 +165,4 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
                     tagName='article' // Use a custom HTML tag (uses a div by default)
                     onPaste={handleOnPaste}
                 />
-            </div>
-        </li>
-    );
-}
+                */
