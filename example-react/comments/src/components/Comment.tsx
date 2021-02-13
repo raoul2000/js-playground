@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { App } from '../types';
 import { useUiStore } from '../store';
-import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+import { ContentEditableEvent } from 'react-contenteditable'
 import TextareaAutosize from 'react-textarea-autosize';
 
-const tagsToReplace:Record<string,string> = {
+const tagsToReplace: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;'
@@ -72,7 +72,7 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
         textRef.current = comment.text;
     }
 
-    const convertToHtml = (str:string):string => XMLEscape(str).replace(/(?:\r\n|\r|\n)/g, '<br>');
+    const convertToHtml = (str: string): string => XMLEscape(str).replace(/(?:\r\n|\r|\n)/g, '<br>');
     /**
      * Render action buttons for a comment belonging to the current user
      */
@@ -141,14 +141,14 @@ export const Comment: React.FC<Props> = ({ comment, currentUserId, onUpdateComme
                 {
                     editedCommentId !== -1
                         ?
-                        <TextareaAutosize 
+                        <TextareaAutosize
                             value={editedCommentText}
                             onChange={(e) => setEditedCommentText(e.currentTarget.value)}
                             maxRows={5}
                         />
-                        : 
-                        <div 
-                            dangerouslySetInnerHTML={{ __html:convertToHtml(comment.text)}}
+                        :
+                        <div
+                            dangerouslySetInnerHTML={{ __html: convertToHtml(comment.text) }}
                         ></div>
                 }
 
