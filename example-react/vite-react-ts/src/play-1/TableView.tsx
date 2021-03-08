@@ -22,7 +22,7 @@ export const TableView: React.FC<Props> = ({ headers, data }): JSX.Element => {
     );
 
     return (
-        <div>
+        <div className="table-container">
             {isSticky && (
                 /*
                 .sticky will be the copy of table header while sticky 

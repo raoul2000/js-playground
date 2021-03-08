@@ -1,4 +1,6 @@
-
+.table-container{
+    overflow-y: visible;
+}
 /* General table styles */
 table {
     table-layout: fixed;
@@ -13,16 +15,18 @@ table:not(.sticky) {
 }
 
 thead {
-    background-color: #282c35;
+    background-color: #545454;
 }
 
 th {
-    padding: 25px 0;
-    color: #fff;
+    padding: 1rem 0;
+    color: rgb(14, 14, 14);
     font-size: 16px;
     line-height: 18px;
     font-weight: 600;
     text-transform: uppercase;
+    text-align: left;
+    padding-left:1rem;
 }
 
 th:last-child {
@@ -35,8 +39,7 @@ tbody tr:nth-last-of-type(odd) {
 
 td {
     font-size: 18px;
+    text-align: left;
+    padding-left:1rem;
 }
 
-td:last-child {
-    font-size: 30px;
-}

@@ -7,16 +7,16 @@ export type TableDataType = {
 };
 export const tableData: TableDataType[] = [
     {
-        country: "111Brazil",
+        country: "111Brazilfqsdf qsdf qsdf qsdf s",
         code: "BR",
         area: "8,515,767 km2",
         flag: "🇧🇷",
     },
     {
         country: "Bulgaria",
-        code: "BG",
-        area: "110,993.6 km2",
-        flag: "🇧🇬",
+        code: "BG qsdf qsdf qsdfq sdf qsdf qsdf qsdf ",
+        area: "110,993.6 km2 qsdf qsdf qsdf qsdf qsdf",
+        flag: "🇧🇬 qsdf qsdf qsdf qsdf qsdf qsdf qsdf",
     },
     {
         country: "China",
