@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+
+body {
+    font-family: "Roboto", "Helvetica Neue Light", "Open Sans", Helvetica;
+    min-width: 1100px;
+}
+
+.ka-tbody {
+    max-height: 400px;
+}
+
+.App {
+    table.ka-table__ {
+        width: 100%;
+    }
+}
+
+.column-resizing-demo {
+    .ka-thead-cell-content,
+    .ka-cell-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

@@ -1,5 +1,12 @@
-.App {
+.App__ {
   text-align: center;
+  position: fixed;
+  top: 5rem;
+  left: 7.6rem;
+  height: 20rem;
+  overflow: auto;
+  width:35rem;
+
 }
 
 .App-logo {
