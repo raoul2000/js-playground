@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #root {
+                width: 250px;
+                border: 1px solid grey;
+                padding: 2em;
+                margin: 2em;
+            }
+
+            .user-input {
+                width: 100%;
+                padding: 0px;
+                margin: 0px;
+                border: 1px solid grey;
+            }
+            .option-list {
+                display: none;
+                cursor: pointer;
+                border: 1px solid grey;
+                /*width: 100%;*/
+                padding: 0px;
+                margin: 0px;
+                max-height: 5em;
+                overflow: auto;
+                position: absolute;
+                background-color: white;
+            }
+            .option-list .active {
+                background-color: blue;
+                color: white;
+            }
+            .option-list > div:hover {
+                background-color: rgb(235, 235, 235);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root">
+            <input id="user-input" class="user-input" type="text" />
+            <div id="option-list" class="option-list"></div>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore
+                dicta veniam repellat earum autem, commodi, quasi reiciendis
+                recusandae error pariatur beatae tempore quibusdam itaque
+                laudantium illum impedit. Doloribus, tenetur sed.
+            </p>
+            <input  type="text" />
+        </div>
+
+        <script>
+            (function () {
+                console.log("inittializing ...");
+
+                const removeAllChildren = (element) => {
+                    while (element.firstChild) {
+                        element.removeChild(element.firstChild);
+                    }
+                };
+                const normalizeSeed = (seed) =>
+                    typeof seed === "string" ? seed.trim() : "";
+
+                const optionList = [
+                    "apple 1",
+                    "apple 2",
+                    "apple 3",
+                    "apple 4",
+                    "apple 5",
+                    "apple 6",
+                    "apple 7 ",
+                    "apple 8",
+                    "orange",
+                    "banana",
+                    "orage",
+                    "blue",
+                    "apple II",
+                ];
+
+                const Element = {
+                    userInput: document.getElementById("user-input"),
+                    optionList: document.getElementById("option-list"),
+                };
+
+                const selectOptions = (seed, options) =>
+                    seed !== ""
+                        ? options.filter((option) => option.startsWith(seed))
+                        : [];
+
+                // same width for input and option list
+                Element.optionList.style.width = `${Element.userInput.clientWidth}px`;
+
+                const renderOptionList = (elList, options) => {
+                    elList.style.display = "none";
+                    if (options.length !== 0) {
+                        removeAllChildren(elList);
+                        options
+                            .map((option) => {
+                                const elOption = document.createElement("div");
+                                elOption.textContent = option;
+                                return elOption;
+                            })
+                            .forEach((elOption) => {
+                                elList.appendChild(elOption);
+                            });
+                        elList.style.display = "block";
+                    }
+                };
+
+                const inputEventHandler = () => (ev) => {
+                    renderOptionList(
+                        Element.optionList,
+                        selectOptions(
+                            normalizeSeed(ev.target.value),
+                            optionList
+                        )
+                    );
+                };
+                Element.userInput.addEventListener(
+                    "input",
+                    inputEventHandler()
+                );
+
+                const Key = {
+                    selectionDown: (elOptions) => {
+                        const currentSelection =
+                            elOptions.getElementsByClassName("active")[0];
+
+                        if (!currentSelection) {
+                            elOptions.firstChild.classList.add("active");
+                        } else if (currentSelection.nextElementSibling) {
+                            currentSelection.nextElementSibling.classList.add(
+                                "active"
+                            );
+                            currentSelection.classList.remove("active");
+                        }
+                    },
+                    selectionUp: (elOptions) => {
+                        const currentSelection =
+                            elOptions.getElementsByClassName("active")[0];
+                        if (currentSelection?.previousElementSibling) {
+                            currentSelection.previousElementSibling.classList.add(
+                                "active"
+                            );
+                            currentSelection.classList.remove("active");
+                        }
+                    },
+                    escape: (elOptions) => {
+                        renderOptionList(elOptions, []);
+                    },
+                    enter: (elOptions, elUserInput) => {
+                        const currentSelection =
+                            elOptions.getElementsByClassName("active")[0];
+                        if (currentSelection) {
+                            elUserInput.value = currentSelection.textContent;
+                            renderOptionList(elOptions, []);
+                        }
+                    },
+                };
+
+                const scrollToSelection = (elOptions) => {
+                    const selectedElement =
+                        elOptions.getElementsByClassName("active")[0];
+                    elOptions.scrollTop =
+                        selectedElement.offsetTop -
+                        elOptions.clientHeight +
+                        selectedElement.clientHeight;
+                };
+
+                const keyEventHandler = () => (ev) => {
+                    const key = event.keyCode || event.charCode;
+                    switch (key) {
+                        case 40: // Arrow DOWN
+                            Key.selectionDown(Element.optionList);
+                            scrollToSelection(Element.optionList);
+                            ev.preventDefault();
+                            ev.stopImmediatePropagation();
+                            return false;
+                            break;
+
+                        case 38: // Arrow UP
+                            Key.selectionUp(Element.optionList);
+                            scrollToSelection(Element.optionList);
+                            ev.preventDefault();
+                            ev.stopImmediatePropagation();
+                            return false;
+                            break;
+
+                        case 13: // Enter
+                            Key.enter(Element.optionList, Element.userInput);
+                            break;
+
+                        case 27: // ESC
+                            Key.escape(Element.optionList);
+                            break;
+                    }
+                    
+                };
+
+                Element.userInput.addEventListener(
+                    "keyup",
+                    keyEventHandler(),
+                    false
+                );
+
+                Element.optionList.addEventListener(
+                    "click",
+                    (ev) => {
+                        ev.target.classList.add("active");
+                        Key.enter(Element.optionList, Element.userInput);
+                    },
+                    false
+                );
+            })();
+        </script>
+    </body>
+</html>

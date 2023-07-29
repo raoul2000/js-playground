@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: sans-serif;
+                font-size: 100%;
+                color: #222;
+                background-color: #fafafe;
+                margin: 1em;
+            }
+
+            label,
+            button {
+                display: block;
+                margin-top: 1em;
+            }
+
+            /* <datalist> and <option> styling */
+            datalist {
+                position: absolute;
+                max-height: 20em;
+                border: 0 none;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
+            datalist option {
+                font-size: 0.8em;
+                padding: 0.3em 1em;
+                background-color: #ccc;
+                cursor: pointer;
+            }
+
+            datalist option:hover,
+            datalist option:focus {
+                color: #fff;
+                background-color: #036;
+                outline: 0 none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>HTML5 datalist styling demonstration</h1>
+        <p>see https://codepen.io/SitePoint/pen/JjbXrvE</p>
+        
+        <form id="autoform">
+            <label for="country">country:</label>
+            <input
+                list="countrydata"
+                id="country"
+                name="country"
+                size="50"
+                autocomplete="off"
+            />
+
+            <!-- must be first element after input and use <option>value</option> format -->
+            <datalist id="countrydata">
+                <option>Afghanistan</option>
+                <option>Åland Islands</option>
+                <option>Albania</option>
+                <option>Algeria</option>
+                <option>American Samoa</option>
+                <option>Andorra</option>
+                <option>Angola</option>
+                <option>Anguilla</option>
+            </datalist>
+
+            <!-- must be first element after input and use <option>value</option> format -->
+            <label for="browser">browser:</label>
+            <input
+                list="browserdata"
+                id="browser"
+                name="browser"
+                size="50"
+                autocomplete="off"
+            />
+
+            <datalist id="browserdata">
+                <option>Brave</option>
+                <option>Chrome</option>
+                <option>Edge</option>
+                <option>Firefox</option>
+                <option>Internet Explorer</option>
+                <option>Opera</option>
+                <option>Safari</option>
+                <option>Vivaldi</option>
+                <option>other</option>
+            </datalist>
+        </form>
+    </body>
+</html>
