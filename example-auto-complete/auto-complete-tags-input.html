@@ -54,6 +54,7 @@
                 padding: 4px 4px;
                 flex-wrap: nowrap;
                 color: white;
+                cursor: pointer;
             }
             #txt:focus-visible {
                 outline: none;
@@ -78,11 +79,11 @@
                 background-color: white;
             }
             .option-list .active {
-                background-color: blue;
+                background-color: rgb(99, 99, 244);
                 color: white;
             }
             .option-list > div {
-                padding: 4px;
+                padding: 0px;
             }
             .option-list > div:hover {
                 background-color: rgb(235, 235, 235);
@@ -100,12 +101,7 @@
 
                 <input id="my-input" type="text" />
                 <span id="hide"></span>
-                <div id="option-list" class="option-list">
-                    <div>Element</div>
-                    <div>Element</div>
-                    <div>Element</div>
-                    <div>Element</div>
-                </div>
+                <div id="option-list" class="option-list" />
             </div>
         </div>
 
@@ -157,10 +153,51 @@
                 UI.textInput.style.width = UI.textInputGhost.offsetWidth + "px";
             };
 
+            const updateOptionListSpec = (
+                referenceElement,
+                optionListElement
+            ) => {
+                const cs = getComputedStyle(referenceElement);
+
+                optionListElement.style.width = "";
+                optionListElement.style.borderBottomWidth = cs.getPropertyValue(
+                    "border-bottom-width"
+                );
+                optionListElement.style.borderTopWidth =
+                    cs.getPropertyValue("border-top-width");
+                optionListElement.style.borderLeftWidth =
+                    cs.getPropertyValue("border-left-width");
+                optionListElement.style.borderRightWidth =
+                    cs.getPropertyValue("border-right-width");
+                optionListElement.style.paddingBottom =
+                    cs.getPropertyValue("padding-bottom");
+                optionListElement.style.paddingTop =
+                    cs.getPropertyValue("padding-top");
+                optionListElement.style.paddingLeft =
+                    cs.getPropertyValue("padding-left");
+                optionListElement.style.paddingRight =
+                    cs.getPropertyValue("padding-right");
+                optionListElement.style.left = `-${cs.getPropertyValue(
+                    "border-left-width"
+                )}`;
+                optionListElement.style.right = `-${cs.getPropertyValue(
+                    "border-right-width"
+                )}`;
+                optionListElement.style.top = `${referenceElement.clientHeight}px`;
+            };
+
+            const removeAllOptions = (optionListElement) => removeAllChildren(elList);
+            const hideOptionList = (optionListElement) => optionListElement.style.display = "none";
+            const showOptionList = (optionListElement) => optionListElement.style.display = "block";
+            const countOptions = (optionListElement) => optionListElement.children.length;
+            const optionListNotEmpty = (optionListElement) => countOptions(optionListElement) > 0;
+
+            //const clearOptionList = (optionListElement) 
+
             const renderOptionList = (elList, options) => {
                 elList.style.display = "none";
-                if (options.length !== 0) {
-                    removeAllChildren(elList);
+                removeAllChildren(elList);
+                if (options.length !== 0) {                    
                     options
                         .map((option) => {
                             const elOption = document.createElement("div");
@@ -170,61 +207,13 @@
                         .forEach((elOption) => {
                             elList.appendChild(elOption);
                         });
-
-                    // adjust position
-                    const cs = getComputedStyle(UI.tagsInput);
-                    const parentCss = {
-                        paddingTop: parseFloat(
-                            cs.getPropertyValue("padding-top")
-                        ),
-                        paddingBottom: parseFloat(
-                            cs.getPropertyValue("padding-bottom")
-                        ),
-                        paddingLeft: parseFloat(
-                            cs.getPropertyValue("padding-left")
-                        ),
-                        paddingRight: parseFloat(
-                            cs.getPropertyValue("padding-right")
-                        ),
-                        borderBottom : parseFloat(
-                            cs.getPropertyValue("border-bottom-width")
-                        ),
-                        borderTop : parseFloat(
-                            cs.getPropertyValue("border-top-width")
-                        ),
-                        borderLeft : parseFloat(
-                            cs.getPropertyValue("border-left-width")
-                        ),
-                        borderRight : parseFloat(
-                            cs.getPropertyValue("border-right-width")
-                        )
-                    };
-                    console.log(parentCss);
-                    elList.style.display = "block";
-                    elList.style.borderBottomWidth = `${parentCss.borderBottom}px`;
-                    elList.style.borderTopWidth = `${parentCss.borderTop}px`;
-                    elList.style.borderLeftWidth = `${parentCss.borderLeft}px`;
-                    elList.style.borderRightWidth = `${parentCss.borderRight}px`;
-
-                    elList.style.paddingBottom = `${parentCss.paddingBottom}px`;
-                    elList.style.paddingTop = `${parentCss.paddingTop}px`;
-                    elList.style.paddingLeft = `${parentCss.paddingLeft}px`;
-                    elList.style.paddingRight = `${parentCss.paddingRight}px`;
-
-
+                    updateOptionListSpec(UI.tagsInput, elList);
                     elList.style.top = `${UI.tagsInput.clientHeight}px`;
-                    elList.style.left = `-${parentCss.borderLeft}px`;
-                    elList.style.right = `-${parentCss.borderRight}px`;
-
-                    elList.style.width = '';
-
-                    // show
                     elList.style.display = "block";
                 }
             };
-            const hideOptionList = () => {
-                renderOptionList(UI.optionList, []);
-            };
+
+
 
             UI.textInput.addEventListener("input", (ev) => {
                 resizeTextInput();
@@ -263,10 +252,14 @@
                 },
                 enter: (elOptions, elUserInput) => {
                     const currentSelection =
-                        elOptions.getElementsByClassName("active")[0];
+                        UI.optionList.getElementsByClassName("active")[0];
                     if (currentSelection) {
-                        elUserInput.value = currentSelection.textContent;
-                        renderOptionList(elOptions, []);
+                        const tag = document.createElement("div");
+                        tag.classList.add("tag");
+                        tag.textContent = currentSelection.textContent;
+                        UI.tagsInput.insertBefore(tag, UI.textInput);
+                        UI.textInput.value = "";
+                        renderOptionList(UI.optionList, []);
                     }
                 },
             };
@@ -284,14 +277,36 @@
             document
                 .getElementById("my-control")
                 .addEventListener("click", (ev) => {
-                    if (!ev.target.closest(".tag")) {
+                    const tag = ev.target.closest(".tag");
+                    if (!tag) {
                         UI.textInput.focus();
+                    } else {
+                        // remove clicked tag from input list
+                        UI.tagsInput.removeChild(tag);
                     }
                 });
-            /*
+            /**
+             * Note: when user click outside the control, hide the list of options. To detect this event
+             * we use 'focusout' on the text input element. This causes an issue when the user click on 
+             * an option from the option list. In this case, the text input element does loose the focus
+             * but the option list should NOT be hidden before the clicked option could actually be added
+             * to the control.
+             * To fix this, the option list is hidden only after a hard coded delay, if the timer created has
+             * not been canceled by the 'click' event handler triggered when user clicks on an option.
+             */
+            let optionListHideTimer;
             UI.textInput.addEventListener("focusout", (ev) => {
-                hideOptionList();
-            });*/
+                console.log('focusout');
+                optionListHideTimer = setTimeout(() => hideOptionList(UI.optionList),200);
+            });
+            
+
+            UI.textInput.addEventListener("focusin", (ev) => {
+                if(optionListNotEmpty(UI.optionList)) {
+                    showOptionList(UI.optionList);
+                }
+            });
+
             UI.textInput.addEventListener("keydown", (ev) => {
                 const key = event.keyCode || event.charCode;
 
@@ -310,16 +325,7 @@
                         ev.stopImmediatePropagation();
                         break;
                     case 13: // Enter
-                        const currentSelection =
-                            UI.optionList.getElementsByClassName("active")[0];
-                        if (currentSelection) {
-                            const tag = document.createElement("div");
-                            tag.classList.add("tag");
-                            tag.textContent = currentSelection.textContent;
-                            UI.tagsInput.insertBefore(tag, UI.textInput);
-                            UI.textInput.value = "";
-                            renderOptionList(UI.optionList, []);
-                        }
+                        Key.enter(null, null);
                         break;
                     case 8: // Backspace
                         const tagToRemove = UI.textInput.previousElementSibling;
@@ -329,11 +335,24 @@
                         }
                         break;
                     case 27: // ESC
-                        hideOptionList();
+                        hideOptionList(UI.optionList);
                         break;
                 }
             });
 
+            UI.optionList.addEventListener(
+                "click",
+                (ev) => {
+                    console.log('click');
+                    if(optionListHideTimer) {
+                        clearTimeout(optionListHideTimer);
+                        optionListHideTimer = null;
+                    }
+                    ev.target.classList.add("active");
+                    Key.enter(UI.optionList, UI.userInput);
+                },
+                false
+            );
             // main ////////////////////////////////////////////
 
             // same width for input and option list
