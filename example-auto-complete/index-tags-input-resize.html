@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #root {
+                width: 250px;
+                border: 1px solid grey;
+                padding: 2em;
+                margin: 2em;
+            }
+            body,
+            #my-input,
+            #hide {
+                font: inherit;
+                margin: 0;
+                padding: 0;
+            }
+            .control {
+                position: relative;
+                width: 100%;
+
+                border: 2px solid rgba(236, 236, 236, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 5px;
+                padding: 4px 5px;
+                flex-wrap: wrap;
+                align-content: start;
+            }
+            #my-input {
+                border: none;
+                color: #888;
+                min-width: 10px;
+            }
+            /*
+            #my-input:focus-visible {
+                outline: none;
+            }*/
+            .tag {
+                position: relative;
+                width: auto;
+                height: auto;
+                border-radius: 4px;
+                background-color: rgba(15, 86, 188, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 0px 4px;
+                padding: 2px 4px;
+                flex-wrap: nowrap;
+                color: white;
+            }
+            #txt:focus-visible {
+                outline: none;
+            }
+
+            #hide {
+                position: absolute;
+                height: 0;
+                overflow: hidden;
+                white-space: pre;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Input Resize</p>
+        <p>Illustrate input resizing ✔</p>
+        <div id="root">
+            <div id="my-control" class="control">
+                <div class="tag">Tag 1</div>
+                <div class="tag">Tag 2</div>
+                <div class="tag">Tag 3</div>
+
+                <input id="my-input" type="text" />
+                <span id="hide"></span>
+            </div>
+        </div>
+
+        <script>
+            const Element = {
+                userInput: document.getElementById("my-input"),
+                userInputGhost: document.getElementById("hide"),
+                tagsInput: document.querySelector("#my-control"),
+            };
+
+            resize();
+
+            Element.userInput.addEventListener("input", (ev) => {
+                resize();
+            });
+
+            function resize() {
+                Element.userInputGhost.textContent = Element.userInput.value;
+                Element.userInput.style.width =
+                    Element.userInputGhost.offsetWidth + "px";
+            }
+            // Set focus to text input when user click in the control
+            // but not on a tag.
+            document
+                .getElementById("my-control")
+                .addEventListener("click", (ev) => {
+                    if (! ev.target.closest(".tag")) {
+                        Element.userInput.focus();
+                    }
+                });
+
+            Element.userInput.addEventListener("keydown", (ev) => {
+                const key = event.keyCode || event.charCode;
+
+                switch (key) {
+                    case 13: // Enter
+                        const inputValue = Element.userInput.value.trim();
+                        if (inputValue.length !== 0) {
+                            console.log(inputValue);
+
+                            const tag = document.createElement("div");
+                            tag.classList.add("tag");
+                            tag.textContent = inputValue;
+                            Element.tagsInput.insertBefore(
+                                tag,
+                                Element.userInput
+                            );
+                            Element.userInput.value = "";
+                        }
+                        break;
+                    case 8: // Backspace
+                        const tagToRemove =
+                            Element.userInput.previousElementSibling;
+                        const inputValue2 = Element.userInput.value;
+                        if (inputValue2.length === 0 && tagToRemove) {
+                            Element.tagsInput.removeChild(tagToRemove);
+                        }
+                        break;
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #root {
+                width: 250px;
+                border: 1px solid grey;
+                padding: 2em;
+                margin: 2em;
+            }
+            .tags-input {
+                position: relative;
+                width: 100%;
+
+                border: 2px solid rgba(236, 236, 236, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 5px;
+                padding: 4px 5px;
+                flex-wrap: wrap;
+                align-content: start;
+            }
+            .tags-input > div {
+                background-color: rgb(237, 236, 236);
+                padding:2px;
+            }
+
+            input#my-input {
+                display: inline;
+                border: 0px;
+                width: 100%;
+            }
+            /*
+            input#my-input:focus {
+                outline: none;
+                border: 0px;
+            }*/
+        </style>
+    </head>
+    <body>
+        <p>Tags input control</p>
+        <div id="root">
+            <div class="tags-input">
+                <input type="text" id="my-input" />
+            </div>
+        </div>
+        <hr />
+        <div>
+            <h3>Contenteditable Span element</h3>
+            <span id="cedit" class="input" role="textbox" contenteditable
+                >99</span
+            >
+        </div>
+        <script>
+            const Element = {
+                tagsInput: document.querySelector(".tags-input"),
+                userInput: document.querySelector(".tags-input input"),
+            };
+
+            /**
+             * seems to be working fine
+             * @see https://www.tutorialspoint.com/how-to-adjust-the-width-of-input-field-automatically-using-javascript
+             */
+            function adjustWidth() {
+                var value = Element.userInput.value;
+                var width = value.length * 8 + 8; // 8px per character
+                Element.userInput.style.width = width + "px";
+            }
+
+            Element.userInput.addEventListener("input", adjustWidth);
+
+            function autoSize(input, o) {
+                o || (o = {});
+                o.on || (o.on = "keyup");
+
+                var canvas = document.createElement("canvas");
+                canvas.setAttribute(
+                    "style",
+                    "position: absolute; left: -9999px"
+                );
+                document.body.appendChild(canvas);
+
+                var ctx = canvas.getContext("2d");
+
+                input.addEventListener(o.on, function () {
+                    ctx.font = getComputedStyle(this, null).getPropertyValue(
+                        "font"
+                    );
+                    this.style.width =
+                        ctx.measureText(this.value + "  ").width + "px";
+                });
+            }
+
+            //autoSize(document.getElementById("my-input"));
+
+            // from https://codepen.io/w3core/pen/ExOVJX
+            function resizable(el, factor) {
+                var int = Number(factor) || 7.7;
+                function resize() {
+                    el.style.width = (el.value.length + 1) * int + "px";
+                }
+                var e = "keyup,keypress,focus,blur,change".split(",");
+                for (var i in e) el.addEventListener(e[i], resize, false);
+                resize();
+            }
+            //resizable(document.getElementById("my-input"), 7);
+
+            /**
+             * Use a contenteditable span
+             * Fail : because user can enter key 'ENTER' and there is no way to capture
+             * this keystroke and prevent for adding a <br/>
+             *
+             * @see https://css-tricks.com/auto-growing-inputs-textareas/
+             */
+            document.getElementById("cedit").addEventListener(
+                "keyup",
+                (ev) => {
+                    const key = event.keyCode || event.charCode;
+                    console.log(key);
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    ev.stopImmediatePropagation();
+                },
+                { capture: true }
+            );
+
+            Element.userInput.addEventListener("keyup", (ev) => {
+                const key = event.keyCode || event.charCode;
+
+                switch (key) {
+                    case 13: // Enter
+                        const inputValue = Element.userInput.value.trim();
+                        if (inputValue.length !== 0) {
+                            console.log(inputValue);
+
+                            const tag = document.createElement("div");
+                            tag.textContent = inputValue;
+                            Element.tagsInput.insertBefore(
+                                tag,
+                                Element.tagsInput.lastElementChild
+                            );
+                            Element.userInput.value = "";
+                            adjustWidth();
+                        }
+                        break;
+                    case 8: // Backspace
+                        const tagToRemove =
+                            Element.tagsInput.lastElementChild
+                                .previousElementSibling;
+                        const inputValue2 = Element.userInput.value;
+                        if (inputValue2.length === 0 && tagToRemove) {
+                            Element.tagsInput.removeChild(tagToRemove);
+                        }
+                        break;
+                }
+            });
+        </script>
+    </body>
+</html>
