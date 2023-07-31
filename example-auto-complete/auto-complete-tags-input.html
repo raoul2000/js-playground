@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #root {
+                width: 250px;
+                border: 1px solid grey;
+                padding: 2em;
+                margin: 2em;
+            }
+            body,
+            #my-input,
+            #hide {
+                font: inherit;
+                margin: 0;
+                padding: 0;
+            }
+            .control {
+                position: relative;
+                width: 100%;
+                border: 1px solid rgba(236, 236, 236, 1);
+                padding: 10px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 5px;
+                flex-wrap: wrap;
+                align-content: start;
+            }
+            #my-input {
+                border: none;
+                color: #888;
+                min-width: 10px;
+            }
+
+            #my-input:focus-visible {
+                outline: none;
+            }
+            .tag {
+                position: relative;
+                width: auto;
+                height: auto;
+                border-radius: 4px;
+                background-color: rgba(15, 86, 188, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 0px 4px;
+                padding: 4px 4px;
+                flex-wrap: nowrap;
+                color: white;
+            }
+            #txt:focus-visible {
+                outline: none;
+            }
+
+            #hide {
+                position: absolute;
+                height: 0;
+                overflow: hidden;
+                white-space: pre;
+            }
+            .option-list {
+                display: none;
+                cursor: pointer;
+                border: 1px solid rgba(236, 236, 236, 1);
+                /*width: 100%;*/
+                padding: 5px;
+                margin: 0px;
+                max-height: 5em;
+                overflow: auto;
+                position: absolute;
+                background-color: white;
+            }
+            .option-list .active {
+                background-color: blue;
+                color: white;
+            }
+            .option-list > div {
+                padding: 4px;
+            }
+            .option-list > div:hover {
+                background-color: rgb(235, 235, 235);
+            }
+        </style>
+    </head>
+    <body>
+        <p>Input Resize</p>
+        <p>Illustrate input resizing ✔</p>
+        <div id="root">
+            <div id="my-control" class="control">
+                <div class="tag">Tag 1</div>
+                <div class="tag">Tag 2</div>
+                <div class="tag">Tag 3</div>
+
+                <input id="my-input" type="text" />
+                <span id="hide"></span>
+                <div id="option-list" class="option-list">
+                    <div>Element</div>
+                    <div>Element</div>
+                    <div>Element</div>
+                    <div>Element</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Data /////////////////////////////////////////////////////////////////////
+
+            const optionList = [
+                "apple 1",
+                "apple 2",
+                "apple 3",
+                "apple 4",
+                "apple 5",
+                "apple 6",
+                "apple 7 ",
+                "apple 8",
+                "orange",
+                "banana",
+                "orage",
+                "blue",
+                "apple II",
+            ];
+
+            // Helpers /////////////////////////////////////////////////////////////////////
+
+            const removeAllChildren = (element) => {
+                while (element.firstChild) {
+                    element.removeChild(element.firstChild);
+                }
+            };
+            const normalizeSeed = (seed) =>
+                typeof seed === "string" ? seed.trim() : "";
+
+            // Domain /////////////////////////////////////////////////////////////////////
+
+            const UI = {
+                textInput: document.getElementById("my-input"),
+                textInputGhost: document.getElementById("hide"),
+                tagsInput: document.querySelector("#my-control"),
+                optionList: document.getElementById("option-list"),
+            };
+
+            const selectOptions = (seed, options) =>
+                seed !== ""
+                    ? options.filter((option) => option.startsWith(seed))
+                    : [];
+
+            const resizeTextInput = () => {
+                UI.textInputGhost.textContent = UI.textInput.value;
+                UI.textInput.style.width = UI.textInputGhost.offsetWidth + "px";
+            };
+
+            const renderOptionList = (elList, options) => {
+                elList.style.display = "none";
+                if (options.length !== 0) {
+                    removeAllChildren(elList);
+                    options
+                        .map((option) => {
+                            const elOption = document.createElement("div");
+                            elOption.textContent = option;
+                            return elOption;
+                        })
+                        .forEach((elOption) => {
+                            elList.appendChild(elOption);
+                        });
+
+                    // adjust position
+                    const cs = getComputedStyle(UI.tagsInput);
+                    const parentCss = {
+                        paddingTop: parseFloat(
+                            cs.getPropertyValue("padding-top")
+                        ),
+                        paddingBottom: parseFloat(
+                            cs.getPropertyValue("padding-bottom")
+                        ),
+                        paddingLeft: parseFloat(
+                            cs.getPropertyValue("padding-left")
+                        ),
+                        paddingRight: parseFloat(
+                            cs.getPropertyValue("padding-right")
+                        ),
+                        borderBottom : parseFloat(
+                            cs.getPropertyValue("border-bottom-width")
+                        ),
+                        borderTop : parseFloat(
+                            cs.getPropertyValue("border-top-width")
+                        ),
+                        borderLeft : parseFloat(
+                            cs.getPropertyValue("border-left-width")
+                        ),
+                        borderRight : parseFloat(
+                            cs.getPropertyValue("border-right-width")
+                        )
+                    };
+                    console.log(parentCss);
+                    elList.style.display = "block";
+                    elList.style.borderBottomWidth = `${parentCss.borderBottom}px`;
+                    elList.style.borderTopWidth = `${parentCss.borderTop}px`;
+                    elList.style.borderLeftWidth = `${parentCss.borderLeft}px`;
+                    elList.style.borderRightWidth = `${parentCss.borderRight}px`;
+
+                    elList.style.paddingBottom = `${parentCss.paddingBottom}px`;
+                    elList.style.paddingTop = `${parentCss.paddingTop}px`;
+                    elList.style.paddingLeft = `${parentCss.paddingLeft}px`;
+                    elList.style.paddingRight = `${parentCss.paddingRight}px`;
+
+
+                    elList.style.top = `${UI.tagsInput.clientHeight}px`;
+                    elList.style.left = `-${parentCss.borderLeft}px`;
+                    elList.style.right = `-${parentCss.borderRight}px`;
+
+                    elList.style.width = '';
+
+                    // show
+                    elList.style.display = "block";
+                }
+            };
+            const hideOptionList = () => {
+                renderOptionList(UI.optionList, []);
+            };
+
+            UI.textInput.addEventListener("input", (ev) => {
+                resizeTextInput();
+                renderOptionList(
+                    UI.optionList,
+                    selectOptions(normalizeSeed(ev.target.value), optionList)
+                );
+            });
+
+            const Key = {
+                selectionDown: (elOptions) => {
+                    const currentSelection =
+                        elOptions.getElementsByClassName("active")[0];
+
+                    if (!currentSelection) {
+                        elOptions.firstChild.classList.add("active");
+                    } else if (currentSelection.nextElementSibling) {
+                        currentSelection.nextElementSibling.classList.add(
+                            "active"
+                        );
+                        currentSelection.classList.remove("active");
+                    }
+                },
+                selectionUp: (elOptions) => {
+                    const currentSelection =
+                        elOptions.getElementsByClassName("active")[0];
+                    if (currentSelection?.previousElementSibling) {
+                        currentSelection.previousElementSibling.classList.add(
+                            "active"
+                        );
+                        currentSelection.classList.remove("active");
+                    }
+                },
+                escape: (elOptions) => {
+                    renderOptionList(elOptions, []);
+                },
+                enter: (elOptions, elUserInput) => {
+                    const currentSelection =
+                        elOptions.getElementsByClassName("active")[0];
+                    if (currentSelection) {
+                        elUserInput.value = currentSelection.textContent;
+                        renderOptionList(elOptions, []);
+                    }
+                },
+            };
+            const scrollToSelection = (elOptions) => {
+                const selectedElement =
+                    elOptions.getElementsByClassName("active")[0];
+                elOptions.scrollTop =
+                    selectedElement.offsetTop -
+                    elOptions.clientHeight +
+                    selectedElement.clientHeight;
+            };
+
+            // Set focus to text input when user click in the control
+            // but not on a tag.
+            document
+                .getElementById("my-control")
+                .addEventListener("click", (ev) => {
+                    if (!ev.target.closest(".tag")) {
+                        UI.textInput.focus();
+                    }
+                });
+            /*
+            UI.textInput.addEventListener("focusout", (ev) => {
+                hideOptionList();
+            });*/
+            UI.textInput.addEventListener("keydown", (ev) => {
+                const key = event.keyCode || event.charCode;
+
+                switch (key) {
+                    case 40: // Arrow DOWN
+                        Key.selectionDown(UI.optionList);
+                        scrollToSelection(UI.optionList);
+                        ev.preventDefault();
+                        ev.stopImmediatePropagation();
+                        break;
+
+                    case 38: // Arrow UP
+                        Key.selectionUp(UI.optionList);
+                        scrollToSelection(UI.optionList);
+                        ev.preventDefault();
+                        ev.stopImmediatePropagation();
+                        break;
+                    case 13: // Enter
+                        const currentSelection =
+                            UI.optionList.getElementsByClassName("active")[0];
+                        if (currentSelection) {
+                            const tag = document.createElement("div");
+                            tag.classList.add("tag");
+                            tag.textContent = currentSelection.textContent;
+                            UI.tagsInput.insertBefore(tag, UI.textInput);
+                            UI.textInput.value = "";
+                            renderOptionList(UI.optionList, []);
+                        }
+                        break;
+                    case 8: // Backspace
+                        const tagToRemove = UI.textInput.previousElementSibling;
+                        const inputValue2 = UI.textInput.value;
+                        if (inputValue2.length === 0 && tagToRemove) {
+                            UI.tagsInput.removeChild(tagToRemove);
+                        }
+                        break;
+                    case 27: // ESC
+                        hideOptionList();
+                        break;
+                }
+            });
+
+            // main ////////////////////////////////////////////
+
+            // same width for input and option list
+            UI.optionList.style.width = `${UI.textInput.clientWidth}px`;
+            resizeTextInput();
+        </script>
+    </body>
+</html>

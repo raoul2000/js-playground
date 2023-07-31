@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            :root {
+                --ref-padding-top: 10px;
+                --ref-padding-bottom: 10px;
+                --ref-padding-left: 20px;
+                --ref-padding-right: 20px;
+                
+                --ref-content-height: 18px;
+                --ref-border-left: 20px;
+                --ref-border-right: 20px;
+            }
+
+            * {
+                padding: 0px;
+                margin: 0px;
+                border-width: 0px;
+            }
+
+            body {
+                margin: 2em;
+                border: 2px solid rgb(236, 236, 236);
+                padding: 2px;
+                height: 100vh;
+            }
+            section {
+                margin-top: 5em;;
+            }
+            .parent {
+                border: 20px solid rgb(212, 255, 212);
+                border-left-width: var(--ref-border-left);
+                border-right-width: var(--ref-border-right);
+                padding-top: var(--ref-padding-top);
+                padding-bottom: var(--ref-padding-bottom);
+
+                background-color: grey;
+                position: relative;
+            }
+            .placeholder {
+                width: 100%;
+                height: var(--ref-content-height);
+                background-color: rgba(255, 123, 123, 0.383);
+            }
+            .list {
+                position: absolute;
+                background-color: rgba(255, 255, 0, 0.282);
+                top: 0px;
+                left: 0px;
+            }
+
+            .section-1 .list {
+                border: 10px solid red;
+                padding: 10px;
+                /* padding-top + content-height + padding-bottom (= clientHeight) */
+                top: calc(
+                    var(--ref-padding-top) + var(--ref-content-height) +
+                        var(--ref-padding-bottom)
+                );
+                left: calc(-1 * var(--ref-border-left));
+            }
+
+            /* section 2 ------------------------------- */
+            .section-2 .parent {
+                padding-top: var(--ref-padding-top);
+                padding-bottom: var(--ref-padding-bottom);
+                padding-left: var(--ref-padding-left);
+                padding-right: var(--ref-padding-right);
+            }
+
+            .section-2 .list {
+                border-color: rgba(255, 155, 155, 0.59);
+                padding-top: var(--ref-padding-top);
+                padding-bottom: var(--ref-padding-bottom);
+                padding-left: var(--ref-padding-left);
+                padding-right: var(--ref-padding-right);
+
+                border-left-width: var(--ref-border-left);
+                border-right-width: var(--ref-border-right);
+                top: calc(
+                    var(--ref-padding-top) + var(--ref-content-height) +
+                        var(--ref-padding-bottom)
+                );
+                left: calc(-1 * var(--ref-border-left));
+                right:calc(-1 * var(--ref-border-right));
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Example 1</h1>
+        <div class="parent">
+            <div class="placeholder">&nbsp;</div>
+            <div class="list">
+                <div>item 1</div>
+                <div>item 1</div>
+                <div>item 1</div>
+            </div>
+        </div>
+        <section class="section-1">
+            <h2>Positionning Top</h2>
+            <p>
+                List top position is reference element
+                <b> padding-top + content-height + padding-bottom</b>
+            </p>
+            <div class="parent">
+                <div class="placeholder">&nbsp;</div>
+                <div class="list">
+                    <div>item 1</div>
+                    <div>item 1</div>
+                    <div>item 1</div>
+                </div>
+            </div>
+        </section>
+        <section class="section-2">
+            <h2>Width</h2>
+            <p>
+                List width is aligned to parent
+            </p>
+            <div class="parent">
+                <div class="placeholder">&nbsp;</div>
+                <div class="list">
+                    <div class="placeholder">item 1</div>
+                    <div class="placeholder">item 1</div>
+                    <div class="placeholder">item 1</div>
+                    <div class="placeholder">item 1</div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
