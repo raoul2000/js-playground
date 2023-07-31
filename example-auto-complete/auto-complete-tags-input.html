@@ -137,9 +137,9 @@
             // Domain /////////////////////////////////////////////////////////////////////
 
             const UI = {
+                tagsInput: document.querySelector("#my-control"),
                 textInput: document.getElementById("my-input"),
                 textInputGhost: document.getElementById("hide"),
-                tagsInput: document.querySelector("#my-control"),
                 optionList: document.getElementById("option-list"),
             };
 
@@ -148,9 +148,9 @@
                     ? options.filter((option) => option.startsWith(seed))
                     : [];
 
-            const resizeTextInput = () => {
-                UI.textInputGhost.textContent = UI.textInput.value;
-                UI.textInput.style.width = UI.textInputGhost.offsetWidth + "px";
+            const resizeTextInput = (textInputElement, ghostElement) => {
+                ghostElement.textContent = textInputElement.value;
+                textInputElement.style.width = ghostElement.offsetWidth + "px";
             };
 
             const updateOptionListSpec = (
@@ -186,37 +186,48 @@
                 optionListElement.style.top = `${referenceElement.clientHeight}px`;
             };
 
-            const removeAllOptions = (optionListElement) => removeAllChildren(elList);
-            const hideOptionList = (optionListElement) => optionListElement.style.display = "none";
-            const showOptionList = (optionListElement) => optionListElement.style.display = "block";
-            const countOptions = (optionListElement) => optionListElement.children.length;
-            const optionListNotEmpty = (optionListElement) => countOptions(optionListElement) > 0;
+            const removeAllOptions = (optionListElement) =>
+                removeAllChildren(optionListElement);
+            const hideOptionList = (optionListElement) =>
+                (optionListElement.style.display = "none");
+            const showOptionList = (optionListElement) =>
+                (optionListElement.style.display = "block");
+            const countOptions = (optionListElement) =>
+                optionListElement.children.length;
+            const optionListNotEmpty = (optionListElement) =>
+                countOptions(optionListElement) > 0;
 
-            //const clearOptionList = (optionListElement) 
+            //const clearOptionList = (optionListElement)
+
+            const createOptionElement = (option) => {
+                const elOption = document.createElement("div");
+                elOption.textContent = option;
+                return elOption;
+            };
+            const createTagElement = (option) => {
+                const tag = document.createElement("div");
+                tag.classList.add("tag");
+                tag.textContent = option.textContent;
+                return tag;
+            };
+            const getActiveOption = (optionListElement) =>
+                optionListElement.getElementsByClassName("active")[0];
 
             const renderOptionList = (elList, options) => {
-                elList.style.display = "none";
-                removeAllChildren(elList);
-                if (options.length !== 0) {                    
-                    options
-                        .map((option) => {
-                            const elOption = document.createElement("div");
-                            elOption.textContent = option;
-                            return elOption;
-                        })
-                        .forEach((elOption) => {
-                            elList.appendChild(elOption);
-                        });
+                hideOptionList(elList);
+                removeAllOptions(elList);
+                if (options.length !== 0) {
+                    options.map(createOptionElement).forEach((elOption) => {
+                        elList.appendChild(elOption);
+                    });
                     updateOptionListSpec(UI.tagsInput, elList);
                     elList.style.top = `${UI.tagsInput.clientHeight}px`;
-                    elList.style.display = "block";
+                    showOptionList(elList);
                 }
             };
 
-
-
             UI.textInput.addEventListener("input", (ev) => {
-                resizeTextInput();
+                resizeTextInput(UI.textInput, UI.textInputGhost);
                 renderOptionList(
                     UI.optionList,
                     selectOptions(normalizeSeed(ev.target.value), optionList)
@@ -225,41 +236,33 @@
 
             const Key = {
                 selectionDown: (elOptions) => {
-                    const currentSelection =
-                        elOptions.getElementsByClassName("active")[0];
-
-                    if (!currentSelection) {
+                    const activeOption = getActiveOption(elOptions);
+                    if (!activeOption) {
                         elOptions.firstChild.classList.add("active");
-                    } else if (currentSelection.nextElementSibling) {
-                        currentSelection.nextElementSibling.classList.add(
-                            "active"
-                        );
-                        currentSelection.classList.remove("active");
+                    } else if (activeOption.nextElementSibling) {
+                        activeOption.nextElementSibling.classList.add("active");
+                        activeOption.classList.remove("active");
                     }
                 },
                 selectionUp: (elOptions) => {
-                    const currentSelection =
-                        elOptions.getElementsByClassName("active")[0];
-                    if (currentSelection?.previousElementSibling) {
-                        currentSelection.previousElementSibling.classList.add(
+                    const activeOption = getActiveOption(elOptions);
+                    if (activeOption?.previousElementSibling) {
+                        activeOption.previousElementSibling.classList.add(
                             "active"
                         );
-                        currentSelection.classList.remove("active");
+                        activeOption.classList.remove("active");
                     }
                 },
                 escape: (elOptions) => {
-                    renderOptionList(elOptions, []);
+                    hideOptionList(elOptions);
                 },
-                enter: (elOptions, elUserInput) => {
-                    const currentSelection =
-                        UI.optionList.getElementsByClassName("active")[0];
-                    if (currentSelection) {
-                        const tag = document.createElement("div");
-                        tag.classList.add("tag");
-                        tag.textContent = currentSelection.textContent;
-                        UI.tagsInput.insertBefore(tag, UI.textInput);
-                        UI.textInput.value = "";
-                        renderOptionList(UI.optionList, []);
+                enter: (elOptions, elUserInput, elTagsInput) => {
+                    const activeOption = getActiveOption(elOptions);
+                    if (activeOption) {
+                        const tag = createTagElement(activeOption);
+                        elTagsInput.insertBefore(tag, elUserInput);
+                        elUserInput.value = "";
+                        renderOptionList(elOptions, []);
                     }
                 },
             };
@@ -287,7 +290,7 @@
                 });
             /**
              * Note: when user click outside the control, hide the list of options. To detect this event
-             * we use 'focusout' on the text input element. This causes an issue when the user click on 
+             * we use 'focusout' on the text input element. This causes an issue when the user click on
              * an option from the option list. In this case, the text input element does loose the focus
              * but the option list should NOT be hidden before the clicked option could actually be added
              * to the control.
@@ -296,60 +299,64 @@
              */
             let optionListHideTimer;
             UI.textInput.addEventListener("focusout", (ev) => {
-                console.log('focusout');
-                optionListHideTimer = setTimeout(() => hideOptionList(UI.optionList),200);
+                console.log("focus - out");
+                optionListHideTimer = setTimeout(
+                    () => hideOptionList(UI.optionList),
+                    200
+                );
             });
-            
 
             UI.textInput.addEventListener("focusin", (ev) => {
-                if(optionListNotEmpty(UI.optionList)) {
+                console.log("focus - in");
+                if (optionListNotEmpty(UI.optionList)) {
                     showOptionList(UI.optionList);
                 }
             });
 
-            UI.textInput.addEventListener("keydown", (ev) => {
-                const key = event.keyCode || event.charCode;
+            UI.textInput.addEventListener(
+                "keydown",
+                (ev) => {
+                    const key = event.keyCode || event.charCode;
 
-                switch (key) {
-                    case 40: // Arrow DOWN
-                        Key.selectionDown(UI.optionList);
-                        scrollToSelection(UI.optionList);
-                        ev.preventDefault();
-                        ev.stopImmediatePropagation();
-                        break;
+                    switch (key) {
+                        case 40: // Arrow DOWN
+                            Key.selectionDown(UI.optionList);
+                            scrollToSelection(UI.optionList);
+                            break;
 
-                    case 38: // Arrow UP
-                        Key.selectionUp(UI.optionList);
-                        scrollToSelection(UI.optionList);
-                        ev.preventDefault();
-                        ev.stopImmediatePropagation();
-                        break;
-                    case 13: // Enter
-                        Key.enter(null, null);
-                        break;
-                    case 8: // Backspace
-                        const tagToRemove = UI.textInput.previousElementSibling;
-                        const inputValue2 = UI.textInput.value;
-                        if (inputValue2.length === 0 && tagToRemove) {
-                            UI.tagsInput.removeChild(tagToRemove);
-                        }
-                        break;
-                    case 27: // ESC
-                        hideOptionList(UI.optionList);
-                        break;
-                }
-            });
+                        case 38: // Arrow UP
+                            Key.selectionUp(UI.optionList);
+                            scrollToSelection(UI.optionList);
+                            break;
+                        case 13: // Enter
+                            Key.enter(UI.optionList, UI.textInput, UI.tagsInput);
+                            break;
+                        case 8: // Backspace
+                            const tagToRemove =
+                                UI.textInput.previousElementSibling;
+                            const inputValue2 = UI.textInput.value;
+                            if (inputValue2.length === 0 && tagToRemove) {
+                                UI.tagsInput.removeChild(tagToRemove);
+                            }
+                            break;
+                        case 27: // ESC
+                            hideOptionList(UI.optionList);
+                            break;
+                    }
+                },
+                false
+            );
 
             UI.optionList.addEventListener(
                 "click",
                 (ev) => {
-                    console.log('click');
-                    if(optionListHideTimer) {
+                    console.log("click");
+                    if (optionListHideTimer) {
                         clearTimeout(optionListHideTimer);
                         optionListHideTimer = null;
                     }
                     ev.target.classList.add("active");
-                    Key.enter(UI.optionList, UI.userInput);
+                    Key.enter(UI.optionList, UI.textInput, UI.tagsInput);
                 },
                 false
             );
@@ -357,7 +364,7 @@
 
             // same width for input and option list
             UI.optionList.style.width = `${UI.textInput.clientWidth}px`;
-            resizeTextInput();
+            resizeTextInput(UI.textInput, UI.textInputGhost);
         </script>
     </body>
 </html>
