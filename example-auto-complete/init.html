@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="tags-input.js"></script>
+        <style>
+            section {
+                margin-top: 3em;
+            }
+            .wrapper {
+                width: 250px;
+                border: 1px solid grey;
+                padding: 2em;
+                margin: 2em;
+            }
+
+            /* --- styles for tags input autocomplete control --- */
+
+            .tags-input-autocomplete {
+                position: relative;
+                border: 2px solid rgb(84, 84, 84);
+                padding: 10px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 5px;
+                flex-wrap: wrap;
+                align-content: start;
+            }
+            .tags-input-autocomplete > input {
+                border: none;
+                min-width: 10px;
+            }
+            .tags-input-autocomplete > input:focus-visible {
+                outline: none;
+            }
+
+            .tags-input-autocomplete > .tag {
+                position: relative;
+                width: auto;
+                height: auto;
+                border-radius: 4px;
+                background-color: rgba(15, 86, 188, 1);
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: start;
+                gap: 0px 4px;
+                padding: 4px 4px;
+                flex-wrap: nowrap;
+                color: white;
+                cursor: pointer;
+            }
+
+            .tags-input-autocomplete > .option-list {
+                display: none;
+                cursor: pointer;
+                border: 4px solid rgb(84, 84, 84);
+                padding: 0px;
+                margin: 0px;
+                max-height: 5em;
+                overflow: auto;
+                position: absolute;
+                background-color: white;
+            }
+
+            .tags-input-autocomplete > .option-list > div {
+                padding: 2px 5px;
+            }
+
+            .tags-input-autocomplete > .option-list > div:hover {
+                background-color: rgb(235, 235, 235);
+            }
+            
+            .tags-input-autocomplete > .option-list > div.active {
+                background-color: rgb(99, 99, 244);
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <h1>control 1</h1>
+            <div class="wrapper">
+                <input id="root1" type="text" />
+            </div>
+        </section>
+        <section>
+            <h1>control 2</h1>
+            <div class="wrapper" style="width:300px">
+                <input id="root2" type="text" />
+            </div>
+        </section>
+
+        <script>
+            const ctrl1 = tagsInputAutoComplete.init({
+                rootElementId: "root1",
+                options: ["apple 1", "apple 2", "apple 3", "apple 4", "banana"],
+            });
+            const ctrl2 = tagsInputAutoComplete.init({
+                rootElementId: "root2",
+                options: [
+                    "banana 1",
+                    "banana 2",
+                    "banana 3",
+                    "banana 4",
+                    "apple",
+                ],
+            });
+            ctrl1.getValues();
+        </script>
+    </body>
+</html>

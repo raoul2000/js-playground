@@ -21,7 +21,7 @@
             .control {
                 position: relative;
                 width: 100%;
-                border: 1px solid rgba(236, 236, 236, 1);
+                border: 2px solid rgb(84, 84, 84);
                 padding: 10px;
                 display: flex;
                 flex-direction: row;
@@ -69,21 +69,22 @@
             .option-list {
                 display: none;
                 cursor: pointer;
-                border: 1px solid rgba(236, 236, 236, 1);
-                /*width: 100%;*/
+                border: 4px solid rgb(84, 84, 84);
+                /*border-top-color: white;*/
                 padding: 0px;
                 margin: 0px;
                 max-height: 5em;
                 overflow: auto;
                 position: absolute;
                 background-color: white;
+
             }
             .option-list .active {
                 background-color: rgb(99, 99, 244);
                 color: white;
             }
             .option-list > div {
-                padding: 0px;
+                padding: 2px 5px;
             }
             .option-list > div:hover {
                 background-color: rgb(235, 235, 235);
@@ -153,37 +154,34 @@
                 textInputElement.style.width = ghostElement.offsetWidth + "px";
             };
 
-            const updateOptionListSpec = (
-                referenceElement,
-                optionListElement
-            ) => {
-                const cs = getComputedStyle(referenceElement);
+            const updateOptionListSpec = (sourceElement, targetElement) => {
+                const cs = getComputedStyle(sourceElement);
 
-                optionListElement.style.width = "";
-                optionListElement.style.borderBottomWidth = cs.getPropertyValue(
+                targetElement.style.width = "";
+                targetElement.style.borderBottomWidth = cs.getPropertyValue(
                     "border-bottom-width"
                 );
-                optionListElement.style.borderTopWidth =
+                targetElement.style.borderTopWidth =
                     cs.getPropertyValue("border-top-width");
-                optionListElement.style.borderLeftWidth =
+                targetElement.style.borderLeftWidth =
                     cs.getPropertyValue("border-left-width");
-                optionListElement.style.borderRightWidth =
+                targetElement.style.borderRightWidth =
                     cs.getPropertyValue("border-right-width");
-                optionListElement.style.paddingBottom =
+                targetElement.style.paddingBottom =
                     cs.getPropertyValue("padding-bottom");
-                optionListElement.style.paddingTop =
+                targetElement.style.paddingTop =
                     cs.getPropertyValue("padding-top");
-                optionListElement.style.paddingLeft =
+                targetElement.style.paddingLeft =
                     cs.getPropertyValue("padding-left");
-                optionListElement.style.paddingRight =
+                targetElement.style.paddingRight =
                     cs.getPropertyValue("padding-right");
-                optionListElement.style.left = `-${cs.getPropertyValue(
+                targetElement.style.left = `-${cs.getPropertyValue(
                     "border-left-width"
                 )}`;
-                optionListElement.style.right = `-${cs.getPropertyValue(
+                targetElement.style.right = `-${cs.getPropertyValue(
                     "border-right-width"
                 )}`;
-                optionListElement.style.top = `${referenceElement.clientHeight}px`;
+                targetElement.style.top = `${sourceElement.clientHeight}px`;
             };
 
             const removeAllOptions = (optionListElement) =>
@@ -200,7 +198,7 @@
             const resetOptionList = (optionListElement) => {
                 hideOptionList(optionListElement);
                 removeAllOptions(optionListElement);
-            }
+            };
 
             const createOptionLabel = (option) => option;
             const createOptionElement = (option) => {
@@ -266,7 +264,7 @@
 
             const scrollToSelection = (elOptions) => {
                 const activeOptionElement = getActiveOptionElement(elOptions);
-                    
+
                 elOptions.scrollTop =
                     activeOptionElement.offsetTop -
                     elOptions.clientHeight +
@@ -304,6 +302,7 @@
              * not been canceled by the 'click' event handler triggered when user clicks on an option.
              */
             let optionListHideTimer;
+            /*
             UI.textInput.addEventListener("focusout", (ev) => {
                 console.log("focus - out");
                 optionListHideTimer = setTimeout(
@@ -311,6 +310,7 @@
                     200
                 );
             });
+            */
 
             UI.textInput.addEventListener("focusin", (ev) => {
                 console.log("focus - in");
