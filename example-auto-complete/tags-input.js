@@ -43,8 +43,7 @@ window.tagsInputAutoComplete = (function () {
         targetElement.style.top = `${sourceElement.clientHeight}px`;
     };
 
-    const removeAllOptions = (optionListElement) =>
-        removeAllChildren(optionListElement);
+    const removeAllOptions = removeAllChildren;
     const hideOptionList = (optionListElement) =>
         (optionListElement.style.display = "none");
     const showOptionList = (optionListElement) =>
@@ -92,7 +91,7 @@ window.tagsInputAutoComplete = (function () {
         elTagsInput,
         elTextInput,
         readOptionLabel
-    ) => {
+    ) =>
         options
             .map((option) =>
                 createTagElement(
@@ -103,7 +102,6 @@ window.tagsInputAutoComplete = (function () {
             .forEach((tagElement) =>
                 elTagsInput.insertBefore(tagElement, elTextInput)
             );
-    };
 
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
@@ -114,8 +112,7 @@ window.tagsInputAutoComplete = (function () {
         elTagsInput,
         createOptionElement
     ) => {
-        hideOptionList(elList);
-        removeAllOptions(elList);
+        resetOptionList(elList);
         if (options.length !== 0) {
             options.map(createOptionElement).forEach((elOption) => {
                 elList.appendChild(elOption);
@@ -151,25 +148,28 @@ window.tagsInputAutoComplete = (function () {
         enter: (elOptions, elTextInput, elTagsInput, optionComparator) => {
             const activeOption = getActiveOptionElement(elOptions);
             if (activeOption) {
-                // duplicate ?
-
-                const currentValues = getSelectedTagValues(elTagsInput);
-                if (currentValues.length !== 0) {
-                    const candidateOption = JSON.parse(
-                        activeOption.dataset.value
-                    );
-                    const duplicateCount = currentValues.filter(
-                        (optVal) =>
-                            optionComparator(optVal, candidateOption) === 0
-                    ).length;
-                    if (duplicateCount !== 0) {
-                        console.log("duplicate");
-                        resetOptionList(elOptions);
-                        return;
+                if (optionComparator) {
+                    // duplicate not allowed
+                    const currentValues = getSelectedTagValues(elTagsInput);
+                    if (currentValues.length !== 0) {
+                        const candidateOption = JSON.parse(
+                            activeOption.dataset.value
+                        );
+                        const duplicateCount = currentValues.filter(
+                            (optVal) =>
+                                optionComparator(optVal, candidateOption) === 0
+                        ).length;
+                        if (duplicateCount !== 0) {
+                            console.log("duplicate");
+                            resetOptionList(elOptions);
+                            return;
+                        }
                     }
                 }
-                const tag = createTagElementFromOptionElement(activeOption);
-                elTagsInput.insertBefore(tag, elTextInput);
+                elTagsInput.insertBefore(
+                    createTagElementFromOptionElement(activeOption),
+                    elTextInput
+                );
                 elTextInput.value = "";
                 resetOptionList(elOptions);
             }
@@ -275,7 +275,12 @@ window.tagsInputAutoComplete = (function () {
                     optionListHideTimer = null;
                 }
                 ev.target.classList.add("active");
-                Key.enter(optionList, textInput, tagsInput);
+                Key.enter(
+                    optionList,
+                    textInput,
+                    tagsInput,
+                    ctx.optionComparator
+                );
             },
             false
         );
@@ -393,11 +398,10 @@ window.tagsInputAutoComplete = (function () {
             optionLabel,
             optionFilter,
             allowDuplicate,
-            optionComparator
+            optionComparator,
         }
     ) => {
-
-        // Process configuration 
+        // Process configuration
 
         let rootElement;
         if (typeof container === "string") {
@@ -419,7 +423,7 @@ window.tagsInputAutoComplete = (function () {
             defaultOptionLabel,
             "optionLabel must be a function"
         );
-        let optComparator = nullComparator;
+        let optComparator;
         if (allowDuplicate === false) {
             optComparator = validateFunctionOrDefault(
                 optionComparator,

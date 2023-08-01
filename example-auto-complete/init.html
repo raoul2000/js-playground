@@ -44,12 +44,21 @@
 
         <script>
             const ctrl1 = tagsInputAutoComplete.init("root1", {
-                options: ["apple 1", "apple 2", "apple 3", "apple 4", "banana"],
+                options: [
+                    "apple 1",
+                    "apple 2",
+                    "apple 3",
+                    "apple 4",
+                    "banana",
+                    "banana but in a very long label with plenty of characters",
+                    "sport/football/national",
+                ],
                 initialOptions: ["boom", "bam"],
                 optionFilter: (txt, option) =>
                     txt.trim().length !== 0 && option.startsWith(txt),
                 optionLabel: (option) => option.toUpperCase(),
-                allowDuplicate: false
+                allowDuplicate: false,
+                optionComparator: (a, b) => (a === b ? 0 : 1),
             });
             const ctrl2 = tagsInputAutoComplete.init(
                 document.getElementById("root2"),
@@ -79,7 +88,6 @@
                     { name: "bil", age: 24 },
                     { name: "billy", age: 25 },
                     { name: "tom", age: 26 },
-
                 ],
                 initialOptions: [{ name: "bob", age: 23 }],
                 optionFilter: (txt, option) =>

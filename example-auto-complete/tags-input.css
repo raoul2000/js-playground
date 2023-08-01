@@ -1,8 +1,12 @@
 .tags-input-autocomplete {
-    /* scoped var definition */
+    /* scoped CSS var definition */
+
     --border: 1px solid #e0e0e0;
+    --tag-border: 1px solid #e9e9e9;
+    --tag-border-radius: 2px;
 
     /* CSS styles */
+
     position: relative;
     border: var(--border);
     padding: 4px;
@@ -19,6 +23,11 @@
 .tags-input-autocomplete > input {
     border: none;
     min-width: 10px;
+
+    /* height should be same height than tag to avoid
+     * resiving when last tag is removed */
+    
+    height: 20px;
 }
 
 .tags-input-autocomplete > input:focus-visible {
@@ -31,9 +40,9 @@
     height: auto;
 
     background-color: #f4f4f4;
-    border: 1px solid #e9e9e9;
+    border: var(--tag-border);
     padding: 1px 4px 1px 4px;
-    border-radius: 2px;
+    border-radius: var(--tag-border-radius);
     cursor: pointer;
 
     display: flex;
