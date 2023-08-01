@@ -1,0 +1,78 @@
+.tags-input-autocomplete {
+    /* scoped var definition */
+    --border: 1px solid #e0e0e0;
+
+    /* CSS styles */
+    position: relative;
+    border: var(--border);
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-content: start;
+    font-size: small;
+}
+
+.tags-input-autocomplete > input {
+    border: none;
+    min-width: 10px;
+}
+
+.tags-input-autocomplete > input:focus-visible {
+    outline: none;
+}
+
+.tags-input-autocomplete > .tag {
+    position: relative;
+    width: auto;
+    height: auto;
+
+    background-color: #f4f4f4;
+    border: 1px solid #e9e9e9;
+    padding: 1px 4px 1px 4px;
+    border-radius: 2px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 0px 4px;
+    flex-wrap: nowrap;
+}
+
+.tags-input-autocomplete > .tag:hover {
+    background-color: #0f56bc;
+    border-color: #0f56bc;
+    color: white;
+}
+
+.tags-input-autocomplete > .option-list {
+    display: none;
+    cursor: pointer;
+    border: var(--border);
+    padding: 0px;
+    margin: 0px;
+    max-height: 10em;
+    overflow: auto;
+    position: absolute;
+    background-color: white;
+    z-index: 9999;
+}
+
+.tags-input-autocomplete > .option-list > div {
+    padding: 2px 5px;
+}
+
+.tags-input-autocomplete > .option-list > div:hover {
+    background-color: rgb(235, 235, 235);
+}
+
+.tags-input-autocomplete > .option-list > div.active {
+    background-color: #0f56bc;
+    border-color: #0f56bc;
+    color: white;
+}

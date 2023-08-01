@@ -1,4 +1,4 @@
-const tagsInputAutoComplete = (function () {
+window.tagsInputAutoComplete = (function () {
     // Helpers /////////////////////////////////////////////////////////////////////
 
     const removeAllChildren = (element) => {
@@ -67,13 +67,35 @@ const tagsInputAutoComplete = (function () {
         return elOption;
     };
 
-    const createTagElement = (optionElement) => {
+    const createTagElement = (textContent, value) => {
         const tag = document.createElement("div");
         tag.classList.add("tag");
-        tag.textContent = optionElement.textContent;
-        tag.dataset.value = optionElement.dataset.value;
+        tag.textContent = textContent;
+        if (value) {
+            tag.dataset.value = value;
+        }
         return tag;
     };
+
+    const createTagElementFromOptionElement = (optionElement) =>
+        createTagElement(
+            optionElement.textContent,
+            optionElement.dataset.value
+        );
+
+    const getSelectedTagValues = (elTagsInput) =>
+        Array.from(elTagsInput.querySelectorAll(".tag")).map(
+            (tag) => tag.dataset.value
+        );
+
+    const setSelectedTags = (options, elTagsInput, elTextInput) => {
+        options
+            .map((option) => createTagElement(option, option))
+            .forEach((tagElement) =>
+                elTagsInput.insertBefore(tagElement, elTextInput)
+            );
+    };
+
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
@@ -113,7 +135,7 @@ const tagsInputAutoComplete = (function () {
         enter: (elOptions, elUserInput, elTagsInput) => {
             const activeOption = getActiveOptionElement(elOptions);
             if (activeOption) {
-                const tag = createTagElement(activeOption);
+                const tag = createTagElementFromOptionElement(activeOption);
                 elTagsInput.insertBefore(tag, elUserInput);
                 elUserInput.value = "";
                 resetOptionList(elOptions);
@@ -237,8 +259,22 @@ const tagsInputAutoComplete = (function () {
 
     // init ////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Initialize the control.
+     *
+     * Object *config* has following properties:
+     * 
+     * - `root` : (string | Element) when string Id of the DOM element that will hold the tas input control. When Object, 
+     * the DOM element itself
+     * - `options` : (Array<string>) - list of available options
+     * - `initialOptions` : (Array<string>) - list of  options initially selected
+     *
+     *
+     * @param {object} config configuration object
+     * @returns object
+     */
     const init = (config) => {
-        const { rootElementId } = config;
+        const { root  } = config;
 
         /**
          * Create the DOM elements required to handle the control
@@ -272,14 +308,27 @@ const tagsInputAutoComplete = (function () {
             };
         };
 
-        const UI = createControl(document.getElementById(rootElementId));
+        let rootElement;
+        if(typeof root === 'string') {
+            rootElement = document.getElementById(root)
+        } else if(typeof root === 'object') {
+            rootElement = root;
+        }
+        if(! rootElement) {
+            throw new Error('failed to find root element');
+        }
+
+        const UI = createControl(rootElement);
 
         registerEventHandlers(UI, (searchtext) =>
             config.options.filter((option) => option.startsWith(searchtext))
         );
-
+        if (Array.isArray(config.initialOptions)) {
+            setSelectedTags(config.initialOptions, UI.tagsInput, UI.textInput);
+        }
+        resizeTextInput(UI.textInput, UI.textInputGhost);
         return Object.freeze({
-            getValues: () => [1, 2, 3],
+            getValues: () => getSelectedTagValues(UI.tagsInput),
         });
     };
 
