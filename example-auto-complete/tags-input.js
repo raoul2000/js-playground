@@ -137,6 +137,7 @@ window.tagsInputAutoComplete = (function () {
                 activeOption.nextElementSibling.classList.add("active");
                 activeOption.classList.remove("active");
             }
+            scrollToSelection(elOptions);
         },
         selectionUp: (elOptions) => {
             const activeOption = getActiveOptionElement(elOptions);
@@ -144,15 +145,39 @@ window.tagsInputAutoComplete = (function () {
                 activeOption.previousElementSibling.classList.add("active");
                 activeOption.classList.remove("active");
             }
+            scrollToSelection(elOptions);
         },
         escape: hideOptionList,
-        enter: (elOptions, elUserInput, elTagsInput) => {
+        enter: (elOptions, elTextInput, elTagsInput, optionComparator) => {
             const activeOption = getActiveOptionElement(elOptions);
             if (activeOption) {
+                // duplicate ?
+
+                const currentValues = getSelectedTagValues(elTagsInput);
+                if (currentValues.length !== 0) {
+                    const candidateOption = JSON.parse(
+                        activeOption.dataset.value
+                    );
+                    const duplicateCount = currentValues.filter(
+                        (optVal) =>
+                            optionComparator(optVal, candidateOption) === 0
+                    ).length;
+                    if (duplicateCount !== 0) {
+                        console.log("duplicate");
+                        resetOptionList(elOptions);
+                        return;
+                    }
+                }
                 const tag = createTagElementFromOptionElement(activeOption);
-                elTagsInput.insertBefore(tag, elUserInput);
-                elUserInput.value = "";
+                elTagsInput.insertBefore(tag, elTextInput);
+                elTextInput.value = "";
                 resetOptionList(elOptions);
+            }
+        },
+        backspace: (elTextInput, elTagsInput) => {
+            const tagToRemove = elTextInput.previousElementSibling;
+            if (elTextInput.value.length === 0 && tagToRemove) {
+                elTagsInput.removeChild(tagToRemove);
             }
         },
     };
@@ -199,22 +224,20 @@ window.tagsInputAutoComplete = (function () {
                 switch (key) {
                     case 40: // Arrow DOWN
                         Key.selectionDown(optionList);
-                        scrollToSelection(optionList);
                         break;
-
                     case 38: // Arrow UP
                         Key.selectionUp(optionList);
-                        scrollToSelection(optionList);
                         break;
                     case 13: // Enter
-                        Key.enter(optionList, textInput, tagsInput);
+                        Key.enter(
+                            optionList,
+                            textInput,
+                            tagsInput,
+                            ctx.optionComparator
+                        );
                         break;
                     case 8: // Backspace
-                        const tagToRemove = textInput.previousElementSibling;
-                        const inputValue2 = textInput.value;
-                        if (inputValue2.length === 0 && tagToRemove) {
-                            tagsInput.removeChild(tagToRemove);
-                        }
+                        Key.backspace(textInput, tagsInput);
                         break;
                     case 27: // ESC
                         hideOptionList(optionList);
@@ -259,7 +282,7 @@ window.tagsInputAutoComplete = (function () {
 
         /* tags input  ---------------------------- */
 
-        // Set focus to text input when user click in the control
+        // Set focus to text input when user clicks in the control
         // but not on a tag.
         tagsInput.addEventListener("click", (ev) => {
             const tag = ev.target.closest(".tag");
@@ -289,6 +312,8 @@ window.tagsInputAutoComplete = (function () {
 
         const textInput = document.createElement("input");
         textInput.setAttribute("type", "text");
+
+        // testInput ghost element is crucial to correctly handle text input auto-grow
 
         const textInputGhost = document.createElement("span");
         textInputGhost.style.margin = "0px";
@@ -337,6 +362,12 @@ window.tagsInputAutoComplete = (function () {
             return def;
         }
     };
+    const defaultOptionComparator = (a, b) => {
+        if (a === b) return 0;
+        if (a < b) return -1;
+        return 1;
+    };
+    const nullComparator = (a, b) => 1;
     /**
      * Initialize the control.
      *
@@ -347,6 +378,8 @@ window.tagsInputAutoComplete = (function () {
      * - `optionLabel` : (optional) - function that returns the string label given an option
      * - `optionFilter` : (optional) - options filter function used to display options given a string entered by the user
      * in the input text element. Signature is (string, stinrg | object) => boolean
+     * - `allowDuplicate` : (boolean - default = "*true*")
+     * - `optionComparator`: (optional) - custom option comparator function (see https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      *
      * @param {object | string } config when string Id of the DOM element that will hold the tas input control. When Object, the DOM element itself
      * @param {object} config configuration object
@@ -354,8 +387,18 @@ window.tagsInputAutoComplete = (function () {
      */
     const init = (
         container,
-        { options, initialOptions, optionLabel, optionFilter }
+        {
+            options,
+            initialOptions,
+            optionLabel,
+            optionFilter,
+            allowDuplicate,
+            optionComparator
+        }
     ) => {
+
+        // Process configuration 
+
         let rootElement;
         if (typeof container === "string") {
             rootElement = document.getElementById(container);
@@ -365,7 +408,7 @@ window.tagsInputAutoComplete = (function () {
         if (!rootElement) {
             throw new Error("failed to find root element");
         }
-        
+
         const optFilter = validateFunctionOrDefault(
             optionFilter,
             defaultOptionFilter,
@@ -376,14 +419,26 @@ window.tagsInputAutoComplete = (function () {
             defaultOptionLabel,
             "optionLabel must be a function"
         );
+        let optComparator = nullComparator;
+        if (allowDuplicate === false) {
+            optComparator = validateFunctionOrDefault(
+                optionComparator,
+                defaultOptionComparator,
+                "optionComparator must be a function"
+            );
+        }
 
         // create the Context
+
         const ctx = {
             optionLabel: optLabel,
             optionFilter: (txt) =>
                 options.filter((option) => optFilter(txt, option)),
+            optionComparator: optComparator,
         };
         ctx.createOptionElement = newOptionElementCreator(ctx.optionLabel);
+
+        // update the DOM : inject control elements
 
         const UI = createControl(rootElement);
         registerEventHandlers(UI, ctx);

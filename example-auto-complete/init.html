@@ -49,6 +49,7 @@
                 optionFilter: (txt, option) =>
                     txt.trim().length !== 0 && option.startsWith(txt),
                 optionLabel: (option) => option.toUpperCase(),
+                allowDuplicate: false
             });
             const ctrl2 = tagsInputAutoComplete.init(
                 document.getElementById("root2"),
@@ -59,6 +60,16 @@
                         "banana 3",
                         "banana 4",
                         "apple",
+                        "banana 5",
+                        "banana 6",
+                        "banana 7",
+                        "banana 8",
+                        "apple 2",
+                        "banana 9",
+                        "banana 10",
+                        "banana 11",
+                        "banana 12",
+                        "apple 3",
                     ],
                 }
             );
@@ -68,6 +79,7 @@
                     { name: "bil", age: 24 },
                     { name: "billy", age: 25 },
                     { name: "tom", age: 26 },
+
                 ],
                 initialOptions: [{ name: "bob", age: 23 }],
                 optionFilter: (txt, option) =>
