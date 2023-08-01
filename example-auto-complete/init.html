@@ -19,9 +19,8 @@
                 padding: 2em;
                 margin: 2em;
             }
-
         </style>
-        <link rel="stylesheet" href="tags-input.css">
+        <link rel="stylesheet" href="tags-input.css" />
     </head>
     <body>
         <section>
@@ -36,24 +35,45 @@
                 <input id="root2" type="text" />
             </div>
         </section>
+        <section>
+            <h1>control 3</h1>
+            <div class="wrapper" style="width: 300px">
+                <input id="root3" type="text" />
+            </div>
+        </section>
 
         <script>
-            const ctrl1 = tagsInputAutoComplete.init({
-                rootElementId: "root1",
+            const ctrl1 = tagsInputAutoComplete.init("root1", {
                 options: ["apple 1", "apple 2", "apple 3", "apple 4", "banana"],
                 initialOptions: ["boom", "bam"],
+                optionFilter: (txt, option) =>
+                    txt.trim().length !== 0 && option.startsWith(txt),
+                optionLabel: (option) => option.toUpperCase(),
             });
-            const ctrl2 = tagsInputAutoComplete.init({
-                rootElementId: document.getElementById("root2"),
+            const ctrl2 = tagsInputAutoComplete.init(
+                document.getElementById("root2"),
+                {
+                    options: [
+                        "banana 1",
+                        "banana 2",
+                        "banana 3",
+                        "banana 4",
+                        "apple",
+                    ],
+                }
+            );
+            const ctrl3 = tagsInputAutoComplete.init("root3", {
                 options: [
-                    "banana 1",
-                    "banana 2",
-                    "banana 3",
-                    "banana 4",
-                    "apple",
+                    { name: "bob", age: 23 },
+                    { name: "bil", age: 24 },
+                    { name: "billy", age: 25 },
+                    { name: "tom", age: 26 },
                 ],
+                initialOptions: [{ name: "bob", age: 23 }],
+                optionFilter: (txt, option) =>
+                    txt.trim().length > 2 && option.name.startsWith(txt),
+                optionLabel: (option) => `${option.name} age ${option.age}`,
             });
-            ctrl1.getValues();
         </script>
     </body>
 </html>

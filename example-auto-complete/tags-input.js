@@ -59,20 +59,19 @@ window.tagsInputAutoComplete = (function () {
         removeAllOptions(optionListElement);
     };
 
-    const createOptionLabel = (option) => option;
-    const createOptionElement = (option) => {
+    const newOptionElementCreator = (readOptionLabel) => (option) => {
         const elOption = document.createElement("div");
-        elOption.textContent = createOptionLabel(option);
-        elOption.dataset.value = option;
+        elOption.textContent = readOptionLabel(option);
+        elOption.dataset.value = JSON.stringify(option);
         return elOption;
     };
 
-    const createTagElement = (textContent, value) => {
+    const createTagElement = (textContent, dataSetValue) => {
         const tag = document.createElement("div");
         tag.classList.add("tag");
         tag.textContent = textContent;
-        if (value) {
-            tag.dataset.value = value;
+        if (dataSetValue) {
+            tag.dataset.value = dataSetValue;
         }
         return tag;
     };
@@ -84,13 +83,23 @@ window.tagsInputAutoComplete = (function () {
         );
 
     const getSelectedTagValues = (elTagsInput) =>
-        Array.from(elTagsInput.querySelectorAll(".tag")).map(
-            (tag) => tag.dataset.value
+        Array.from(elTagsInput.querySelectorAll(".tag")).map((tag) =>
+            JSON.parse(tag.dataset.value)
         );
 
-    const setSelectedTags = (options, elTagsInput, elTextInput) => {
+    const setSelectedTags = (
+        options,
+        elTagsInput,
+        elTextInput,
+        readOptionLabel
+    ) => {
         options
-            .map((option) => createTagElement(option, option))
+            .map((option) =>
+                createTagElement(
+                    readOptionLabel(option),
+                    JSON.stringify(option)
+                )
+            )
             .forEach((tagElement) =>
                 elTagsInput.insertBefore(tagElement, elTextInput)
             );
@@ -99,7 +108,12 @@ window.tagsInputAutoComplete = (function () {
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
-    const renderOptionList = (elList, options, elTagsInput) => {
+    const renderOptionList = (
+        elList,
+        options,
+        elTagsInput,
+        createOptionElement
+    ) => {
         hideOptionList(elList);
         removeAllOptions(elList);
         if (options.length !== 0) {
@@ -157,15 +171,16 @@ window.tagsInputAutoComplete = (function () {
 
     const registerEventHandlers = (
         { tagsInput, textInput, textInputGhost, optionList },
-        filterOptionsOn
+        ctx
     ) => {
         /* input text ---------------------------- */
         textInput.addEventListener("input", (ev) => {
             resizeTextInput(textInput, textInputGhost);
             renderOptionList(
                 optionList,
-                filterOptionsOn(normalizeSeed(ev.target.value)),
-                tagsInput
+                ctx.optionFilter(normalizeSeed(ev.target.value)),
+                tagsInput,
+                ctx.createOptionElement
             );
         });
 
@@ -257,76 +272,135 @@ window.tagsInputAutoComplete = (function () {
         });
     };
 
-    // init ////////////////////////////////////////////////////////////////////////
+    // Plugin  ////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Create the DOM elements required to handle the control.
+     *
+     * Returns an object containg references to all main DOM elements used by this control
+     *
+     * @param {Element} rootEl the element where the tags input will be created
+     * @returns object
+     */
+    const createControl = (rootEl) => {
+        const tagsInput = document.createElement("div");
+        tagsInput.classList.add("tags-input-autocomplete");
+        rootEl.replaceWith(tagsInput);
+
+        const textInput = document.createElement("input");
+        textInput.setAttribute("type", "text");
+
+        const textInputGhost = document.createElement("span");
+        textInputGhost.style.margin = "0px";
+        textInputGhost.style.padding = "0px";
+        textInputGhost.style.height = "0px";
+        textInputGhost.style.position = "absolute";
+        textInputGhost.style.whiteSpace = "pre";
+        textInputGhost.style.overflow = "hidden";
+
+        const optionList = document.createElement("div");
+        optionList.classList.add("option-list");
+
+        tagsInput.appendChild(textInput);
+        tagsInput.appendChild(textInputGhost);
+        tagsInput.appendChild(optionList);
+
+        // after tagsInput has been inserted into the DOM, align styles from textInput into textInputGhost
+        // This is touchy, because ghost element width is used to update text input size (auto grow), so they
+        // should have same rendering in terms of width.
+
+        const textInputCS = getComputedStyle(textInput);
+        textInputGhost.style.padding = textInputCS.getPropertyValue("padding");
+        textInputGhost.style.fontSize =
+            textInputCS.getPropertyValue("font-size");
+        textInputGhost.style.fontFamily =
+            textInputCS.getPropertyValue("font-family");
+
+        return {
+            tagsInput,
+            textInput,
+            textInputGhost,
+            optionList,
+        };
+    };
+    const identity = (v) => v;
+    const defaultOptionFilter = (txt, option) => option.startsWith(txt);
+    const defaultOptionLabel = identity;
+    const validateFunctionOrDefault = (f, def, errorMsg) => {
+        if (f) {
+            if (typeof f === "function") {
+                return f;
+            } else {
+                throw new Error(errorMsg || "invalid function type");
+            }
+        } else {
+            return def;
+        }
+    };
     /**
      * Initialize the control.
      *
      * Object *config* has following properties:
-     * 
-     * - `root` : (string | Element) when string Id of the DOM element that will hold the tas input control. When Object, 
-     * the DOM element itself
-     * - `options` : (Array<string>) - list of available options
-     * - `initialOptions` : (Array<string>) - list of  options initially selected
      *
+     * - `options` : (Array<string | object>) - list of available options
+     * - `initialOptions` : (Array<string | object>) - list of  options initially selected
+     * - `optionLabel` : (optional) - function that returns the string label given an option
+     * - `optionFilter` : (optional) - options filter function used to display options given a string entered by the user
+     * in the input text element. Signature is (string, stinrg | object) => boolean
      *
+     * @param {object | string } config when string Id of the DOM element that will hold the tas input control. When Object, the DOM element itself
      * @param {object} config configuration object
      * @returns object
      */
-    const init = (config) => {
-        const { root  } = config;
-
-        /**
-         * Create the DOM elements required to handle the control
-         */
-        const createControl = (rootEl) => {
-            const tagsInput = document.createElement("div");
-            tagsInput.classList.add("tags-input-autocomplete");
-            rootEl.replaceWith(tagsInput);
-
-            const textInput = document.createElement("input");
-            textInput.setAttribute("type", "text");
-            const textInputGhost = document.createElement("span");
-            textInputGhost.style.margin = "0px";
-            textInputGhost.style.padding = "0px";
-            textInputGhost.style.height = "0px";
-            textInputGhost.style.position = "absolute";
-            textInputGhost.style.overflow = "hidden";
-
-            const optionList = document.createElement("div");
-            optionList.classList.add("option-list");
-
-            tagsInput.appendChild(textInput);
-            tagsInput.appendChild(textInputGhost);
-            tagsInput.appendChild(optionList);
-
-            return {
-                tagsInput,
-                textInput,
-                textInputGhost,
-                optionList,
-            };
-        };
-
+    const init = (
+        container,
+        { options, initialOptions, optionLabel, optionFilter }
+    ) => {
         let rootElement;
-        if(typeof root === 'string') {
-            rootElement = document.getElementById(root)
-        } else if(typeof root === 'object') {
-            rootElement = root;
+        if (typeof container === "string") {
+            rootElement = document.getElementById(container);
+        } else if (typeof container === "object") {
+            rootElement = container;
         }
-        if(! rootElement) {
-            throw new Error('failed to find root element');
+        if (!rootElement) {
+            throw new Error("failed to find root element");
         }
+        
+        const optFilter = validateFunctionOrDefault(
+            optionFilter,
+            defaultOptionFilter,
+            "optionFilter must be a function"
+        );
+        const optLabel = validateFunctionOrDefault(
+            optionLabel,
+            defaultOptionLabel,
+            "optionLabel must be a function"
+        );
+
+        // create the Context
+        const ctx = {
+            optionLabel: optLabel,
+            optionFilter: (txt) =>
+                options.filter((option) => optFilter(txt, option)),
+        };
+        ctx.createOptionElement = newOptionElementCreator(ctx.optionLabel);
 
         const UI = createControl(rootElement);
+        registerEventHandlers(UI, ctx);
 
-        registerEventHandlers(UI, (searchtext) =>
-            config.options.filter((option) => option.startsWith(searchtext))
-        );
-        if (Array.isArray(config.initialOptions)) {
-            setSelectedTags(config.initialOptions, UI.tagsInput, UI.textInput);
+        // update control with provided initial options
+        if (Array.isArray(initialOptions)) {
+            setSelectedTags(
+                initialOptions,
+                UI.tagsInput,
+                UI.textInput,
+                ctx.optionLabel
+            );
         }
+        // refresh text input size
         resizeTextInput(UI.textInput, UI.textInputGhost);
+
+        // returns the public API
         return Object.freeze({
             getValues: () => getSelectedTagValues(UI.tagsInput),
         });
