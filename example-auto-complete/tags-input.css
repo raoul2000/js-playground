@@ -26,7 +26,7 @@
 
     /* height should be same height than tag to avoid
      * resiving when last tag is removed */
-    
+
     height: 20px;
 }
 
@@ -57,6 +57,16 @@
     background-color: #0f56bc;
     border-color: #0f56bc;
     color: white;
+}
+/* when duplicate tag */
+.tags-input-autocomplete > .blink {
+    animation: tag-autocomplete-input-blink-tag 1s linear 1;
+}
+
+@keyframes tag-autocomplete-input-blink-tag {
+    50% {
+        opacity: 0;
+    }
 }
 
 .tags-input-autocomplete > .option-list {
