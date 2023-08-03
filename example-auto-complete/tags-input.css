@@ -25,7 +25,7 @@
     min-width: 10px;
 
     /* height should be same height than tag to avoid
-     * resiving when last tag is removed */
+     * resizing when last tag is removed */
 
     height: 20px;
 }
