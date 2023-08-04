@@ -1,11 +1,9 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
-const download = require("image-downloader");
-const asyncUtil = require("async");
-const uuid = require("uuid");
-const os = require("os");
 const path = require("path");
-const process = require("process");
+const fs = require("fs");
+
+const puppeteer = require("puppeteer");
+const download = require("image-downloader");
+const async = require("async");
 
 const articleUrlToSlug = (articleUrl) => {
     const url = new URL(articleUrl);
@@ -18,6 +16,7 @@ const imageUrlToBasename = (urlStr) => {
 };
 
 const downloadImages = (urls, destinationFolderPath) => {
+    console.log(`Downloading ${urls.length} image(s) ...`);
     let downloadTasks = urls.map((imageURL) => {
         const imageBasename = imageUrlToBasename(imageURL);
         return function (cb) {
@@ -28,7 +27,7 @@ const downloadImages = (urls, destinationFolderPath) => {
                 dest: destinationFilePath,
                 filename: imageBasename,
             };
-            console.log(`image Url : ${imageURL}`);
+            console.log(`download image from : ${imageURL}`);
             download
                 .image(imageInfo)
                 .then(({ filename, image }) => {
@@ -41,7 +40,7 @@ const downloadImages = (urls, destinationFolderPath) => {
     });
 
     return new Promise((resolve, reject) => {
-        asyncUtil.parallel(asyncUtil.reflectAll(downloadTasks), function (err, results) {
+        async.parallel(async.reflectAll(downloadTasks), function (err, results) {
             if (err) {
                 reject(err);
             } else {
@@ -51,9 +50,9 @@ const downloadImages = (urls, destinationFolderPath) => {
     });
 };
 
-const getAllUrl = async (browser) => {
+const getAllUrl = async (browser, articleIndexUrl) => {
     const page = await browser.newPage();
-    await page.goto("https://www.paris-turf.com/actualites/");
+    await page.goto(articleIndexUrl);
     await page.waitForSelector("body");
     const result = await page.evaluate(() =>
         [...document.querySelectorAll("div.mui-jrrayk > div > div > div > a")].map((link) => link.href)
@@ -62,52 +61,83 @@ const getAllUrl = async (browser) => {
 };
 
 const getDataFromUrl = async (browser, url) => {
-    console.log(`loading url : ${url}`);
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "networkidle2" });
     await page.waitForSelector("body");
-    return page.evaluate((pageUrl) => {
-        let title = document.querySelector("h1.MuiTypography-root").innerText;
-        let section = document.querySelector("p.mui-14661yt").innerText;
-        let signature = document.querySelector("h4.mui-1s2nfck:nth-child(2)").innerText;
-        let headline = document.querySelector("h4.MuiTypography-root.MuiTypography-h4.mui-1cb58xh").innerText;
-        let body = [...document.querySelectorAll("div.qiota_reserve > div > p")].map((p) => p.innerText);
-        let mainImageUrl = document.querySelector(
-            ".tss-zxehbm-imageWrapper > span:nth-child(1) > img:nth-child(2)"
-        ).src;
+    return page
+        .evaluate((pageUrl) => {
+            let title = document.querySelector("h1.MuiTypography-root").innerText;
+            let section = document.querySelector("p.mui-14661yt").innerText;
+            let signature = document.querySelector("h4.mui-1s2nfck:nth-child(2)").innerText;
+            let headline = document.querySelector(
+                "h4.MuiTypography-root.MuiTypography-h4.mui-1cb58xh"
+            ).innerText;
+            let body = [...document.querySelectorAll("div.qiota_reserve > div > p")].map((p) => p.innerText);
+            let mainImageUrl = document.querySelector(
+                ".tss-zxehbm-imageWrapper > span:nth-child(1) > img:nth-child(2)"
+            ).src;
 
-        return {
-            title,
-            headline,
-            body,
-            section,
-            mainImageUrl,
-            signature,
-            pageUrl,
-        };
-    }, page.url());
+            return {
+                title,
+                headline,
+                body,
+                section,
+                mainImageUrl,
+                signature,
+                pageUrl,
+            };
+        }, page.url())
+        .finally(() => page.close());
 };
 
 const scrap = async () => {
     const browser = await puppeteer.launch({ headless: false });
-    /*
-    const urlList = await getAllUrl(browser);
-    console.log(`articles links found : ${urlList.length}`);
-    //urlList.forEach(console.log);
-    */
-    
+    const articles = [];
+    console.log("Starting work ...");
+    console.log("scrapping articles urls");
 
+    const urlList = await getAllUrl(browser, "https://www.paris-turf.com/actualites/");
+    console.log(`articles links found : ${urlList.length}`);
+
+    /*
     const urlList = [
         "https://www.paris-turf.com/actualites/france/jeudi-a-la-teste-diamond-vendome-trouve-sa-place-202268042417",
         "https://www.paris-turf.com/actualites/france/quinte-du-jeudi-03-08-2023-a-deauville-lorne-sur-sa-lancee-202259375668",
     ];
-    
-    const results = await Promise.all(urlList.map((url) => getDataFromUrl(browser, url)));
-    browser.close();
-    return results;
+*/
+
+    const q = async.queue(function (url, callback) {
+        console.log("url " + url);
+        getDataFromUrl(browser, url)
+            .then((article) => {
+                articles.push(article);
+                callback();
+            })
+            .catch((error) => callback({ error, url }));
+    }, 5); // concurrency
+
+    q.push(urlList, function (err) {
+        if (err) {
+            console.error("taks failed", err);
+        }
+    });
+    console.log("scrapping article(s)");
+    return q.drain().then(() => {
+        browser.close();
+        console.log("Done.");
+        return articles;
+    });
 };
 
+// Main //////////////////////////////////////////////////////////////////////////////////
+
 const outputFolder = "out";
+const outputPath = path.resolve(outputFolder);
+if (!fs.existsSync(outputPath)) {
+    console.log("creating output folder " + outputPath);
+    fs.mkdirSync(outputPath);
+}
+
 scrap()
     .then((articles) =>
         articles.map((article) => {
@@ -119,41 +149,14 @@ scrap()
     .then((articles) =>
         downloadImages(
             articles.map((article) => article.mainImageUrl),
-            path.resolve(outputFolder)
+            outputPath
         ).then(() => articles)
     )
     .then((articles) =>
         articles.forEach((article) => {
-            fs.writeFileSync(path.join(path.resolve(outputFolder), `${article.id}.json`), JSON.stringify(article));
-            console.log(article);
+            const articleFilePath = path.join(outputPath, `${article.id}.json`);
+            console.log("saving to " + articleFilePath);
+            fs.writeFileSync(articleFilePath, JSON.stringify(article, null, 4));
         })
     )
     .catch((e) => console.log(`error: ${e}`, e));
-
-
-
-
-/*
-console.log("Current working directory: ", process.cwd());
-
-//const absolutFolderPath = path.resolve("out");
-
-//console.log(`absolutFolderPath = ${absolutFolderPath}`);
-
-const myURL = new URL(
-    "https://www.paris-turf.com/articles/asset/quinte-du-jeudi-03-08-2023-a-deauville-lorne-sur-sa-lancee-202259375668/00233045-019-scoopdyga-589420ee-305c-11ee-8fcd-fc267de771ac.jpg"
-);
-
-console.log(path.basename(myURL.pathname));
-
-downloadImages(
-    [
-        "https://www.paris-turf.com/articles/asset/quinte-du-jeudi-03-08-2023-a-deauville-lorne-sur-sa-lancee-202259375668/00233045-019-scoopdyga-589420ee-305c-11ee-8fcd-fc267de771ac.jpg",
-    ],
-     path.resolve("out")
-)
-    .then((result) => {
-        console.log(result);
-    })
-    .catch((e) => console.log(`error: ${e}`));
-    */
