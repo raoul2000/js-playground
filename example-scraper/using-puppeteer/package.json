@@ -5,7 +5,8 @@
     "puppeteer": "^21.0.1",
     "puppeteer-cluster": "^0.23.0",
     "uuid": "^9.0.0",
-    "uuidv1": "^1.6.14"
+    "uuidv1": "^1.6.14",
+    "xmlbuilder": "^15.1.1"
   },
   "name": "using-puppeteer",
   "version": "1.0.0",
