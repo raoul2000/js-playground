@@ -28,6 +28,8 @@ const scrap = async (indexPageUrl) => {
 
 // Main //////////////////////////////////////////////////////////////////////////////////
 
+// Process CLI Options -----------
+
 if (process.argv.length !== 3) {
     console.error("missing argument : configuration file");
     process.exit(1);
@@ -45,7 +47,7 @@ try {
     process.exit(3);
 }
 
-const { outputFile, pageUrl } = config;
+const { urlListFile, pageUrl } = config;
 
 try {
     new URL(pageUrl);
@@ -54,12 +56,14 @@ try {
     process.exit(5);
 }
 
+// Start Scrapping  -----------
+
 scrap(pageUrl)
     .then((articlesUrl) => {
-        console.log("saving to " + outputFile);
+        console.log("saving to " + urlListFile);
         const rawData = JSON.stringify(articlesUrl, null, 4);
         try {
-            fs.writeFileSync(outputFile, rawData);
+            fs.writeFileSync(urlListFile, rawData);
         } catch (error) {
             console.error(`failed to save result to ${outputFile}`, error);
             console.log("result : ");

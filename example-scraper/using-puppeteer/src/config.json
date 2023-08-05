@@ -1,4 +1,5 @@
 {
     "pageUrl" : "https://www.paris-turf.com/actualites/",
-    "outputFile": "out/urls.json"
+    "urlListFile": "out/urls.json",
+    "outputPath": "./out"
 }

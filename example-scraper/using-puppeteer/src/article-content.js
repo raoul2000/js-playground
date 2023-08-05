@@ -20,8 +20,7 @@ const downloadImages = (urls, destinationFolderPath) => {
     let downloadTasks = urls.map((imageURL) => {
         const imageBasename = imageUrlToBasename(imageURL);
         return function (cb) {
-            let destinationFilePath = path.join(destinationFolderPath, imageBasename);
-            console.log(destinationFilePath);
+            let destinationFilePath = path.resolve(path.join(destinationFolderPath, imageBasename));
             const imageInfo = {
                 url: imageURL,
                 dest: destinationFilePath,
@@ -110,27 +109,48 @@ const scrap = async (urlList) => {
 
 // Main //////////////////////////////////////////////////////////////////////////////////
 
-if(process.argv.length !== 3) {
+// Process CLI Options -----------
+
+if (process.argv.length !== 3) {
     console.error("missing argument : configuration file");
     process.exit(1);
 }
 
-const outputFolder = "out";
-const outputPath = path.resolve(outputFolder);
-
-let rawdata = fs.readFileSync('student.json');
-let student = JSON.parse(rawdata);
-
-
-if (!fs.existsSync(outputPath)) {
-    console.log("creating output folder " + outputPath);
-    fs.mkdirSync(outputPath);
+const configFile = process.argv[2];
+if (!fs.existsSync(configFile)) {
+    console.error(`config file not found : ${configFile}`);
+    process.exit(2);
+}
+let config;
+try {
+    config = JSON.parse(fs.readFileSync(configFile));
+} catch (error) {
+    console.error(`failed to load configuration file : ${configFile}`, error);
+    process.exit(3);
 }
 
-const urlList = [
+const { urlListFile, outputPath } = config;
+
+if (!fs.existsSync(outputPath)) {
+    console.error(`config file not found : ${outputPath}`);
+    process.exit(4);
+}
+
+let urlList;
+/*
+urlList = [
     "https://www.paris-turf.com/actualites/france/jeudi-a-la-teste-diamond-vendome-trouve-sa-place-202268042417",
     "https://www.paris-turf.com/actualites/france/quinte-du-jeudi-03-08-2023-a-deauville-lorne-sur-sa-lancee-202259375668",
 ];
+*/
+try {
+    urlList = JSON.parse(fs.readFileSync(urlListFile));
+} catch (error) {
+    console.error(`failed to load URL list file : ${urlListFile}`, error);
+    process.exit(4);
+}
+
+// Start Scrapping  -----------
 
 scrap(urlList)
     .then((articles) =>
