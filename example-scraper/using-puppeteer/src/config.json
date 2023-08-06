@@ -1,5 +1,19 @@
 {
-    "pageUrl" : "https://www.paris-turf.com/actualites/",
+    "pageUrl": "https://www.paris-turf.com/actualites/",
     "urlListFile": "out/urls.json",
-    "outputPath": "./out"
+    "outputPath": "./out",
+    "scrapper": {
+        "articleContent": {
+            "title": "h1.MuiTypography-root",
+            "section": "p.mui-14661yt",
+            "signature": "h4.mui-1s2nfck:nth-child(2)",
+            "headline": "h4.MuiTypography-root.MuiTypography-h4.mui-1cb58xh",
+            "body": "div.qiota_reserve > div > p",
+            "mainImageUrl": {
+                "selector": ".tss-zxehbm-imageWrapper > span:nth-child(1) > img:nth-child(2)",
+                "value": "src"
+            }
+        },
+        "articlesUrl" : "div.mui-jrrayk > div > div > div > a"
+    }
 }
