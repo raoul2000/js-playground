@@ -55,8 +55,8 @@ const getDataFromUrl = async (browser, url) => {
     await page.waitForSelector("body");
     return page
         .evaluate((pageUrl) => {
-            let title = document.querySelector("h1.MuiTypography-root").innerText;
-            let section = document.querySelector("p.mui-14661yt").innerText;
+            let title = document.querySelector("h1.MuiTypography-root").innerText;   // header.article-header h1
+            let section = document.querySelector("p.mui-14661yt").innerText;    // li[ng-repeat$=breadcrumb] > a > span
             let signature = document.querySelector("h4.mui-1s2nfck:nth-child(2)").innerText;
             let headline = document.querySelector(
                 "h4.MuiTypography-root.MuiTypography-h4.mui-1cb58xh"

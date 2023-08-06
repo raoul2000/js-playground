@@ -1,0 +1,5 @@
+{
+    "pageUrl" : "https://www.lanouvellerepublique.fr/sports",
+    "urlListFile": "out/2/urls.json",
+    "outputPath": "./out"
+}

@@ -2,8 +2,10 @@ const path = require("path");
 const fs = require("fs");
 
 const puppeteer = require("puppeteer");
-const { tryEach } = require("async");
 
+
+// 
+// "div[ng-hide^=isPubliInfo]  + h2 > a"
 const getAllUrl = async (browser, articleIndexUrl) => {
     const page = await browser.newPage();
     await page.goto(articleIndexUrl);
