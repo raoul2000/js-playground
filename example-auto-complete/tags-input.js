@@ -37,6 +37,7 @@ window.tagsInputAutoComplete = (function () {
     const removeAllOptions = removeAllChildren;
     const hideOptionList = (optionListElement) => (optionListElement.style.display = "none");
     const showOptionList = (optionListElement) => (optionListElement.style.display = "block");
+    const isOptionListVisible = (optionListElement) => optionListElement.style.display == "block";
     const countOptions = (optionListElement) => optionListElement.children.length;
     const optionListNotEmpty = (optionListElement) => countOptions(optionListElement) > 0;
     const readValue = (element) => JSON.parse(element.dataset.value);
@@ -83,9 +84,8 @@ window.tagsInputAutoComplete = (function () {
         resetOptionList(elList);
         if (options.length !== 0) {
             let optionsToDisplay = options;
-            if(maxOptionsCount) {
-                optionsToDisplay = options.slice(0,maxOptionsCount);
-
+            if (maxOptionsCount) {
+                optionsToDisplay = options.slice(0, maxOptionsCount);
             }
             optionsToDisplay.map(createOptionElement).forEach((elOption) => {
                 elList.appendChild(elOption);
@@ -202,10 +202,22 @@ window.tagsInputAutoComplete = (function () {
 
                 switch (key) {
                     case Key.code.ARROW_DOWN:
-                        Key.selectionDown(optionList);
+                        if (isOptionListVisible(optionList)) {
+                            Key.selectionDown(optionList);
+                        } else {
+                            renderOptionList(
+                                optionList,
+                                ctx.allOptions,
+                                tagsInput,
+                                ctx.createOptionElement,
+                                ctx.maxOptionsCount
+                            );
+                        }
                         break;
                     case Key.code.ARROW_UP:
-                        Key.selectionUp(optionList);
+                        if (isOptionListVisible(optionList)) {
+                            Key.selectionUp(optionList);
+                        }
                         break;
                     case Key.code.ENTER:
                         const valueAdded = Key.enter(
@@ -434,6 +446,7 @@ window.tagsInputAutoComplete = (function () {
 
         const ctx = {
             optionLabel: optLabel,
+            allOptions: options,
             maxOptionsCount,
             optionFilter: (txt) => options.filter((option) => optFilter(txt, option)),
             optionComparator: optComparator,
