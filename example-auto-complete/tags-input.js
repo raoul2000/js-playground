@@ -9,7 +9,11 @@ window.tagsInputAutoComplete = (function () {
         }
     };
     const normalizeSeed = (seed) => (typeof seed === "string" ? seed.trim() : "");
-
+    const removePreviousSiblings = (currentElement) => {
+        while (currentElement.previousElementSibling) {
+            currentElement.previousElementSibling.remove();
+        }
+    };
     // Domain /////////////////////////////////////////////////////////////////////
 
     const resizeTextInput = (textInputElement, ghostElement) => {
@@ -69,14 +73,16 @@ window.tagsInputAutoComplete = (function () {
 
     const getSelectedTagElements = (elTagsInput) => Array.from(elTagsInput.querySelectorAll(".tag"));
 
-    const getSelectedTagValues = (elTagsInput) =>
+    const getTags = (elTagsInput) =>
         getSelectedTagElements(elTagsInput).map((tagElement) => readValue(tagElement));
 
-    const setSelectedTags = (optionValues, elTagsInput, elTextInput, readOptionLabel) =>
+    const addTags = (optionValues, elTagsInput, elTextInput, readOptionLabel) =>
         optionValues
             .map((optionValue) => createTagElement(readOptionLabel(optionValue), optionValue))
             .forEach((tagElement) => elTagsInput.insertBefore(tagElement, elTextInput));
 
+    const clearTags = (elTagsInput, elTextInput) => removePreviousSiblings(elTextInput);
+        //[...elTextInput.previousElementSibling].forEach((tagElement) => elTagsInput.removeChild(tagElement));
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
@@ -471,7 +477,7 @@ window.tagsInputAutoComplete = (function () {
 
         // update control with provided initial options
         if (Array.isArray(initialOptions)) {
-            setSelectedTags(initialOptions, UI.tagsInput, UI.textInput, ctx.optionLabel);
+            addTags(initialOptions, UI.tagsInput, UI.textInput, ctx.optionLabel);
         }
 
         // refresh text input size
@@ -479,7 +485,9 @@ window.tagsInputAutoComplete = (function () {
 
         // returns the public API
         return Object.freeze({
-            getValues: () => getSelectedTagValues(UI.tagsInput),
+            getTags: () => getTags(UI.tagsInput),
+            addTags: (options) => addTags(options, UI.tagsInput, UI.textInput, ctx.optionLabel),
+            clearTags: () => clearTags(UI.tagsInput, UI.textInput),
         });
     };
 
