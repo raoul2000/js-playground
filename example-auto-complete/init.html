@@ -103,7 +103,9 @@
                 optionLabel: (option) => `${option.name} age ${option.age}`,
             });
             const ctrl4 = tagsInputAutoComplete.init("root3", {
-                options:  [...Array(10000).keys()].map(i => `element ${i}`)
+                options:  [...Array(10000).keys()].map(i => `element ${i}`),
+                optionFilter: (txt, option) => txt.trim().length > 2 && option.startsWith(txt),
+                maxOptionsCount: 10
             });
         </script>
     </body>

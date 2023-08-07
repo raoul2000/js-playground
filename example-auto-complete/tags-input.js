@@ -79,10 +79,15 @@ window.tagsInputAutoComplete = (function () {
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
-    const renderOptionList = (elList, options, elTagsInput, createOptionElement) => {
+    const renderOptionList = (elList, options, elTagsInput, createOptionElement, maxOptionsCount) => {
         resetOptionList(elList);
         if (options.length !== 0) {
-            options.map(createOptionElement).forEach((elOption) => {
+            let optionsToDisplay = options;
+            if(maxOptionsCount) {
+                optionsToDisplay = options.slice(0,maxOptionsCount);
+
+            }
+            optionsToDisplay.map(createOptionElement).forEach((elOption) => {
                 elList.appendChild(elOption);
             });
             alignElements(elTagsInput, elList);
@@ -178,7 +183,8 @@ window.tagsInputAutoComplete = (function () {
                 optionList,
                 ctx.optionFilter(normalizeSeed(ev.target.value)),
                 tagsInput,
-                ctx.createOptionElement
+                ctx.createOptionElement,
+                ctx.maxOptionsCount
             );
         });
 
@@ -383,6 +389,7 @@ window.tagsInputAutoComplete = (function () {
         container,
         {
             options,
+            maxOptionsCount,
             initialOptions,
             optionLabel,
             optionFilter,
@@ -427,6 +434,7 @@ window.tagsInputAutoComplete = (function () {
 
         const ctx = {
             optionLabel: optLabel,
+            maxOptionsCount,
             optionFilter: (txt) => options.filter((option) => optFilter(txt, option)),
             optionComparator: optComparator,
             onDuplicateTag: validateFunctionOrDefault(
