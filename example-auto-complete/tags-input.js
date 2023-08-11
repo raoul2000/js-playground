@@ -82,7 +82,7 @@ window.tagsInputAutoComplete = (function () {
             .forEach((tagElement) => elTagsInput.insertBefore(tagElement, elTextInput));
 
     const clearTags = (elTagsInput, elTextInput) => removePreviousSiblings(elTextInput);
-        //[...elTextInput.previousElementSibling].forEach((tagElement) => elTagsInput.removeChild(tagElement));
+    //[...elTextInput.previousElementSibling].forEach((tagElement) => elTagsInput.removeChild(tagElement));
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
@@ -300,7 +300,13 @@ window.tagsInputAutoComplete = (function () {
                 textInput.focus();
             } else {
                 // remove clicked tag from input list
+                // save
+                const valueRemoved = readValue(tag);
                 tagsInput.removeChild(tag);
+
+                if (ctx.onTaglistChange) {
+                    ctx.onTaglistChange(valueRemoved, false);
+                }
             }
         });
     };
@@ -356,7 +362,6 @@ window.tagsInputAutoComplete = (function () {
             optionList,
         };
     };
-    const nullFunction = () => {};
     const identity = (v) => v;
     const defaultOptionFilter = (txt, option) => option.startsWith(txt);
     const defaultOptionLabel = identity;
