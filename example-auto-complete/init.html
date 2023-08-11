@@ -26,6 +26,9 @@
         <link rel="stylesheet" href="tags-input.css" />
     </head>
     <body>
+        <p>For outside div detection see https://stackoverflow.com/a/74719120 (working)</p>
+        <p>About input loosing focus on scroll click : https://stackoverflow.com/questions/2333142/how-to-make-input-not-to-lose-focus-when-clicking-on-scrollbar-in-suggestion-lis</p>
+
         <section>
             <h1>control 1</h1>
             <div class="wrapper">
@@ -70,7 +73,8 @@
                 optionLabel: (option) => option.toUpperCase(),
                 allowDuplicate: false,
                 optionComparator: (a, b) => (a === b ? 0 : 1),
-                onTaglistChange: (value, isAdded) => console.log(value, isAdded),
+                //onTaglistChange: (value, isAdded) => console.log(value, isAdded),
+                onTaglistChange: (value, isAdded) => console.log(ctrl1.getTags()),
             });
             const ctrl2 = tagsInputAutoComplete.init(document.getElementById("root2"), {
                 options: [
