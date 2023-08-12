@@ -14,6 +14,18 @@ window.tagsInputAutoComplete = (function () {
             currentElement.previousElementSibling.remove();
         }
     };
+
+    const outsideClickHandler = (ev) => {
+        const targetDiv = document.getElementById("root1");
+        const isClickedInsideDiv = ev.composedPath().includes(targetDiv);
+
+        if (isClickedInsideDiv) {
+            console.log("clicked inside of div");
+        } else {
+            console.log("clicked outside of div");
+        }
+    };
+
     // Domain /////////////////////////////////////////////////////////////////////
 
     const resizeTextInput = (textInputElement, ghostElement) => {
@@ -39,14 +51,23 @@ window.tagsInputAutoComplete = (function () {
     };
 
     const removeAllOptions = removeAllChildren;
-    const hideOptionList = (optionListElement) => (optionListElement.style.display = "none");
-    const showOptionList = (optionListElement) => (optionListElement.style.display = "block");
+    const hideOptionList = (optionListElement) => {
+        console.log('hideOptionList - deprecated');
+        //document.removeEventListener("click", outsideClickHandler);
+        //optionListElement.style.display = "none";
+    };
+    const showOptionList = (optionListElement) => {
+        console.log('showOptionList - deprecated');
+        //document.addEventListener("click", outsideClickHandler);
+        //optionListElement.style.display = "block";
+    };
     const isOptionListVisible = (optionListElement) => optionListElement.style.display == "block";
     const countOptions = (optionListElement) => optionListElement.children.length;
     const optionListNotEmpty = (optionListElement) => countOptions(optionListElement) > 0;
     const readValue = (element) => JSON.parse(element.dataset.value);
     const writeValue = (element, value) => (element.dataset.value = JSON.stringify(value));
     const resetOptionList = (optionListElement) => {
+        console.log('resetOptionList - deprecated');
         hideOptionList(optionListElement);
         removeAllOptions(optionListElement);
     };
@@ -82,23 +103,27 @@ window.tagsInputAutoComplete = (function () {
             .forEach((tagElement) => elTagsInput.insertBefore(tagElement, elTextInput));
 
     const clearTags = (elTagsInput, elTextInput) => removePreviousSiblings(elTextInput);
-    //[...elTextInput.previousElementSibling].forEach((tagElement) => elTagsInput.removeChild(tagElement));
+
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
-    const renderOptionList = (elList, options, elTagsInput, createOptionElement, maxOptionsCount) => {
-        resetOptionList(elList);
+    const renderOptionList = (elListCtrl, options, elTagsInput, createOptionElement, maxOptionsCount) => {
+        //resetOptionList(elListCtrl);
+        elListCtrl.hide();
+        removeAllOptions(elListCtrl.containerElement);
+
         if (options.length !== 0) {
             let optionsToDisplay = options;
             if (maxOptionsCount) {
                 optionsToDisplay = options.slice(0, maxOptionsCount);
             }
             optionsToDisplay.map(createOptionElement).forEach((elOption) => {
-                elList.appendChild(elOption);
+                elListCtrl.containerElement.appendChild(elOption);
             });
-            alignElements(elTagsInput, elList);
-            elList.style.top = `${elTagsInput.clientHeight}px`;
-            showOptionList(elList);
+            alignElements(elTagsInput, elListCtrl.containerElement);
+            elListCtrl.containerElement.style.top = `${elTagsInput.clientHeight}px`;
+            //showOptionList(elListCtrl);
+            elListCtrl.show();
         }
     };
 
@@ -130,9 +155,8 @@ window.tagsInputAutoComplete = (function () {
             }
             scrollToSelection(elOptions);
         },
-        escape: hideOptionList,
-        enter: (elOptions, elTextInput, elTagsInput, optionComparator, onDuplicateTag) => {
-            const activeOption = getActiveOptionElement(elOptions);
+        enter: (optionListCtrl, elTextInput, elTagsInput, optionComparator, onDuplicateTag) => {
+            const activeOption = getActiveOptionElement(optionListCtrl.containerElement);
             if (activeOption) {
                 if (optionComparator) {
                     // duplicate not allowed
@@ -151,14 +175,19 @@ window.tagsInputAutoComplete = (function () {
                             if (onDuplicateTag) {
                                 onDuplicateTag(duplicateTags[0]);
                             }
-                            resetOptionList(elOptions);
+                            optionListCtrl.hide();
+                            removeAllOptions(optionListCtrl.containerElement);
+
+                            //resetOptionList(optionListCtrl);
                             return;
                         }
                     }
                 }
                 elTagsInput.insertBefore(createTagElementFromOptionElement(activeOption), elTextInput);
                 elTextInput.value = "";
-                resetOptionList(elOptions);
+                optionListCtrl.hide();
+                removeAllOptions(optionListCtrl.containerElement);
+                //resetOptionList(optionListCtrl);
                 return readValue(activeOption);
             }
         },
@@ -182,11 +211,33 @@ window.tagsInputAutoComplete = (function () {
     // Event Handlers ////////////////////////////////////////////////////////////////////
 
     const registerEventHandlers = ({ tagsInput, textInput, textInputGhost, optionList }, ctx) => {
+
+        const optionListController = {
+            containerElement: optionList,
+            outsideClickHandler: (ev) => {
+                const isClickedInsideDiv = ev.composedPath().includes(tagsInput);
+                if (isClickedInsideDiv) {
+                    console.log("clicked inside of div");
+                } else {
+                    console.log("clicked outside of div");
+                    optionListController.hide();
+                }
+            },
+            show: () => {
+                document.addEventListener("click", optionListController.outsideClickHandler);
+                optionList.style.display = "block";
+            },
+            hide: () => {
+                document.removeEventListener("click", optionListController.outsideClickHandler);
+                optionList.style.display = "none";
+            },
+        };
+
         /* input text ---------------------------- */
         textInput.addEventListener("input", (ev) => {
             resizeTextInput(textInput, textInputGhost);
             renderOptionList(
-                optionList,
+                optionListController,
                 ctx.optionFilter(normalizeSeed(ev.target.value)),
                 tagsInput,
                 ctx.createOptionElement,
@@ -197,7 +248,8 @@ window.tagsInputAutoComplete = (function () {
         textInput.addEventListener("focusin", (ev) => {
             console.log("focus - in");
             if (optionListNotEmpty(optionList)) {
-                showOptionList(optionList);
+                optionListController.show();
+                //showOptionList(optionList);
             }
         });
 
@@ -212,7 +264,7 @@ window.tagsInputAutoComplete = (function () {
                             Key.selectionDown(optionList);
                         } else {
                             renderOptionList(
-                                optionList,
+                                optionListController,
                                 ctx.allOptions,
                                 tagsInput,
                                 ctx.createOptionElement,
@@ -227,7 +279,7 @@ window.tagsInputAutoComplete = (function () {
                         break;
                     case Key.code.ENTER:
                         const valueAdded = Key.enter(
-                            optionList,
+                            optionListController,
                             textInput,
                             tagsInput,
                             ctx.optionComparator,
@@ -244,7 +296,8 @@ window.tagsInputAutoComplete = (function () {
                         }
                         break;
                     case Key.code.ESCAPE:
-                        hideOptionList(optionList);
+                        optionListController.hide();
+                        //hideOptionList(optionList);
                         break;
                 }
             },
@@ -260,10 +313,11 @@ window.tagsInputAutoComplete = (function () {
          * not been canceled by the 'click' event handler triggered when user clicks on an option.
          */
         let optionListHideTimer;
-
+        /*
         textInput.addEventListener("focusout", (ev) => {
             optionListHideTimer = setTimeout(() => hideOptionList(optionList), 200);
         });
+*/
 
         /* option list  ---------------------------- */
 
@@ -277,7 +331,7 @@ window.tagsInputAutoComplete = (function () {
                 }
                 ev.target.classList.add("active");
                 const valueAdded = Key.enter(
-                    optionList,
+                    optionListController,
                     textInput,
                     tagsInput,
                     ctx.optionComparator,
