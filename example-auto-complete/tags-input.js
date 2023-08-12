@@ -14,6 +14,7 @@ window.tagsInputAutoComplete = (function () {
             currentElement.previousElementSibling.remove();
         }
     };
+
     // Domain /////////////////////////////////////////////////////////////////////
 
     const resizeTextInput = (textInputElement, ghostElement) => {
@@ -38,18 +39,8 @@ window.tagsInputAutoComplete = (function () {
         targetElement.style.top = `${sourceElement.clientHeight}px`;
     };
 
-    const removeAllOptions = removeAllChildren;
-    const hideOptionList = (optionListElement) => (optionListElement.style.display = "none");
-    const showOptionList = (optionListElement) => (optionListElement.style.display = "block");
-    const isOptionListVisible = (optionListElement) => optionListElement.style.display == "block";
-    const countOptions = (optionListElement) => optionListElement.children.length;
-    const optionListNotEmpty = (optionListElement) => countOptions(optionListElement) > 0;
     const readValue = (element) => JSON.parse(element.dataset.value);
     const writeValue = (element, value) => (element.dataset.value = JSON.stringify(value));
-    const resetOptionList = (optionListElement) => {
-        hideOptionList(optionListElement);
-        removeAllOptions(optionListElement);
-    };
 
     const newOptionElementCreator = (readOptionLabel) => (optionValue) => {
         const elOption = document.createElement("div");
@@ -81,28 +72,30 @@ window.tagsInputAutoComplete = (function () {
             .map((optionValue) => createTagElement(readOptionLabel(optionValue), optionValue))
             .forEach((tagElement) => elTagsInput.insertBefore(tagElement, elTextInput));
 
-    const clearTags = (elTagsInput, elTextInput) => removePreviousSiblings(elTextInput);
-    //[...elTextInput.previousElementSibling].forEach((tagElement) => elTagsInput.removeChild(tagElement));
+    const clearTags = (elTextInput) => removePreviousSiblings(elTextInput);
+
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
-    const renderOptionList = (elList, options, elTagsInput, createOptionElement, maxOptionsCount) => {
-        resetOptionList(elList);
+    const renderOptionList = (elListCtrl, options, elTagsInput, createOptionElement, maxOptionsCount) => {
+        elListCtrl.hide();
+        elListCtrl.removeAllOptions();
+
         if (options.length !== 0) {
             let optionsToDisplay = options;
             if (maxOptionsCount) {
                 optionsToDisplay = options.slice(0, maxOptionsCount);
             }
             optionsToDisplay.map(createOptionElement).forEach((elOption) => {
-                elList.appendChild(elOption);
+                elListCtrl.containerElement.appendChild(elOption);
             });
-            alignElements(elTagsInput, elList);
-            elList.style.top = `${elTagsInput.clientHeight}px`;
-            showOptionList(elList);
+            alignElements(elTagsInput, elListCtrl.containerElement);
+            elListCtrl.containerElement.style.top = `${elTagsInput.clientHeight}px`;
+            elListCtrl.show();
         }
     };
 
-    const Key = {
+    const Keyboard = {
         code: {
             ARROW_DOWN: 40,
             ARROW_UP: 38,
@@ -130,9 +123,8 @@ window.tagsInputAutoComplete = (function () {
             }
             scrollToSelection(elOptions);
         },
-        escape: hideOptionList,
-        enter: (elOptions, elTextInput, elTagsInput, optionComparator, onDuplicateTag) => {
-            const activeOption = getActiveOptionElement(elOptions);
+        enter: (optionListCtrl, elTextInput, elTagsInput, optionComparator, onDuplicateTag) => {
+            const activeOption = getActiveOptionElement(optionListCtrl.containerElement);
             if (activeOption) {
                 if (optionComparator) {
                     // duplicate not allowed
@@ -151,14 +143,16 @@ window.tagsInputAutoComplete = (function () {
                             if (onDuplicateTag) {
                                 onDuplicateTag(duplicateTags[0]);
                             }
-                            resetOptionList(elOptions);
+                            optionListCtrl.hide();
+                            optionListCtrl.removeAllOptions();
                             return;
                         }
                     }
                 }
                 elTagsInput.insertBefore(createTagElementFromOptionElement(activeOption), elTextInput);
                 elTextInput.value = "";
-                resetOptionList(elOptions);
+                optionListCtrl.hide();
+                optionListCtrl.removeAllOptions();
                 return readValue(activeOption);
             }
         },
@@ -179,14 +173,40 @@ window.tagsInputAutoComplete = (function () {
         }
     };
 
+    const createOptionListController = (optionList, tagsInput) => {
+        const result = {
+            containerElement: optionList,
+            outsideClickHandler: (ev) => {
+                if (!ev.composedPath().includes(tagsInput)) {
+                    result.hide();
+                }
+            },
+            show: () => {
+                document.addEventListener("click", result.outsideClickHandler);
+                optionList.style.display = "block";
+            },
+            hide: () => {
+                document.removeEventListener("click", result.outsideClickHandler);
+                optionList.style.display = "none";
+            },
+            isVisible: () => result.containerElement.style.display == "block",
+            countOptions: () => result.containerElement.children.length,
+            removeAllOptions: () => removeAllChildren(result.containerElement),
+        };
+        return result;
+    };
+
     // Event Handlers ////////////////////////////////////////////////////////////////////
 
     const registerEventHandlers = ({ tagsInput, textInput, textInputGhost, optionList }, ctx) => {
+        const optionListController = createOptionListController(optionList, tagsInput);
+
         /* input text ---------------------------- */
+
         textInput.addEventListener("input", (ev) => {
             resizeTextInput(textInput, textInputGhost);
             renderOptionList(
-                optionList,
+                optionListController,
                 ctx.optionFilter(normalizeSeed(ev.target.value)),
                 tagsInput,
                 ctx.createOptionElement,
@@ -195,9 +215,8 @@ window.tagsInputAutoComplete = (function () {
         });
 
         textInput.addEventListener("focusin", (ev) => {
-            console.log("focus - in");
-            if (optionListNotEmpty(optionList)) {
-                showOptionList(optionList);
+            if (optionListController.countOptions() > 0) {
+                optionListController.show();
             }
         });
 
@@ -207,12 +226,12 @@ window.tagsInputAutoComplete = (function () {
                 const key = ev.keyCode || ev.charCode;
 
                 switch (key) {
-                    case Key.code.ARROW_DOWN:
-                        if (isOptionListVisible(optionList)) {
-                            Key.selectionDown(optionList);
+                    case Keyboard.code.ARROW_DOWN:
+                        if (optionListController.isVisible()) {
+                            Keyboard.selectionDown(optionList);
                         } else {
                             renderOptionList(
-                                optionList,
+                                optionListController,
                                 ctx.allOptions,
                                 tagsInput,
                                 ctx.createOptionElement,
@@ -220,14 +239,14 @@ window.tagsInputAutoComplete = (function () {
                             );
                         }
                         break;
-                    case Key.code.ARROW_UP:
-                        if (isOptionListVisible(optionList)) {
-                            Key.selectionUp(optionList);
+                    case Keyboard.code.ARROW_UP:
+                        if (optionListController.isVisible()) {
+                            Keyboard.selectionUp(optionList);
                         }
                         break;
-                    case Key.code.ENTER:
-                        const valueAdded = Key.enter(
-                            optionList,
+                    case Keyboard.code.ENTER:
+                        const valueAdded = Keyboard.enter(
+                            optionListController,
                             textInput,
                             tagsInput,
                             ctx.optionComparator,
@@ -237,47 +256,31 @@ window.tagsInputAutoComplete = (function () {
                             ctx.onTaglistChange(valueAdded, true);
                         }
                         break;
-                    case Key.code.BACKSPACE:
-                        const valueRemoved = Key.backspace(textInput, tagsInput);
+                    case Keyboard.code.BACKSPACE:
+                        const valueRemoved = Keyboard.backspace(textInput, tagsInput);
                         if (valueRemoved && ctx.onTaglistChange) {
                             ctx.onTaglistChange(valueRemoved, false);
                         }
                         break;
-                    case Key.code.ESCAPE:
-                        hideOptionList(optionList);
+                    case Keyboard.code.ESCAPE:
+                        optionListController.hide();
                         break;
                 }
             },
             false
         );
-        /**
-         * Note: when user click outside the control, hide the list of options. To detect this event
-         * we use 'focusout' on the text input element. This causes an issue when the user click on
-         * an option from the option list. In this case, the text input element does loose the focus
-         * but the option list should NOT be hidden before the clicked option could actually be added
-         * to the control.
-         * To fix this, the option list is hidden only after a hard coded delay, if the timer created has
-         * not been canceled by the 'click' event handler triggered when user clicks on an option.
-         */
-        let optionListHideTimer;
-
-        textInput.addEventListener("focusout", (ev) => {
-            optionListHideTimer = setTimeout(() => hideOptionList(optionList), 200);
-        });
 
         /* option list  ---------------------------- */
 
         optionList.addEventListener(
             "click",
             (ev) => {
-                // see optionListHideTimer declaration
-                if (optionListHideTimer) {
-                    clearTimeout(optionListHideTimer);
-                    optionListHideTimer = null;
-                }
+                [...optionListController.containerElement.children].forEach((optionElement) =>
+                    optionElement.classList.remove("active")
+                );
                 ev.target.classList.add("active");
-                const valueAdded = Key.enter(
-                    optionList,
+                const valueAdded = Keyboard.enter(
+                    optionListController,
                     textInput,
                     tagsInput,
                     ctx.optionComparator,
@@ -292,18 +295,15 @@ window.tagsInputAutoComplete = (function () {
 
         /* tags input  ---------------------------- */
 
-        // Set focus to text input when user clicks in the control
-        // but not on a tag.
         tagsInput.addEventListener("click", (ev) => {
             const tag = ev.target.closest(".tag");
             if (!tag) {
+                // click not on tag element
                 textInput.focus();
             } else {
-                // remove clicked tag from input list
-                // save
+                // click on tag element : remove clicked tag from input list
                 const valueRemoved = readValue(tag);
                 tagsInput.removeChild(tag);
-
                 if (ctx.onTaglistChange) {
                     ctx.onTaglistChange(valueRemoved, false);
                 }
@@ -492,7 +492,7 @@ window.tagsInputAutoComplete = (function () {
         return Object.freeze({
             getTags: () => getTags(UI.tagsInput),
             addTags: (options) => addTags(options, UI.tagsInput, UI.textInput, ctx.optionLabel),
-            clearTags: () => clearTags(UI.tagsInput, UI.textInput),
+            clearTags: () => clearTags(UI.textInput),
         });
     };
 
