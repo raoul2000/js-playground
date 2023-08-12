@@ -173,32 +173,36 @@ window.tagsInputAutoComplete = (function () {
         }
     };
 
-    // Event Handlers ////////////////////////////////////////////////////////////////////
-
-    const registerEventHandlers = ({ tagsInput, textInput, textInputGhost, optionList }, ctx) => {
-        
-        const optionListController = {
+    const createOptionListController = (optionList, tagsInput) => {
+        const result = {
             containerElement: optionList,
             outsideClickHandler: (ev) => {
                 if (!ev.composedPath().includes(tagsInput)) {
-                    optionListController.hide();
+                    result.hide();
                 }
             },
             show: () => {
-                document.addEventListener("click", optionListController.outsideClickHandler);
+                document.addEventListener("click", result.outsideClickHandler);
                 optionList.style.display = "block";
             },
             hide: () => {
-                document.removeEventListener("click", optionListController.outsideClickHandler);
+                document.removeEventListener("click", result.outsideClickHandler);
                 optionList.style.display = "none";
             },
-            isVisible: () => optionListController.containerElement.style.display == "block",
-            countOptions: () => optionListController.containerElement.children.length,
-            removeAllOptions: () => removeAllChildren(optionListController.containerElement),
+            isVisible: () => result.containerElement.style.display == "block",
+            countOptions: () => result.containerElement.children.length,
+            removeAllOptions: () => removeAllChildren(result.containerElement),
         };
+        return result;
+    };
 
+    // Event Handlers ////////////////////////////////////////////////////////////////////
+
+    const registerEventHandlers = ({ tagsInput, textInput, textInputGhost, optionList }, ctx) => {
+        const optionListController = createOptionListController(optionList, tagsInput);
 
         /* input text ---------------------------- */
+
         textInput.addEventListener("input", (ev) => {
             resizeTextInput(textInput, textInputGhost);
             renderOptionList(
@@ -211,7 +215,6 @@ window.tagsInputAutoComplete = (function () {
         });
 
         textInput.addEventListener("focusin", (ev) => {
-            console.log("focus - in");
             if (optionListController.countOptions() > 0) {
                 optionListController.show();
             }
@@ -272,6 +275,9 @@ window.tagsInputAutoComplete = (function () {
         optionList.addEventListener(
             "click",
             (ev) => {
+                [...optionListController.containerElement.children].forEach((optionElement) =>
+                    optionElement.classList.remove("active")
+                );
                 ev.target.classList.add("active");
                 const valueAdded = Keyboard.enter(
                     optionListController,
@@ -289,18 +295,15 @@ window.tagsInputAutoComplete = (function () {
 
         /* tags input  ---------------------------- */
 
-        // Set focus to text input when user clicks in the control
-        // but not on a tag.
         tagsInput.addEventListener("click", (ev) => {
             const tag = ev.target.closest(".tag");
             if (!tag) {
+                // click not on tag element
                 textInput.focus();
             } else {
-                // remove clicked tag from input list
-                // save
+                // click on tag element : remove clicked tag from input list
                 const valueRemoved = readValue(tag);
                 tagsInput.removeChild(tag);
-
                 if (ctx.onTaglistChange) {
                     ctx.onTaglistChange(valueRemoved, false);
                 }
