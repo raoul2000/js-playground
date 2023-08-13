@@ -58,6 +58,7 @@
     border-color: #0f56bc;
     color: white;
 }
+
 /* when duplicate tag */
 .tags-input-autocomplete > .blink {
     animation: tag-autocomplete-input-blink-tag 1s linear 1;

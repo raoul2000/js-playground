@@ -1,5 +1,9 @@
 window.tagsInputAutoComplete = (function () {
     console.log("loading tagsInputAutoComplete plugin ...");
+    /**
+     * - options are suggestions displayed in a dropdown list based on user input
+     * - options value can be any js type. It is attached to the dataset value of the option Element
+     */
 
     // Helpers /////////////////////////////////////////////////////////////////////
 
@@ -42,13 +46,6 @@ window.tagsInputAutoComplete = (function () {
     const readValue = (element) => JSON.parse(element.dataset.value);
     const writeValue = (element, value) => (element.dataset.value = JSON.stringify(value));
 
-    const newOptionElementCreator = (readOptionLabel) => (optionValue) => {
-        const elOption = document.createElement("div");
-        elOption.textContent = readOptionLabel(optionValue);
-        writeValue(elOption, optionValue);
-        return elOption;
-    };
-
     const createTagElement = (textContent, value) => {
         const tag = document.createElement("div");
         tag.classList.add("tag");
@@ -64,8 +61,7 @@ window.tagsInputAutoComplete = (function () {
 
     const getSelectedTagElements = (elTagsInput) => Array.from(elTagsInput.querySelectorAll(".tag"));
 
-    const getTags = (elTagsInput) =>
-        getSelectedTagElements(elTagsInput).map((tagElement) => readValue(tagElement));
+    const getTags = (elTagsInput) => getSelectedTagElements(elTagsInput).map(readValue);
 
     const addTags = (optionValues, elTagsInput, elTextInput, readOptionLabel) =>
         optionValues
@@ -77,21 +73,21 @@ window.tagsInputAutoComplete = (function () {
     const getActiveOptionElement = (optionListElement) =>
         optionListElement.getElementsByClassName("active")[0];
 
-    const renderOptionList = (elListCtrl, options, elTagsInput, createOptionElement, maxOptionsCount) => {
-        elListCtrl.hide();
-        elListCtrl.removeAllOptions();
+    const renderOptionList = (optionsList, options, elTagsInput, maxOptionsCount) => {
+        optionsList.hide();
+        optionsList.removeAllOptions();
 
         if (options.length !== 0) {
             let optionsToDisplay = options;
             if (maxOptionsCount) {
                 optionsToDisplay = options.slice(0, maxOptionsCount);
             }
-            optionsToDisplay.map(createOptionElement).forEach((elOption) => {
-                elListCtrl.containerElement.appendChild(elOption);
+            optionsToDisplay.map(optionsList.createOptionElement).forEach((elOption) => {
+                optionsList.containerElement.appendChild(elOption);
             });
-            alignElements(elTagsInput, elListCtrl.containerElement);
-            elListCtrl.containerElement.style.top = `${elTagsInput.clientHeight}px`;
-            elListCtrl.show();
+            alignElements(elTagsInput, optionsList.containerElement);
+            optionsList.containerElement.style.top = `${elTagsInput.clientHeight}px`;
+            optionsList.show();
         }
     };
 
@@ -173,9 +169,23 @@ window.tagsInputAutoComplete = (function () {
         }
     };
 
-    const createOptionListController = (optionList, tagsInput) => {
+    const createOptionListController = (optionList, tagsInput, { optionLabel }) => {
         const result = {
             containerElement: optionList,
+            createOptionElement: (optionValue) => {
+                const elOption = document.createElement("div");
+                elOption.textContent = optionLabel(optionValue);
+                writeValue(elOption, optionValue);
+                return elOption;
+            },
+            /**
+             * Using focusout event to hide the option list is not working as expected when the user
+             * clicks on the vertical scrool bar of the option list: this closes the option list.
+             * Base on https://stackoverflow.com/questions/12625976/how-to-retain-input-focus-when-clicking-on-a-scrollbar-for-selection-list
+             * this click handler has been implemented.
+             * 
+             * @param {Event} ev Brtowser event
+             */
             outsideClickHandler: (ev) => {
                 if (!ev.composedPath().includes(tagsInput)) {
                     result.hide();
@@ -199,7 +209,7 @@ window.tagsInputAutoComplete = (function () {
     // Event Handlers ////////////////////////////////////////////////////////////////////
 
     const registerEventHandlers = ({ tagsInput, textInput, textInputGhost, optionList }, ctx) => {
-        const optionListController = createOptionListController(optionList, tagsInput);
+        const optionListController = createOptionListController(optionList, tagsInput, ctx);
 
         /* input text ---------------------------- */
 
@@ -209,7 +219,6 @@ window.tagsInputAutoComplete = (function () {
                 optionListController,
                 ctx.optionFilter(normalizeSeed(ev.target.value)),
                 tagsInput,
-                ctx.createOptionElement,
                 ctx.maxOptionsCount
             );
         });
@@ -234,7 +243,6 @@ window.tagsInputAutoComplete = (function () {
                                 optionListController,
                                 ctx.allOptions,
                                 tagsInput,
-                                ctx.createOptionElement,
                                 ctx.maxOptionsCount
                             );
                         }
@@ -472,8 +480,6 @@ window.tagsInputAutoComplete = (function () {
                 "onTaglistChange must be a function"
             ),
         };
-
-        ctx.createOptionElement = newOptionElementCreator(ctx.optionLabel);
 
         // update the DOM : inject control elements
 
