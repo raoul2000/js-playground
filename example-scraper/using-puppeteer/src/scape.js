@@ -34,19 +34,52 @@ const extractData = async (page, extractionPlan, type) => {
     if (typeof extractionPlan === "string") {
         if (type) {
             const selectMulti = Array.isArray(type);
-            //const dataExtractorFn = createDataExtractorFn(type);
-            const dataExtractorFn = (el) => el.textContent;
+            const typeName = selectMulti ? type[0] : type;
+
             if (selectMulti) {
-                result = await page.$$eval(
+                result = await page.evaluate(
+                    (selector, typeName) => {
+                        return [...document.querySelectorAll(selector)].map((el) => {
+                            if (typeName === "text") {
+                                return el.textContent;
+                            }
+                            if (typeName === "html") {
+                                return el.innerHTML;
+                            }
+                            if (typeName.startsWith("@") && typeName.length > 1) {
+                                return el[typeName.substring(1)];
+                            }
+                            return { error: `failed to extract data with type ${typeName}` };
+                        });
+                    },
                     extractionPlan,
-                    (elementList, mapper) => elementList.map((el) => el.textContent)
-                    
+                    typeName
                 );
             } else {
-                result = await page.$eval(extractionPlan, dataExtractorFn);
+                result = await page.evaluate((selector, typeName) => {
+                    const selected = document.querySelector(selector);
+                    if (selected) {
+                        if (typeName === "text") {
+                            return el.textContent;
+                        }
+                        if (typeName === "html") {
+                            return el.innerHTML;
+                        }
+                        if (typeName.startsWith("@") && typeName.length > 1) {
+                            return el[typeName.substring(1)];
+                        }                        
+                        return { error: `failed to extract data with type ${typeName}` };
+                    }
+                }, extractionPlan, typeName);
             }
         } else {
-            result = await page.$eval(extractionPlan, (el) => el.textContent);
+            // no type: fallback to default = single selection and textContent value
+            result = await page.evaluate((selector) => {
+                const selected = document.querySelector(selector);
+                if (selected) {
+                    return selected.textContent;
+                }
+            }, extractionPlan);
         }
     } else if (Array.isArray(extractionPlan)) {
         result = await Promise.all(extractionPlan.map((planItem) => extractData(page, planItem)));
@@ -106,8 +139,8 @@ async function main() {
 
         const data = await extractData(page, {
             link: {
-                selector: "#w1 > li > a",
-                type: ["text"],
+                selector: "#w1 > li abbe",
+                //type: ["@href"],
             },
         });
         console.log(data);
