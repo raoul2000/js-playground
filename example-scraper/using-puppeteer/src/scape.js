@@ -7,26 +7,22 @@ const openPage = async (url, browser) => {
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "networkidle2" });
     await page.waitForSelector("body");
-    return page;
-};
-
-const createDataExtractorFn = (type) => {
-    let result;
-    const typeName = Array.isArray(type) ? type[0] : type;
-    if (typeof typeName === "string") {
+    /*
+    await page.exposeFunction('extractValueFromElement', (el, typeName) => {
+        console.log(el.jsonValue());
         if (typeName === "text") {
-            result = (el) => el.textContent;
-        } else if (typeName === "html") {
-            result = (el) => el.innerHTML;
-        } else if (typeName.startsWith("@") && typeName.length > 1) {
-            result = (el) => el.getAttribue(typeName.substr(1));
-        } else {
-            throw new Error(`Unknown 'type' : ${typeName}`, { cause: typeName });
+            return el.textContent;
         }
-    } else {
-        throw new Error(`'type' is expected to be a string : ${typeName}`, { cause: typeName });
-    }
-    return result;
+        if (typeName === "html") {
+            return el.innerHTML;
+        }
+        if (typeName.startsWith("@") && typeName.length > 1) {
+            return el[typeName.substring(1)];
+        }
+        return { error: `failed to extract data with type ${typeName}` };
+    });
+    */
+    return page;
 };
 
 const extractData = async (page, extractionPlan, type) => {
@@ -36,42 +32,50 @@ const extractData = async (page, extractionPlan, type) => {
             const selectMulti = Array.isArray(type);
             const typeName = selectMulti ? type[0] : type;
 
-            if (selectMulti) {
-                result = await page.evaluate(
-                    (selector, typeName) => {
-                        return [...document.querySelectorAll(selector)].map((el) => {
-                            if (typeName === "text") {
-                                return el.textContent;
+            if (typeof typeName === "string") {
+                if (selectMulti) {
+                    result = await page.evaluate(
+                        (selector, typeName) => {
+                            return [...document.querySelectorAll(selector)].map((el) => {
+                                if (typeName === "text") {
+                                    return el.textContent;
+                                }
+                                if (typeName === "html") {
+                                    return el.innerHTML;
+                                }
+                                if (typeName.startsWith("@") && typeName.length > 1) {
+                                    return el[typeName.substring(1)];
+                                }
+                                return { error: `failed to extract data with type ${typeName}` };
+                            });
+                        },
+                        extractionPlan,
+                        typeName
+                    );
+                } else {
+                    result = await page.evaluate(
+                        async (selector, typeName) => {
+                            const selected = document.querySelector(selector);
+                            if (selected) {
+                                if (typeName === "text") {
+                                    return selected.textContent;
+                                }
+                                if (typeName === "html") {
+                                    return selected.innerHTML;
+                                }
+                                if (typeName.startsWith("@") && typeName.length > 1) {
+                                    return selected[typeName.substring(1)];
+                                }
+                                return { error: `failed to extract data with type ${typeName}` };
                             }
-                            if (typeName === "html") {
-                                return el.innerHTML;
-                            }
-                            if (typeName.startsWith("@") && typeName.length > 1) {
-                                return el[typeName.substring(1)];
-                            }
-                            return { error: `failed to extract data with type ${typeName}` };
-                        });
-                    },
-                    extractionPlan,
-                    typeName
-                );
-            } else {
-                result = await page.evaluate((selector, typeName) => {
-                    const selected = document.querySelector(selector);
-                    if (selected) {
-                        if (typeName === "text") {
-                            return el.textContent;
-                        }
-                        if (typeName === "html") {
-                            return el.innerHTML;
-                        }
-                        if (typeName.startsWith("@") && typeName.length > 1) {
-                            return el[typeName.substring(1)];
-                        }                        
-                        return { error: `failed to extract data with type ${typeName}` };
-                    }
-                }, extractionPlan, typeName);
-            }
+                        },
+                        extractionPlan,
+                        typeName
+                    );
+                }
+            }/* else if (typeof type === "object") {
+                result = await extractData(page, type);
+            }*/
         } else {
             // no type: fallback to default = single selection and textContent value
             result = await page.evaluate((selector) => {
@@ -136,11 +140,18 @@ async function main() {
             },
         });
         */
-
+        /*
         const data = await extractData(page, {
             link: {
-                selector: "#w1 > li abbe",
-                //type: ["@href"],
+                selector: "#w1 > li a",
+                type: ["@href"],
+            },
+        });
+*/
+        const data = await extractData(page, {
+            link: {
+                selector: "#w1 > li",
+                type: [{ anchor: { selector: "a", type: "@href" } }],
             },
         });
         console.log(data);
