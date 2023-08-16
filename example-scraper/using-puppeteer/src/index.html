@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Main title</h1>
+        <h2>sub title</h2>
+        <a href="http://domain1">link 1</a>
+        <section>
+            <div class="toc">
+                <ul>
+                    <li>
+                        <article>
+                            <h1>article 1</h1>
+                            <p>text 1</p>
+                            <a href="http://article1">read more 1</a>
+                            <span class="signature">
+                                <span class="initial">1.1</span>
+                                <span class="name">name 1</span>
+                            </span>
+                        </article>
+                    </li>
+                    <li>
+                        <article>
+                            <h1>article 2</h1>
+                            <p>text 2</p>
+                            <a href="http://article2">read more 2</a>
+                        </article>
+                    </li>
+                    <li>
+                        <article>
+                            <h1>article 3</h1>
+                            <p>text 3</p>
+                            <a href="http://article3">read more 3</a>
+                        </article>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <script>
+            const extract = (selector, type = "text", rootElement = document) => {
+                let result;
+
+                let valueTypeReader = (el) => el.textContent;
+                if (type) {
+                    if (typeof type === "string" && type?.startsWith("@") && type.length > 1) {
+                        valueTypeReader = (el) => el.getAttribute(type.substring(1));
+                    } else if (typeof type === "object") {
+                        if (Array.isArray(selector)) {
+                            return [...rootElement.querySelectorAll(selector[0])].map((el) =>
+                                extract(type, null, el)
+                            );
+                        } else {
+                            const newRootElement = rootElement.querySelector(selector);
+                            return newRootElement && extract(type, null, rootElement.querySelector(selector));
+                        }
+                    }
+                }
+
+                if (typeof selector === "string") {
+                    const el = rootElement.querySelector(selector);
+                    result = el && valueTypeReader(el);
+                } else if (Array.isArray(selector) && selector.length !== 0) {
+                    result = [...rootElement.querySelectorAll(selector[0])].map(valueTypeReader);
+                } else if (selector && typeof selector === "object") {
+                    const selectorObj = selector;
+                    if (selectorObj.hasOwnProperty("selector")) {
+                        result = extract(selectorObj.selector, selectorObj.type, rootElement);
+                    } else {
+                        result = Object.entries(selectorObj)
+                            .map(([propName, aSelector]) => ({
+                                name: propName,
+                                data: extract(aSelector, type, rootElement),
+                            }))
+                            .reduce((acc, { name, data }) => {
+                                acc[name] = data;
+                                return acc;
+                            }, {});
+                    }
+                }
+                return result;
+            };
+
+            console.log(
+                extract({
+                    allArticles: {
+                        selector: ["article"],
+                        type: {
+                            title: "h1",
+                            body: ["p"],
+                            link: { selector: "a", type: "@href" },
+                            signature: {
+                                selector: "span.signature",
+                                type: { initial: "span.initial", name: "span.name" },
+                            },
+                        },
+                    },
+                })
+            );
+
+            console.log(
+                extract({
+                    allArticles: {
+                        selector: ["article"],
+                        type: {
+                            title: "h1",
+                            body: ["p"],
+                            link: { selector: "a", type: "@href" },
+                        },
+                    },
+                })
+            );
+
+            console.log(extract("h1"));
+            console.log(extract("h1.notFound"));
+            console.log(extract(["h1"]));
+            console.log(extract({ title: "h1", subTitle: "h2" }));
+            console.log(extract({ title: { theTitle: "h1" }, subTitle: "h2" }));
+            console.log(extract({ allTitles: ["h1"] }));
+            console.log(extract({ allTitles: ["h1"], allSubTitles: ["h2"] }));
+            /* ----------------------------- */
+
+            console.log(extract({ title: { selector: "h1" } }));
+            console.log(extract({ allTitles: { selector: ["h1"] } }));
+
+            console.log(extract({ link: { selector: "a", type: "@href" } }));
+            console.log(extract({ allLink: { selector: ["a"], type: "@href" } }));
+        </script>
+    </body>
+</html>
