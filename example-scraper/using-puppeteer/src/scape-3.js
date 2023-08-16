@@ -46,6 +46,9 @@ const extract = async (page, plan) => {
                 const selectorObj = selector;
                 if (selectorObj.hasOwnProperty("selector")) {
                     result = _extractFromPage(selectorObj.selector, selectorObj.type, rootElement);
+                    if (selectorObj.hasOwnProperty("follow")) {
+                        result = { "#url": result, "#plan": selectorObj.follow };
+                    }
                 } else {
                     result = Object.entries(selectorObj)
                         .map(([propName, aSelector]) => ({
@@ -103,15 +106,18 @@ async function main() {
             rows: { selector: "body > div.wrap > div > div > div.row > div", type: { title: "h2" } },
         });
         console.log(data);
-        */
-
+        
         data = await extract(page, {
             rows: { selector: ["body > div.wrap > div > div > div.row > div"], type: { title: "h2" } },
         });
         console.log(data);
-        /*
-
         */
+        data = await extract(page, {
+            rows: { selector: ["#w1 a"], type: "@href", follow: { title : "li.active"} },
+        });
+        console.log(data);
+
+
     } catch (error) {
         console.error(error);
     } finally {
@@ -122,18 +128,53 @@ async function main() {
 }
 const f = () => {
     mine("http://domain.com", { selector: ["some > selector"], type: "@href", follow: true });
-
-}
+};
 /**
  * extract("http://domain.com", plan)
  * extract(["http://domain.com", "http://other-domain.com"], plan)
  * 
  * plan { selector: ["div > a"], type: "@href"} => [url1, url2, url3, ...]
- * plan { selector: ["div > a"], type: "@href", follow: {plan2}} => {'#next': [url1, url2, url3, ...], plan: {plan2}}
+ * plan { selector: ["div > a"], type: "@href", follow: {plan2}} => {'#url': [url1, url2, url3, ...], '#plan': {plan2}}
  
  */
-const plan = {
-    url: "http://domain.com",
-    p: { selector: ["some > selector"], type: "@href", follow: true },
+
+const mineNextPages = async (job, browser) => {
+    const urls = Array.isArray(job["#url"]) ? job["#url"] : [...job["#url"]];
+    const plan = job["#plan"];
+
+    return await Promise.all(
+        urls.map(async (url) => {
+            const page = await openPage(url, browser);
+            return await extract(page, plan);
+        })
+    );
 };
+
+async function main2() {
+    let browser;
+    try {
+        browser = await puppeteer.launch({ headless: false, devtools: true });
+        const d = await mineNextPages(
+            {
+                "#url": ["https://mes-livres.exdata.info/", "https://mes-livres.exdata.info/"],
+                "#plan": {
+                    rows: {
+                        selector: ["body > div.wrap > div > div > div.row > div"],
+                        type: { title: "h2" },
+                    },
+                },
+            },
+            browser
+        );
+        console.log(JSON.stringify(d, null, 4));
+    } catch (error) {
+        console.error(error);
+    } finally {
+        if (browser) {
+            await browser.close();
+        }
+    }
+}
+
+//main2();
 main();
