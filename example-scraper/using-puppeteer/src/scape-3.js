@@ -5,7 +5,10 @@ const puppeteer = require("puppeteer");
 
 const openPage = async (url, browser) => {
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle2" });
+    const response = await page.goto(url, { waitUntil: "networkidle2" });
+    if (response.status() !== 200) {
+        throw new Error(`page load request returned status ${response.status()}`, { cause: url });
+    }
     await page.waitForSelector("body");
     return page;
 };
@@ -47,7 +50,16 @@ const extract = async (page, plan) => {
                 if (selectorObj.hasOwnProperty("selector")) {
                     result = _extractFromPage(selectorObj.selector, selectorObj.type, rootElement);
                     if (selectorObj.hasOwnProperty("follow")) {
-                        result = { "#url": result, "#plan": selectorObj.follow };
+                        const anchor = document.createElement("a");
+                        if (Array.isArray(result)) {
+                            result = result.map((aResult) => {
+                                anchor.setAttribute("href", aResult);
+                                return { "#url": anchor.href, "#plan": selectorObj.follow };
+                            });
+                        } else {
+                            anchor.setAttribute("href", result);
+                            result = { "#url": anchor.href, "#plan": selectorObj.follow };
+                        }
                     }
                 } else {
                     result = Object.entries(selectorObj)
@@ -113,11 +125,10 @@ async function main() {
         console.log(data);
         */
         data = await extract(page, {
-            rows: { selector: ["#w1 a"], type: "@href", follow: { title : "li.active"} },
+            title: "#w1 > li",
+            rows: { selector: ["#w1 a"], type: "@href", follow: { title: "li.active" } },
         });
-        console.log(data);
-
-
+        console.log(JSON.stringify(data, null, 4));
     } catch (error) {
         console.error(error);
     } finally {
@@ -126,9 +137,7 @@ async function main() {
         }
     }
 }
-const f = () => {
-    mine("http://domain.com", { selector: ["some > selector"], type: "@href", follow: true });
-};
+
 /**
  * extract("http://domain.com", plan)
  * extract(["http://domain.com", "http://other-domain.com"], plan)
@@ -139,21 +148,53 @@ const f = () => {
  */
 
 const mineNextPages = async (job, browser) => {
-    const urls = Array.isArray(job["#url"]) ? job["#url"] : [...job["#url"]];
+    const urls = Array.isArray(job["#url"]) ? job["#url"] : [job["#url"]];
     const plan = job["#plan"];
 
-    return await Promise.all(
+    return Promise.all(
         urls.map(async (url) => {
-            const page = await openPage(url, browser);
-            return await extract(page, plan);
+            try {
+                const page = await openPage(url, browser);
+                const data = await extract(page, plan);
+                return {
+                    "#url": url,
+                    "#data": data,
+                };
+            } catch (error) {
+                return {
+                    "#url": url,
+                    "#error": error.message,
+                };
+            }
         })
-    );
+    ).then((results) => {
+        if (Array.isArray(job["#url"])) {
+            return results;
+        } else {
+            return results[0];
+        }
+    });
 };
 
 async function main2() {
     let browser;
     try {
         browser = await puppeteer.launch({ headless: false, devtools: true });
+        /*
+        const d = await mineNextPages(
+            {
+                "#url": "https://mes-livres.exdata.info/",
+                "#plan": {
+                    rows: {
+                        selector: ["body > div.wrap > div > div > div.row > div"],
+                        type: { title: "h2" },
+                    },
+                },
+            },
+            browser
+        );
+        
+        
         const d = await mineNextPages(
             {
                 "#url": ["https://mes-livres.exdata.info/", "https://mes-livres.exdata.info/"],
@@ -166,6 +207,21 @@ async function main2() {
             },
             browser
         );
+        */
+
+        const d = await mineNextPages(
+            {
+                "#url": ["https://mes-livres.exdata.info/", "https://mes-livres.exdata.info/XXX"],
+                "#plan": {
+                    rows: {
+                        selector: ["body > div.wrap > div > div > div.row > div"],
+                        type: { title: "h2" },
+                    },
+                },
+            },
+            browser
+        );
+
         console.log(JSON.stringify(d, null, 4));
     } catch (error) {
         console.error(error);
@@ -176,5 +232,79 @@ async function main2() {
     }
 }
 
+async function runJob(job, browser) {
+    const allJobs = Object.entries(job).map(([k, v]) => {
+        if (v && typeof v === "object") {
+            if (v["#url"] && v["#plan"]) {
+                return mineNextPages(v["#plan"], browser).then((result) => (job[k] = result));
+            } else {
+                return runJob(v, browser);
+            }
+        } else {
+            return Promise.resolve(true);
+        }
+    });
+
+    return Promise.all(allJobs);
+}
+
+async function main3() {
+    let browser;
+    try {
+        browser = await puppeteer.launch({ headless: false, devtools: true });
+        /*
+        let d = await runJob(
+            {
+                "#url": "https://mes-livres.exdata.info/",
+                "#plan": {
+                    rows: {
+                        selector: "#w1 > li  a",
+                        type: "@href",
+                        follow: {
+                            label: "#w1 > li.active",
+                        },
+                    },
+                },
+            },
+            browser
+        );
+        
+
+        let d = await runJob({
+            "#url": "https://mes-livres.exdata.info/",
+            "#data": {
+                rows: {
+                    "#url": "https://mes-livres.exdata.info/index.php?r=account%2Fcreate",
+                    "#plan": {
+                        label: "#w1 > li.active",
+                    },
+                },
+            },
+        });
+*/
+        let d = await runJob({
+            "#url": "https://raoul2000.github.io/",
+            "#plan": {
+                selector: ["article > a"],
+                type: "@ref",
+                follow: {
+                    title: "article > header > h1",
+                    image: { selector: "div.post-content > p > img", type: "@src" },
+                    body: ["div.post-content > p"],
+                },
+            },
+        });
+
+        console.log(JSON.stringify(d, null, 4));
+    } catch (error) {
+        console.error(error);
+    } finally {
+        if (browser) {
+            await browser.close();
+        }
+    }
+}
+
+main3();
 //main2();
-main();
+//main();
