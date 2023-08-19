@@ -304,7 +304,7 @@ async function main3() {
         }
     }
 }
-// see https://alphahydrae.com/2021/02/a-javascript-function-that-recursively-resolves-promises/
+
 main3();
 //main2();
 //main();
