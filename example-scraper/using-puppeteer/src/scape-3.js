@@ -24,9 +24,11 @@ const extract = async (page, plan) => {
             let valueTypeReader = (el) => el.textContent;
             if (type) {
                 if (typeof type === "string" && type?.startsWith("@") && type.length > 1) {
+                    // type = "@attributeName"
                     valueTypeReader = (el) => el.getAttribute(type.substring(1));
                 } else if (typeof type === "object") {
-                    if (Array.isArray(selector)) {
+                    // {type: {...}}
+                    if (Array.isArray(selector)) {                        
                         return [...rootElement.querySelectorAll(selector[0])].map((el) =>
                             _extractFromPage(type, null, el)
                         );
@@ -34,7 +36,7 @@ const extract = async (page, plan) => {
                         const newRootElement = rootElement.querySelector(selector);
                         return (
                             newRootElement &&
-                            _extractFromPage(type, null, rootElement.querySelector(selector))
+                            _extractFromPage(type, null, newRootElement)
                         );
                     }
                 }
