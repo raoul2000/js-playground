@@ -169,7 +169,8 @@ const createMiningJobs = (project, browser) => {
 
     return Object.entries(project).reduce((acc, [k, v]) => {
         let reducedAcc = acc;
-        if (isMap(v)) { // TODO: could also be an array of projects
+        if (isMap(v)) {
+            // TODO: could also be an array of projects
             if (v.hasOwnProperty("#url") && v.hasOwnProperty("#plan")) {
                 const url = v["#url"];
                 const plan = v["#plan"];
@@ -185,21 +186,43 @@ const createMiningJobs = (project, browser) => {
                     reducedAcc = [...acc, ...ar];
                 }
             }
-        } else if( Array.isArray(v)) {
-            // FIXME: return v.map((item) => createMiningJobs(item, browser));
+        } else if (Array.isArray(v)) {
+            v.map((item) => newMinigJob());
+            reducedAcc = [...acc, ...v.map((item) => createMiningJobs(item, browser))];
         }
         return reducedAcc;
     }, []);
 };
 
-const tesCcreateMiningJobs = (project) => {
+const createMiningJobs2 = (project, browser) => {
+    const isMap = (o) => o !== null && !Array.isArray(o) && typeof o === "object";
+    const limit = pLimit(2); // concurrency limit
+    
+    if (isMap(project)) {
+        if (project.hasOwnProperty("#url") && project.hasOwnProperty("#plan")) {
+            const url = project["#url"];
+            const plan = project["#plan"];
+            return limit(() => newMinigJob(url, plan, browser));
+        } else {
+            return Object.entries(project).map(([k, v]) => {
+                return createMiningJobs2(v).then((minedData) => project[k] = minedData)
+            });
+        }
+    } else if(Array.isArray(project)) {
+        return Promise.all(project.map(item => createMiningJobs2(item, browser)));
+    } else {
+        return Promise.resolve(project);
+    }
+};
+
+const tesCcreateMiningJobs2 = (project) => {
     console.log("test : createMiningJobs");
     let browser;
     puppeteer
         .launch({ headless: false, devtools: true })
         .then((thisBrowser) => {
             browser = thisBrowser;
-            return Promise.all(createMiningJobs(project, browser));
+            return Promise.all(createMiningJobs2(project, browser));
         })
         .then((miningJobs) => console.log(JSON.stringify(project, null, 4)))
         .finally(() => {
@@ -218,7 +241,7 @@ const runMiningProject = (project, browser) => {
         return Promise.resolve(project);
     } else {
         return Promise.all(jobs).then(() => {
-            //console.log(JSON.stringify(project, null, 4));
+            console.log(JSON.stringify(project, null, 4));
             return runMiningProject(project, browser);
         });
     }
@@ -242,20 +265,32 @@ const testRunMiningProject = (project) => {
 };
 
 console.log("start");
-
+/**
+ * README.
+ * 
+ * 
+ * This implementation has benne abandonned because it goes ina direction that will only bring more complexity
+ * to the user. If some multi page scenario are required, it cannot be handled by config and should be implemented
+ * programatically.
+ * We will keep only the wcraping on one page.
+ * 
+ */
+/*
 testRunMiningProject({
     project: {
         "#url": "https://raoul2000.github.io/",
-        "#plan": {header : {
-            selector:  ["article > a"],
-            type: "@href",
-            follow: {
-                title: "article > header > h1"
-            }
-        }},
+        "#plan": {
+            header: {
+                selector: "article > a",
+                type: "@href",
+                follow: {
+                    title: "article > header > h1",
+                },
+            },
+        },
     },
 });
-
+*/
 /*
 testRunMiningProject({
     project: {
@@ -272,6 +307,8 @@ testRunMiningProject({
     },
 });
 */
+
+tesCcreateMiningJobs2({ "#url": "https://raoul2000.github.io/", "#plan": "div.logo > a" });
 
 //tesCcreateMiningJobs({_ : { "#url": "https://raoul2000.github.io/", "#plan": "div.logo > a" }});
 //tesCcreateMiningJobs({ prop1 : "value1", prop2: { "#url": "https://raoul2000.github.io/", "#plan": "div.logo > a" }});
