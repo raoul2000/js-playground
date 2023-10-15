@@ -3,7 +3,7 @@ import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 
-export default async function Home() {
+export default async function Page() {
 
     /*
     // this is another way to protect this page from public access
