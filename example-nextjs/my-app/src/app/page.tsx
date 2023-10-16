@@ -1,11 +1,14 @@
+
 import Image from "next/image";
 import styles from "./page.module.css";
 import NavBar from "@/components/NavBar";
+import {Counter} from "@/components/Counter";
 
-export default async function Home() {
+export default function Home() {
     return (
-        <main className={styles.main}>
+        <main>
             <NavBar />
+            <Counter label="Value"></Counter>
         </main>
     );
 }

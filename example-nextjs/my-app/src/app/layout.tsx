@@ -1,4 +1,8 @@
 import './globals.css'
+import "/node_modules/primeflex/primeflex.css"
+import 'primeicons/primeicons.css';
+import "primereact/resources/themes/fluent-light/theme.css";
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 

@@ -11,6 +11,9 @@
   "dependencies": {
     "next": "13.5.4",
     "next-auth": "^4.23.2",
+    "primeflex": "^3.3.1",
+    "primeicons": "^6.0.1",
+    "primereact": "^10.0.3",
     "react": "^18",
     "react-dom": "^18"
   },
