@@ -1,4 +1,6 @@
 
+'use client'
+
 import Link from "next/link";
 import { options } from "../app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
@@ -129,8 +131,8 @@ const items: MenuItem[] = [
     },
 ];
 
-export default async function NavBar() {
-    const session = await getServerSession(options);
+export default function NavBar() {
+    //const session = await getServerSession(options);
     return (
         <div>
             <Menubar model={items} />
