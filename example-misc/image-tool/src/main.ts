@@ -13,8 +13,6 @@ const tr = new Konva.Transformer();
 
 
 const init = (kittyImage: Konva.Image) => {
-  layer.add(kittyImage);
-  layer.add(tr);
 
   let selectionRectangle = new Konva.Rect({
     fill: 'rgba(0,0,255,0.5)',
@@ -68,26 +66,65 @@ const init = (kittyImage: Konva.Image) => {
     if (!selectionRectangle.visible()) {
       return;
     }
+    // add a new working rect ---------------------------------------------
+
     const workingRect = selectionRectangle.clone();
     workingRect.on('click', () => {
       tr.nodes([workingRect])
     })
+    /*     const clonedImg: Konva.Image = kittyImage.clone();
+        clonedImg.cache();
+        clonedImg.setAttrs({
+          name: "cloned"
+        });
+        clonedImg.filters([Konva.Filters.Blur]); */
+
+
     layer.add(workingRect);
     tr.nodes([workingRect])
     selectionRectangle.visible(false);
   });
-
 }
 
 
+const init2 = (kittyImage: Konva.Image) => {
+
+  let selectionRectangle = new Konva.Rect({
+    x: 50,
+    y: 50,
+    width: 100,
+    height: 100,
+    fill: 'rgba(206, 206, 206, 0.5)',
+    visible: true,
+    draggable: true,
+  });
+  tr.nodes([selectionRectangle]);
+  var group = new Konva.Group({
+    clipFunc: (ctx) => {
+      ctx.save();
+      ctx.translate(selectionRectangle.x(), selectionRectangle.y())
+      ctx.rotate(Konva.getAngle(selectionRectangle.rotation()))
+      ctx.rect(0, 0, selectionRectangle.width() * selectionRectangle.scaleX(), selectionRectangle.height() * selectionRectangle.scaleY());
+      ctx.restore()
+    }
+  })
+  const clonedImage: Konva.Image = kittyImage.clone();
+  clonedImage.cache();
+  clonedImage.filters([Konva.Filters.Blur]);
+  clonedImage.blurRadius(10);
+  group.add(clonedImage);
+  group.add(selectionRectangle);
+  layer.add(group);
+
+}
 // alternative API:
 Konva.Image.fromURL('kitty.jpg', function (kittyImage) {
   kittyImage.setAttrs({
     x: 0,
     y: 0
   });
-
-  init(kittyImage);
-
+  layer.add(kittyImage);
+  layer.add(tr);
+  init2(kittyImage);
 });
 
