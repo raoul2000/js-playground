@@ -1,7 +1,6 @@
-import type { Container } from 'konva/lib/Container';
+
 import './style.css'
 import Konva from 'konva';
-import type { NodeConfig } from 'konva/lib/Node';
 
 const stage = new Konva.Stage({
   container: 'app',
@@ -11,7 +10,10 @@ const stage = new Konva.Stage({
 
 const layer = new Konva.Layer();
 stage.add(layer);
-const tr = new Konva.Transformer();
+const tr = new Konva.Transformer({
+  ignoreStroke: true,
+  keepRatio: false,
+});
 
 
 const init = (kittyImage: Konva.Image) => {
@@ -136,8 +138,13 @@ const init3 = (kittyImage: Konva.Image) => {
 
     console.log("mousedown", e.target);
     if (e.target !== kittyImage) {
+      
       return;
     }
+/*     if(! (e.target instanceof Konva.Rect)) {
+      tr.nodes([]);
+      return
+    } */
     selectionRectangle.moveToTop();
     selectionRectangle.visible(true);
     x1 = stage.getPointerPosition()!.x;
@@ -173,6 +180,7 @@ const init3 = (kittyImage: Konva.Image) => {
 
 
   stage.on('mouseup touchend', () => {
+    console.log('mouseup');
     // do nothing if we didn't start selection
     if (!selectionRectangle.visible()) {
       return;
@@ -193,6 +201,7 @@ const init3 = (kittyImage: Konva.Image) => {
       dash: [3, 3],
       visible: true,
       draggable: true,
+      strokeScaleEnabled: false,
     });
     workingRect.on('click', () => {
       tr.nodes([workingRect])
