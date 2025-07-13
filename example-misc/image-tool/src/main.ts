@@ -1,5 +1,7 @@
+import type { Container } from 'konva/lib/Container';
 import './style.css'
 import Konva from 'konva';
+import type { NodeConfig } from 'konva/lib/Node';
 
 const stage = new Konva.Stage({
   container: 'app',
@@ -127,9 +129,7 @@ const init3 = (kittyImage: Konva.Image) => {
     draggable: true,
   });
 
-
   layer.add(selectionRectangle);
-
 
   let x1: number, y1: number, x2: number, y2: number;
   stage.on('mousedown touchstart', (e) => {
@@ -218,6 +218,22 @@ const init3 = (kittyImage: Konva.Image) => {
 
     tr.nodes([workingRect]);
   });
+
+  // key handler -----------------
+  stage.container().tabIndex = 1;
+  stage.container().focus();
+  stage.container().addEventListener('keydown', (ev) => {
+    if (ev.key === 'Delete') {
+      console.log('deleting');
+      tr.nodes().forEach(node => {
+        const group = node.getParent();
+        if (group && group instanceof Konva.Group) {
+          group.destroy();
+          tr.nodes([]);
+        }
+      })
+    }
+  })
 }
 // alternative API:
 Konva.Image.fromURL('kitty.jpg', function (kittyImage) {
