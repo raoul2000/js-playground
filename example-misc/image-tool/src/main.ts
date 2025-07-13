@@ -125,6 +125,8 @@ const init2 = (kittyImage: Konva.Image) => {
 
 const init3 = (kittyImage: Konva.Image) => {
 
+  let editMode = true;
+
   let selectionRectangle = new Konva.Rect({
     fill: 'rgba(143, 143, 143, 0.5)',
     visible: false,
@@ -137,14 +139,13 @@ const init3 = (kittyImage: Konva.Image) => {
   stage.on('mousedown touchstart', (e) => {
 
     console.log("mousedown", e.target);
-    if (e.target !== kittyImage) {
-      
+    if (!editMode || e.target !== kittyImage) {
       return;
     }
-/*     if(! (e.target instanceof Konva.Rect)) {
-      tr.nodes([]);
-      return
-    } */
+    /*     if(! (e.target instanceof Konva.Rect)) {
+          tr.nodes([]);
+          return
+        } */
     selectionRectangle.moveToTop();
     selectionRectangle.visible(true);
     x1 = stage.getPointerPosition()!.x;
@@ -164,7 +165,7 @@ const init3 = (kittyImage: Konva.Image) => {
 
   stage.on('mousemove touchmove', () => {
     // do nothing if we didn't start selection
-    if (!selectionRectangle.visible()) {
+    if (!editMode || !selectionRectangle.visible()) {
       return;
     }
     x2 = stage.getPointerPosition()!.x;
@@ -182,7 +183,7 @@ const init3 = (kittyImage: Konva.Image) => {
   stage.on('mouseup touchend', () => {
     console.log('mouseup');
     // do nothing if we didn't start selection
-    if (!selectionRectangle.visible()) {
+    if (!editMode || !selectionRectangle.visible()) {
       return;
     }
     // when selection is too small, ignore it
@@ -195,6 +196,7 @@ const init3 = (kittyImage: Konva.Image) => {
     const workingRect: Konva.Rect = selectionRectangle.clone();
     selectionRectangle.visible(false);
     workingRect.setAttrs({
+      name: "filterRect",
       fill: null,
       stroke: 'rgba(124, 119, 255, 1)',
       strokeWidth: 2,
@@ -204,6 +206,9 @@ const init3 = (kittyImage: Konva.Image) => {
       strokeScaleEnabled: false,
     });
     workingRect.on('click', () => {
+      if(!editMode) {
+        return;
+      }
       tr.nodes([workingRect])
     });
 
@@ -232,6 +237,9 @@ const init3 = (kittyImage: Konva.Image) => {
   stage.container().tabIndex = 1;
   stage.container().focus();
   stage.container().addEventListener('keydown', (ev) => {
+    if(!editMode) {
+      return;
+    }
     if (ev.key === 'Delete') {
       console.log('deleting');
       tr.nodes().forEach(node => {
@@ -243,6 +251,31 @@ const init3 = (kittyImage: Konva.Image) => {
       })
     }
   })
+
+  // Show hide images selectors ---------------------------------------
+  document.querySelector('#view')?.addEventListener('click', (ev) => {
+    const button = ev.target as HTMLButtonElement;
+    if (button.dataset.editMode == "true") {
+      stage.find(".filterRect").forEach((node) => {
+        const rect: Konva.Rect = node as Konva.Rect;
+        rect.setAttrs({
+          strokeWidth: 0,
+        })
+      })
+      button.dataset.editMode = "false";
+      editMode = false;
+    } else {
+      stage.find(".filterRect").forEach((node) => {
+        const rect: Konva.Rect = node as Konva.Rect;
+        rect.setAttrs({
+          strokeWidth: 2,
+        })
+      })
+      button.dataset.editMode = "true";
+      editMode = true;
+    }
+    tr.nodes([]);
+  });
 }
 // alternative API:
 Konva.Image.fromURL('kitty.jpg', function (kittyImage) {
