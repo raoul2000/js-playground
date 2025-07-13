@@ -122,11 +122,11 @@ const init2 = (kittyImage: Konva.Image) => {
 const init3 = (kittyImage: Konva.Image) => {
 
   let selectionRectangle = new Konva.Rect({
-    fill: 'rgba(216, 216, 216, 0.5)',
+    fill: 'rgba(143, 143, 143, 0.5)',
     visible: false,
     draggable: true,
   });
- 
+
 
   layer.add(selectionRectangle);
 
@@ -134,7 +134,7 @@ const init3 = (kittyImage: Konva.Image) => {
   let x1: number, y1: number, x2: number, y2: number;
   stage.on('mousedown touchstart', (e) => {
 
-    console.log(e.target);
+    console.log("mousedown", e.target);
     if (e.target !== kittyImage) {
       return;
     }
@@ -144,10 +144,6 @@ const init3 = (kittyImage: Konva.Image) => {
     y1 = stage.getPointerPosition()!.y;
     x2 = stage.getPointerPosition()!.x;
     y2 = stage.getPointerPosition()!.y;
-
-    if(Math.abs(x1-x2) < 10 || Math.abs(y1-y2) < 10) {
-      return;
-    } 
 
     selectionRectangle.setAttrs({
       x: x1,
@@ -181,17 +177,27 @@ const init3 = (kittyImage: Konva.Image) => {
     if (!selectionRectangle.visible()) {
       return;
     }
+    // when selection is too small, ignore it
+    if (selectionRectangle.width() < 10 || selectionRectangle.height() < 10) {
+      selectionRectangle.visible(false);
+      return;
+    }
     // add a new working rect ---------------------------------------------
 
-    const workingRect = selectionRectangle.clone();
+    const workingRect: Konva.Rect = selectionRectangle.clone();
     selectionRectangle.visible(false);
-    workingRect.draggable = true;
+    workingRect.setAttrs({
+      fill: null,
+      stroke: 'rgba(124, 119, 255, 1)',
+      strokeWidth: 2,
+      dash: [3, 3],
+      visible: true,
+      draggable: true,
+    });
     workingRect.on('click', () => {
-      console.log('cloned');
       tr.nodes([workingRect])
     });
 
-    workingRect.listening(true);
     const group = new Konva.Group({
       clipFunc: (ctx) => {
         ctx.save();
@@ -210,10 +216,7 @@ const init3 = (kittyImage: Konva.Image) => {
     group.add(workingRect);
     layer.add(group);
 
-
-    
     tr.nodes([workingRect]);
-    
   });
 }
 // alternative API:
