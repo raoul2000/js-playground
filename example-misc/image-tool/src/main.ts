@@ -206,7 +206,7 @@ const init3 = (kittyImage: Konva.Image) => {
       strokeScaleEnabled: false,
     });
     workingRect.on('click', () => {
-      if(!editMode) {
+      if (!editMode) {
         return;
       }
       tr.nodes([workingRect])
@@ -225,7 +225,7 @@ const init3 = (kittyImage: Konva.Image) => {
     clonedImage.name("cloned");
     clonedImage.cache();
     clonedImage.filters([Konva.Filters.Blur]);
-    clonedImage.blurRadius(10);
+    clonedImage.blurRadius(20);
     group.add(clonedImage);
     group.add(workingRect);
     layer.add(group);
@@ -237,7 +237,7 @@ const init3 = (kittyImage: Konva.Image) => {
   stage.container().tabIndex = 1;
   stage.container().focus();
   stage.container().addEventListener('keydown', (ev) => {
-    if(!editMode) {
+    if (!editMode) {
       return;
     }
     if (ev.key === 'Delete') {
@@ -276,6 +276,37 @@ const init3 = (kittyImage: Konva.Image) => {
     }
     tr.nodes([]);
   });
+
+  document.querySelector('#pixelate')?.addEventListener('click', (ev) => {
+    console.log('pixelate');
+    tr.nodes().forEach(node => {
+      console.log(node);
+      console.log(node.getParent());
+      const group: Konva.Group = node.getParent() as Konva.Group;
+      group.getChildren(item => item instanceof Konva.Image)
+        .map(item => item as Konva.Image)
+        .forEach((image: Konva.Image) => {
+          image.filters([Konva.Filters.Pixelate]);
+          image.pixelSize(10);
+        });
+
+    })
+  })
+  document.querySelector('#blur')?.addEventListener('click', (ev) => {
+    
+    tr.nodes().forEach(node => {
+      console.log(node);
+      console.log(node.getParent());
+      const group: Konva.Group = node.getParent() as Konva.Group;
+      group.getChildren(item => item instanceof Konva.Image)
+        .map(item => item as Konva.Image)
+        .forEach((image: Konva.Image) => {
+          image.filters([Konva.Filters.Blur]);
+          image.blurRadius(20);
+        });
+
+    })
+  })
 }
 // alternative API:
 Konva.Image.fromURL('kitty.jpg', function (kittyImage) {
