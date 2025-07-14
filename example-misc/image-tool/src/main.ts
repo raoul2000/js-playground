@@ -125,6 +125,15 @@ const init2 = (kittyImage: Konva.Image) => {
 
 const init3 = (kittyImage: Konva.Image) => {
 
+  const DEFAULT_BLUR_RADIUS = 20;
+  const rangeBlur = document.getElementById('rangeBlur') as HTMLInputElement;
+  rangeBlur.value = `${DEFAULT_BLUR_RADIUS}`;
+
+  const DEFAULT_PIXEL_SIZE = 10;
+  const rangePixelate = document.getElementById('rangePixelate') as HTMLInputElement;
+  rangePixelate.value = `${DEFAULT_PIXEL_SIZE}`;
+
+
   let editMode = true;
 
   let selectionRectangle = new Konva.Rect({
@@ -225,7 +234,7 @@ const init3 = (kittyImage: Konva.Image) => {
     clonedImage.name("cloned");
     clonedImage.cache();
     clonedImage.filters([Konva.Filters.Blur]);
-    clonedImage.blurRadius(20);
+    clonedImage.blurRadius(parseInt(rangeBlur.value));
     group.add(clonedImage);
     group.add(workingRect);
     layer.add(group);
@@ -287,13 +296,13 @@ const init3 = (kittyImage: Konva.Image) => {
         .map(item => item as Konva.Image)
         .forEach((image: Konva.Image) => {
           image.filters([Konva.Filters.Pixelate]);
-          image.pixelSize(10);
+          image.pixelSize(parseInt(rangePixelate.value));
         });
 
     })
   })
   document.querySelector('#blur')?.addEventListener('click', (ev) => {
-    
+
     tr.nodes().forEach(node => {
       console.log(node);
       console.log(node.getParent());
@@ -302,11 +311,41 @@ const init3 = (kittyImage: Konva.Image) => {
         .map(item => item as Konva.Image)
         .forEach((image: Konva.Image) => {
           image.filters([Konva.Filters.Blur]);
-          image.blurRadius(20);
+          image.blurRadius(parseInt(rangeBlur.value));
         });
 
     })
   })
+  rangeBlur.addEventListener('input', (ev) => {
+    if (!ev.target) {
+      return;
+    }
+    const value = parseInt((ev.target as HTMLInputElement).value);
+    tr.nodes().forEach(node => {
+      const group: Konva.Group = node.getParent() as Konva.Group;
+      group.getChildren(item => item instanceof Konva.Image)
+        .map(item => item as Konva.Image)
+        .filter(image => image.filters().includes(Konva.Filters.Blur))
+        .forEach((image: Konva.Image) => {
+          image.blurRadius(value);
+        });
+    })
+  });
+  rangePixelate.addEventListener('input', (ev) => {
+    if (!ev.target) {
+      return;
+    }
+    const value = parseInt((ev.target as HTMLInputElement).value);
+    tr.nodes().forEach(node => {
+      const group: Konva.Group = node.getParent() as Konva.Group;
+      group.getChildren(item => item instanceof Konva.Image)
+        .map(item => item as Konva.Image)
+        .filter(image => image.filters().includes(Konva.Filters.Pixelate))
+        .forEach((image: Konva.Image) => {
+          image.pixelSize(value);
+        });
+    })
+  });
 }
 // alternative API:
 Konva.Image.fromURL('kitty.jpg', function (kittyImage) {
