@@ -159,14 +159,10 @@ const init3 = (kittyImage: Konva.Image) => {
   let x1: number, y1: number, x2: number, y2: number;
   stage.on('mousedown touchstart', (e) => {
 
-    console.log("mousedown", e.target);
     if (!editMode || e.target !== kittyImage) {
       return;
     }
-    /*     if(! (e.target instanceof Konva.Rect)) {
-          tr.nodes([]);
-          return
-        } */
+
     selectionRectangle.moveToTop();
     selectionRectangle.visible(true);
     x1 = stage.getPointerPosition()!.x;
@@ -202,7 +198,6 @@ const init3 = (kittyImage: Konva.Image) => {
 
 
   stage.on('mouseup touchend', () => {
-    console.log('mouseup');
     // do nothing if we didn't start selection
     if (!editMode || !selectionRectangle.visible()) {
       return;
@@ -270,7 +265,6 @@ const init3 = (kittyImage: Konva.Image) => {
       return;
     }
     if (ev.key === 'Delete') {
-      console.log('deleting');
       tr.nodes().forEach(node => {
         const group = node.getParent();
         if (group && group instanceof Konva.Group) {
@@ -282,6 +276,7 @@ const init3 = (kittyImage: Konva.Image) => {
   })
 
   // Show hide images selectors ---------------------------------------
+
   editModeButton?.addEventListener('click', (ev) => {
     const button = ev.target as HTMLButtonElement;
     if (button.dataset.editMode == "true") {
@@ -292,6 +287,7 @@ const init3 = (kittyImage: Konva.Image) => {
         })
       })
       button.dataset.editMode = "false";
+      button.textContent = "edit";
       editMode = false;
     } else {
       stage.find(".filterRect").forEach((node) => {
@@ -302,6 +298,7 @@ const init3 = (kittyImage: Konva.Image) => {
       })
       button.dataset.editMode = "true";
       editMode = true;
+      button.textContent = "view";
     }
     tr.nodes([]);
   });
