@@ -125,6 +125,12 @@ const init2 = (kittyImage: Konva.Image) => {
 
 const init3 = (kittyImage: Konva.Image) => {
 
+
+  const editModeButton = document.querySelector('#view') as HTMLButtonElement;
+  const pixelateButton = document.querySelector('#pixelate') as HTMLButtonElement;
+  const blurButton = document.querySelector('#blur') as HTMLButtonElement;
+
+
   const DEFAULT_BLUR_RADIUS = 20;
   const rangeBlur = document.getElementById('rangeBlur') as HTMLInputElement;
   rangeBlur.value = `${DEFAULT_BLUR_RADIUS}`;
@@ -135,6 +141,12 @@ const init3 = (kittyImage: Konva.Image) => {
 
 
   let editMode = true;
+  let activeTool: "blur" | "pixelate" = 'blur';
+  const getInputBlurRadius = () => parseInt(rangeBlur.value);
+  const getInputPixelSize = () => parseInt(rangePixelate.value);
+  const getActiveTool = () => activeTool;
+  const setActiveTool = (tool: "blur" | "pixelate") => activeTool = tool;
+
 
   let selectionRectangle = new Konva.Rect({
     fill: 'rgba(143, 143, 143, 0.5)',
@@ -233,8 +245,16 @@ const init3 = (kittyImage: Konva.Image) => {
     const clonedImage: Konva.Image = kittyImage.clone();
     clonedImage.name("cloned");
     clonedImage.cache();
-    clonedImage.filters([Konva.Filters.Blur]);
-    clonedImage.blurRadius(parseInt(rangeBlur.value));
+    const tool = getActiveTool();
+    if (tool === 'blur') {
+      clonedImage.filters([Konva.Filters.Blur]);
+      clonedImage.blurRadius(getInputBlurRadius());
+    } else if (tool === 'pixelate') {
+      clonedImage.filters([Konva.Filters.Pixelate]);
+      clonedImage.pixelSize(getInputPixelSize());
+    } else {
+      throw new Error(`unsupported active tool : ${tool}`);
+    }
     group.add(clonedImage);
     group.add(workingRect);
     layer.add(group);
@@ -262,7 +282,7 @@ const init3 = (kittyImage: Konva.Image) => {
   })
 
   // Show hide images selectors ---------------------------------------
-  document.querySelector('#view')?.addEventListener('click', (ev) => {
+  editModeButton?.addEventListener('click', (ev) => {
     const button = ev.target as HTMLButtonElement;
     if (button.dataset.editMode == "true") {
       stage.find(".filterRect").forEach((node) => {
@@ -286,34 +306,29 @@ const init3 = (kittyImage: Konva.Image) => {
     tr.nodes([]);
   });
 
-  document.querySelector('#pixelate')?.addEventListener('click', (ev) => {
-    console.log('pixelate');
+  pixelateButton.addEventListener('click', (ev) => {
+    setActiveTool('pixelate');
     tr.nodes().forEach(node => {
-      console.log(node);
-      console.log(node.getParent());
       const group: Konva.Group = node.getParent() as Konva.Group;
       group.getChildren(item => item instanceof Konva.Image)
         .map(item => item as Konva.Image)
         .forEach((image: Konva.Image) => {
           image.filters([Konva.Filters.Pixelate]);
-          image.pixelSize(parseInt(rangePixelate.value));
+          image.pixelSize(getInputPixelSize());
         });
 
     })
   })
-  document.querySelector('#blur')?.addEventListener('click', (ev) => {
-
+  blurButton.addEventListener('click', (ev) => {
+    setActiveTool('blur');
     tr.nodes().forEach(node => {
-      console.log(node);
-      console.log(node.getParent());
       const group: Konva.Group = node.getParent() as Konva.Group;
       group.getChildren(item => item instanceof Konva.Image)
         .map(item => item as Konva.Image)
         .forEach((image: Konva.Image) => {
           image.filters([Konva.Filters.Blur]);
-          image.blurRadius(parseInt(rangeBlur.value));
+          image.blurRadius(getInputBlurRadius());
         });
-
     })
   })
   rangeBlur.addEventListener('input', (ev) => {
